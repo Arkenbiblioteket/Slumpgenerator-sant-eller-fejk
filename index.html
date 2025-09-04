@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #f0f8ff, #e6f7ff);
+      background: #f0f0f0;
       text-align: center;
       padding: 30px;
     }
@@ -18,15 +18,20 @@
       padding: 20px;
       width: 70%;
       border-radius: 15px;
-      background-color: #fff;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .sf {
+      background-color: #e6ffe6; /* ljusgrön */
+    }
+    .ln {
+      background-color: #e6f0ff; /* ljusblå */
     }
     .question {
       font-size: 1.6em;
       margin: 20px auto;
       padding: 15px;
       border-radius: 10px;
-      background-color: #f9f9f9;
+      background-color: #fff;
     }
     .buttons {
       margin: 15px 0;
@@ -41,4 +46,110 @@
       width: 100px;
       transition: transform 0.2s;
     }
-    .choice img:hover
+    .choice img:hover {
+      transform: scale(1.1);
+    }
+    .newBtn {
+      margin-top: 10px;
+      padding: 8px 18px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #007acc;
+      color: white;
+    }
+    .newBtn:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎲 Slumpgenerator 🎲</h1>
+
+  <!-- Sant eller Fejk -->
+  <div class="section sf">
+    <h2>Sant eller Fejk?</h2>
+    <div id="sfQuestion" class="question">Klicka på "Ny fråga" för att börja!</div>
+    <div class="buttons">
+      <button class="choice" onclick="playSF(true)">
+        <img src="sant.jpg" alt="Sant">
+      </button>
+      <button class="choice" onclick="playSF(false)">
+        <img src="fejk.jpg" alt="Fejk">
+      </button>
+    </div>
+    <button class="newBtn" onclick="newSFQuestion()">Ny Sant/Fejk-fråga</button>
+  </div>
+
+  <!-- Like eller Not Like -->
+  <div class="section ln">
+    <h2>Like eller Not Like?</h2>
+    <div id="lnQuestion" class="question">Klicka på "Ny fråga" för att börja!</div>
+    <div class="buttons">
+      <button class="choice" onclick="playLN(true)">
+        <img src="like.jpg" alt="Like">
+      </button>
+      <button class="choice" onclick="playLN(false)">
+        <img src="not like.jpg" alt="Not Like">
+      </button>
+    </div>
+    <button class="newBtn" onclick="newLNQuestion()">Ny Like/Not Like-fråga</button>
+  </div>
+
+  <!-- Ljudfiler -->
+  <audio id="correctSound" src="325444__troym1__correct.mp3"></audio>
+  <audio id="wrongSound" src="325443__troym1__wrong.mp3"></audio>
+  <audio id="likeSound" src="714568__lilmati__like-thumbs-up.wav"></audio>
+  <audio id="notLikeSound" src="187104__unfa__scary-boo-04 (1).flac"></audio>
+
+  <script>
+    // Frågor
+    const sfQuestions = [
+      "Bananskal är radioaktiva.",
+      "Det är lagligt att ha en krokodil som husdjur i Sverige.",
+      "Om man nyser med ögonen öppna kan de hoppa ur sina hålor.",
+      "Ketchup såldes som medicin på 1800-talet."
+    ];
+
+    const lnQuestions = [
+      "Någon postar en bild som kan göra en annan person ledsen.",
+      "Någon delar en rolig kattvideo.",
+      "En vän delar sin kompis lösenord offentligt.",
+      "En influencer uppmanar följare att göra farliga utmaningar.",
+      "Någon postar en bild på en lyckad skolresa.",
+      "En vän delar en meme som får dig att skratta högt."
+    ];
+
+    // Slumpa frågor
+    function newSFQuestion() {
+      const i = Math.floor(Math.random() * sfQuestions.length);
+      document.getElementById("sfQuestion").innerText = sfQuestions[i];
+    }
+
+    function newLNQuestion() {
+      const i = Math.floor(Math.random() * lnQuestions.length);
+      document.getElementById("lnQuestion").innerText = lnQuestions[i];
+    }
+
+    // Spela ljud
+    function playSF(isCorrect) {
+      if (isCorrect) {
+        document.getElementById("correctSound").play();
+      } else {
+        document.getElementById("wrongSound").play();
+      }
+    }
+
+    function playLN(isLike) {
+      if (isLike) {
+        document.getElementById("likeSound").play();
+      } else {
+        document.getElementById("notLikeSound").play();
+      }
+    }
+  </script>
+
+</body>
+</html>
