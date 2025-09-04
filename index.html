@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slumpgenerator</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Slumpgenerator utan upprepning</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
@@ -13,20 +12,21 @@
     <div id="questionBox">Tryck på en knapp för att få en fråga!</div>
 
     <div class="buttons">
-      <button onclick="slumpaFraga()">Sant eller fejk?</button>
-      <button onclick="slumpaLike()">Like eller Not Like?</button>
+      <button onclick="nextSantFejk()">Sant eller fejk?</button>
+      <button onclick="nextLikeNotLike()">Like eller Not Like?</button>
     </div>
   </div>
 
   <script>
-    const santEllerFejk = [
+    // Listor
+    const santEllerFejkAll = [
       "Bananskal är radioaktiva.",
       "Det är lagligt att ha en krokodil som husdjur i Sverige.",
       "Om man nyser med ögonen öppna kan ögonen hoppa ur sina hålor.",
       "Ketchup såldes som medicin på 1800-talet."
     ];
 
-    const likeNotLike = [
+    const likeNotLikeAll = [
       "Någon postar en rolig kattvideo.",
       "Någon skriver elaka kommentarer.",
       "En kompis delar ett recept.",
@@ -34,20 +34,43 @@
       "En influencer uppmanar folk att göra en farlig utmaning."
     ];
 
-    function slumpaFraga() {
-      const box = document.getElementById("questionBox");
-      const i = Math.floor(Math.random() * santEllerFejk.length);
-      box.textContent = santEllerFejk[i];
-      box.classList.remove("likeNotLike");
-      box.classList.add("santFejk");
+    // Kopior som vi jobbar igenom
+    let santEllerFejk = shuffle([...santEllerFejkAll]);
+    let likeNotLike = shuffle([...likeNotLikeAll]);
+
+    function shuffle(array) {
+      // Fisher-Yates shuffle
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
     }
 
-    function slumpaLike() {
+    function nextSantFejk() {
       const box = document.getElementById("questionBox");
-      const i = Math.floor(Math.random() * likeNotLike.length);
-      box.textContent = likeNotLike[i];
-      box.classList.remove("santFejk");
-      box.classList.add("likeNotLike");
+      if (santEllerFejk.length === 0) {
+        santEllerFejk = shuffle([...santEllerFejkAll]); // börja om
+        box.textContent = "Alla 'Sant eller fejk' är visade – börjar om!";
+      } else {
+        const fraga = santEllerFejk.pop();
+        box.textContent = fraga;
+        box.classList.remove("likeNotLike");
+        box.classList.add("santFejk");
+      }
+    }
+
+    function nextLikeNotLike() {
+      const box = document.getElementById("questionBox");
+      if (likeNotLike.length === 0) {
+        likeNotLike = shuffle([...likeNotLikeAll]); // börja om
+        box.textContent = "Alla 'Like/Not Like' är visade – börjar om!";
+      } else {
+        const fraga = likeNotLike.pop();
+        box.textContent = fraga;
+        box.classList.remove("santFejk");
+        box.classList.add("likeNotLike");
+      }
     }
   </script>
 </body>
