@@ -1,59 +1,54 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slumpgenerator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Slumpgenerator 🎲</h1>
 
-.container {
-  text-align: center;
-  width: 90%;
-  max-width: 700px;
-}
+    <div id="questionBox">Tryck på en knapp för att få en fråga!</div>
 
-#questionBox {
-  margin: 20px auto;
-  padding: 40px;
-  border-radius: 20px;
-  font-size: 2em;       /* mycket större text */
-  font-weight: bold;
-  max-width: 100%;
-  min-height: 200px;    /* alltid stor ruta */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: #eee;
-  transition: 0.3s;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
+    <div class="buttons">
+      <button onclick="slumpaFraga()">Sant eller fejk?</button>
+      <button onclick="slumpaLike()">Like eller Not Like?</button>
+    </div>
+  </div>
 
-.santFejk {
-  background: #ffefd5; /* ljusorange */
-  border: 4px solid #ff9800;
-}
+  <script>
+    const santEllerFejk = [
+      "Bananskal är radioaktiva.",
+      "Det är lagligt att ha en krokodil som husdjur i Sverige.",
+      "Om man nyser med ögonen öppna kan ögonen hoppa ur sina hålor.",
+      "Ketchup såldes som medicin på 1800-talet."
+    ];
 
-.likeNotLike {
-  background: #e0f7fa; /* ljusblå */
-  border: 4px solid #00acc1;
-}
+    const likeNotLike = [
+      "Någon postar en rolig kattvideo.",
+      "Någon skriver elaka kommentarer.",
+      "En kompis delar ett recept.",
+      "Någon lägger upp hotfulla meddelanden.",
+      "En influencer uppmanar folk att göra en farlig utmaning."
+    ];
 
-button {
-  margin: 15px;
-  padding: 15px 30px;
-  font-size: 1.2em;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  background: #4caf50;
-  color: white;
-  transition: background 0.3s, transform 0.2s;
-}
+    function slumpaFraga() {
+      const box = document.getElementById("questionBox");
+      const i = Math.floor(Math.random() * santEllerFejk.length);
+      box.textContent = santEllerFejk[i];
+      box.classList.remove("likeNotLike");
+      box.classList.add("santFejk");
+    }
 
-button:hover {
-  background: #388e3c;
-  transform: scale(1.05);
-}
+    function slumpaLike() {
+      const box = document.getElementById("questionBox");
+      const i = Math.floor(Math.random() * likeNotLike.length);
+      box.textContent = likeNotLike[i];
+      box.classList.remove("santFejk");
+      box.classList.add("likeNotLike");
+    }
+  </script>
+</body>
+</html>
