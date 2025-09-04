@@ -2,67 +2,47 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Slumpgenerator – Sant eller Fejk?</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f8ff; /* ljus bakgrund */
-    }
-    h1 {
-      margin: 20px 0;
-      color: #333;
-    }
-    #question-box {
-      background-color: #ffefd5; /* ljus orange/gul ruta */
-      border: 3px solid #ffa500; /* stark orange ram */
-      border-radius: 15px;
-      padding: 30px;
-      width: 60%;
-      margin: 30px auto;
-      font-size: 1.5em;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-      min-height: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    button {
-      background-color: #ffa500; /* orange knapp */
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 1em;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #ff8c00; /* mörkare orange vid hover */
-    }
-  </style>
+  <title>Slumpgenerator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🎲 Sant eller Fejk?</h1>
-  <div id="question-box">Tryck på knappen för att få en fråga!</div>
-  <button onclick="newQuestion()">Slumpa fråga</button>
+  <div class="container">
+    <h1>Slumpgenerator 🎲</h1>
+    <div id="questionBox">Tryck på en knapp för att få en fråga!</div>
+    <div class="buttons">
+      <button onclick="slumpaFraga()">Sant eller fejk?</button>
+      <button onclick="slumpaLike()">Like eller Not Like?</button>
+    </div>
+  </div>
 
   <script>
-    const questions = [
+    const santEllerFejk = [
       "Bananskal är radioaktiva.",
       "Det är lagligt att ha en krokodil som husdjur i Sverige.",
-      "Om man nyser med ögonen öppna kan de hoppa ur sina hålor.",
-      "Ketchup såldes som medicin på 1800-talet.",
-      "Månen är större än Australien.",
-      "Guld finns i människokroppen.",
-      "Man kan inte se Kinesiska muren från rymden."
+      "Om man nyser med ögonen öppna kan ögonen hoppa ur sina hålor.",
+      "Ketchup såldes som medicin på 1800-talet."
     ];
 
-    function newQuestion() {
-      const randomIndex = Math.floor(Math.random() * questions.length);
-      document.getElementById("question-box").innerText = questions[randomIndex];
+    const likeNotLike = [
+      "Någon postar en rolig kattvideo.",
+      "Någon skriver elaka kommentarer.",
+      "En kompis delar ett recept.",
+      "Någon lägger upp hotfulla meddelanden.",
+      "En influencer uppmanar folk att göra en farlig utmaning."
+    ];
+
+    function slumpaFraga() {
+      const box = document.getElementById("questionBox");
+      const fraga = santEllerFejk[Math.floor(Math.random() * santEllerFejk.length)];
+      box.textContent = fraga;
+      box.className = "santFejk";
+    }
+
+    function slumpaLike() {
+      const box = document.getElementById("questionBox");
+      const fraga = likeNotLike[Math.floor(Math.random() * likeNotLike.length)];
+      box.textContent = fraga;
+      box.className = "likeNotLike";
     }
   </script>
 </body>
