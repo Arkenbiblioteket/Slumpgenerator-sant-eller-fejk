@@ -2,74 +2,180 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Slumpgenerator utan upprepning</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Slumpgenerator – Sant eller Fejk & Like eller Not Like</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #cbebff);
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px;
+      color: #333;
+    }
+
+    .game-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      margin: 20px;
+    }
+
+    .game {
+      width: 45%;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .questionBox {
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 1.2em;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .choice {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .choice img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .choice:hover {
+      transform: scale(1.2);
+    }
+
+    .newQuestion {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+    }
+
+    .newQuestion:hover {
+      background-color: #005fa3;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Slumpgenerator 🎲</h1>
+  <h1>🎲 Sant eller Fejk & 👍 Like eller Not Like</h1>
 
-    <div id="questionBox">Tryck på en knapp för att få en fråga!</div>
+  <div class="game-container">
+    <!-- Sant eller Fejk -->
+    <div class="game">
+      <h2>Sant eller Fejk</h2>
+      <div id="questionBox1" class="questionBox">Tryck på knappen för en fråga!</div>
+      <div class="buttons">
+        <button class="choice" onclick="checkAnswer1(true)">
+          <img src="check.png" alt="Sant">
+        </button>
+        <button class="choice" onclick="checkAnswer1(false)">
+          <img src="cross.png" alt="Fejk">
+        </button>
+      </div>
+      <button class="newQuestion" onclick="newQuestion1()">Ny fråga</button>
+    </div>
 
-    <div class="buttons">
-      <button onclick="nextSantFejk()">Sant eller fejk?</button>
-      <button onclick="nextLikeNotLike()">Like eller Not Like?</button>
+    <!-- Like eller Not Like -->
+    <div class="game">
+      <h2>Like eller Not Like</h2>
+      <div id="questionBox2" class="questionBox">Tryck på knappen för en situation!</div>
+      <div class="buttons">
+        <button class="choice" onclick="checkAnswer2(true)">
+          <img src="like.png" alt="Like">
+        </button>
+        <button class="choice" onclick="checkAnswer2(false)">
+          <img src="dislike.png" alt="Not Like">
+        </button>
+      </div>
+      <button class="newQuestion" onclick="newQuestion2()">Ny situation</button>
     </div>
   </div>
 
+  <!-- Ljud -->
+  <audio id="correctSound" src="correct.mp3"></audio>
+  <audio id="wrongSound" src="wrong.mp3"></audio>
+  <audio id="likeSound" src="like.wav"></audio>
+  <audio id="dislikeSound" src="boo.flac"></audio>
+
   <script>
-    // Listor
-    const santEllerFejkAll = [
-      "Bananskal är radioaktiva.",
-      "Det är lagligt att ha en krokodil som husdjur i Sverige.",
-      "Om man nyser med ögonen öppna kan ögonen hoppa ur sina hålor.",
-      "Ketchup såldes som medicin på 1800-talet."
+    // --- Sant eller Fejk ---
+    const questions1 = [
+      { text: "Bananskal är radioaktiva.", answer: true },
+      { text: "Man får ha krokodil som husdjur i Sverige.", answer: false },
+      { text: "Ketchup såldes som medicin på 1800-talet.", answer: true },
+      { text: "Om man nyser med öppna ögon kan ögonen hoppa ur.", answer: false },
+      { text: "Internet uppfanns på 1960-talet.", answer: true },
+      { text: "Alla bilder på nätet är gratis att använda.", answer: false }
     ];
+    let currentQuestion1 = null;
 
-    const likeNotLikeAll = [
-      "Någon postar en rolig kattvideo.",
-      "Någon skriver elaka kommentarer.",
-      "En kompis delar ett recept.",
-      "Någon lägger upp hotfulla meddelanden.",
-      "En influencer uppmanar folk att göra en farlig utmaning."
-    ];
-
-    // Kopior som vi jobbar igenom
-    let santEllerFejk = shuffle([...santEllerFejkAll]);
-    let likeNotLike = shuffle([...likeNotLikeAll]);
-
-    function shuffle(array) {
-      // Fisher-Yates shuffle
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
+    function newQuestion1() {
+      currentQuestion1 = questions1[Math.floor(Math.random() * questions1.length)];
+      document.getElementById("questionBox1").innerText = currentQuestion1.text;
     }
 
-    function nextSantFejk() {
-      const box = document.getElementById("questionBox");
-      if (santEllerFejk.length === 0) {
-        santEllerFejk = shuffle([...santEllerFejkAll]); // börja om
-        box.textContent = "Alla 'Sant eller fejk' är visade – börjar om!";
+    function checkAnswer1(choice) {
+      if (!currentQuestion1) return;
+      if (choice === currentQuestion1.answer) {
+        document.getElementById("correctSound").play();
+        alert("Rätt! 🎉");
       } else {
-        const fraga = santEllerFejk.pop();
-        box.textContent = fraga;
-        box.classList.remove("likeNotLike");
-        box.classList.add("santFejk");
+        document.getElementById("wrongSound").play();
+        alert("Fel! 😅");
       }
     }
 
-    function nextLikeNotLike() {
-      const box = document.getElementById("questionBox");
-      if (likeNotLike.length === 0) {
-        likeNotLike = shuffle([...likeNotLikeAll]); // börja om
-        box.textContent = "Alla 'Like/Not Like' är visade – börjar om!";
+    // --- Like eller Not Like ---
+    const questions2 = [
+      { text: "Någon lägger ut en rolig kattvideo.", answer: true },
+      { text: "Någon skriver elaka kommentarer.", answer: false },
+      { text: "En kompis delar sitt lösenord offentligt.", answer: false },
+      { text: "En vän delar ett recept på chokladbollar.", answer: true },
+      { text: "Någon postar hotfulla meddelanden.", answer: false },
+      { text: "Någon lägger upp en bild där alla är glada.", answer: true }
+    ];
+    let currentQuestion2 = null;
+
+    function newQuestion2() {
+      currentQuestion2 = questions2[Math.floor(Math.random() * questions2.length)];
+      document.getElementById("questionBox2").innerText = currentQuestion2.text;
+    }
+
+    function checkAnswer2(choice) {
+      if (!currentQuestion2) return;
+      if (choice === currentQuestion2.answer) {
+        document.getElementById("likeSound").play();
+        alert("Like! 👍");
       } else {
-        const fraga = likeNotLike.pop();
-        box.textContent = fraga;
-        box.classList.remove("santFejk");
-        box.classList.add("likeNotLike");
+        document.getElementById("dislikeSound").play();
+        alert("Not Like 👎");
       }
     }
   </script>
