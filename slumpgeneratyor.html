@@ -1,0 +1,133 @@
+<!--
+OM TEKNIKJAKTEN
+==========================================================
+Teknikjakten är inspirerad av escape rooms och skapades som en del 
+av projektet Mer för fler som Umeå kommuns bibliotek deltog i 2018. 
+Projektgruppen bestod av sex personer från olika bibliotek som gick 
+en metodutbildning, SKL:s Innovationsguiden.
+
+Du kan hitta mer information om detta projekt på följande plats
+
+www.minabibliotek.se/merforfler
+
+SKAPA EGNA JAKTER
+==========================================================
+Denna version av teknikjakten är en mall framtagen för att det skall vara
+enkelt att skapa egna teknikjakter.
+kunna skapa egna "teknikjakter".
+
+Ett exempel på teknikjakt kan hittas på:
+
+www.itbib.se/teknikjakten
+
+LICENS OCH MALL
+==========================================================
+Teknikjakten är byggd med hjälp av ett javascript ramverk som heter 
+Twitter bootstrap och en tema som heter Agency.
+Temat kan hittas på följande sida.
+
+https://startbootstrap.com/themes/agency/
+
+Eller här:
+
+https://github.com/BlackrockDigital/startbootstrap-agency
+
+Mallen Agency använder sig av en licens som heter "The MIT License".
+Det innebär följande
+
+The MIT License (MIT)
+
+Copyright (c) 2013-2019 Blackrock Digital LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+SLUT PÅ KOMMENTARER
+==========================================================
+-->
+
+<!--SÅ GÖR DU För att skapa en egen teknikjakt behöver du ändra vissa delar i detta dokument
+sådana platser är märkta med texten ÄNDRA. Läs kommentarerna eller använd sökfunktionen
+ctrl+f för att snabbt hitta de platser du behöver ändra på.-->
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Slumpa en fråga</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f5f5f5;
+    }
+    #question-box {
+      font-size: 1.5rem;
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #1a73e8;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0d47a1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎲 Slumpa en fråga</h1>
+  <div id="question-box">Tryck på knappen för att få en fråga</div>
+  <button onclick="showRandomQuestion()">Slumpa fråga</button>
+
+  <script>
+    const questions = [
+      "Bananskal är radioaktiva – sant eller fejk?",
+      "Kan man ha en krokodil som husdjur i Sverige?",
+      "Om man nyser med ögonen öppna kan de hoppa ur sina hålor.",
+      "Ketchup såldes som medicin på 1800-talet.",
+      "Ska man trycka like på en rolig kattvideo?",
+      "Är det smart att dela någon annans lösenord?",
+      "Vad vill du att andra ska se om dig när de googlar ditt namn?",
+      "Är alla bilder på nätet äkta?",
+      "En influencer ber dig göra en farlig utmaning – like eller not like?",
+      "Någon postar en bild från en lyckad skolresa – like eller not like?"
+    ];
+
+    function showRandomQuestion() {
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      const question = questions[randomIndex];
+      document.getElementById("question-box").textContent = question;
+    }
+  </script>
+
+</body>
+</html>
