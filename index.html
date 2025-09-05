@@ -4,21 +4,88 @@
   <meta charset="UTF-8">
   <title>Bli ett proffs på smarta val online!</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 700px;
+    }
+    #questionBox {
+      margin: 20px auto;
+      padding: 40px;
+      border-radius: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eee;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .modeButtons {
+      margin-bottom: 20px;
+    }
+    .modeButtons button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+    .modeButtons button:first-child {
+      background: #ff9800; /* orange för sant/fejk */
+    }
+    .modeButtons button:last-child {
+      background: #00acc1; /* blå för like/not like */
+    }
+    .answerButtons button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #4caf50;
+      color: white;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .answerButtons button:hover {
+      background: #388e3c;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9; /* grön bakgrund vid rätt */
+    }
+    .wrong {
+      background: #ffcdd2; /* röd bakgrund vid fel */
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div id="questionBox">Välj en kategori för att börja!</div>
-
-    <div class="buttons">
+    <div class="modeButtons">
       <button onclick="startSantFejk()">Sant eller fejk</button>
       <button onclick="startLikeNotLike()">Like eller Not Like</button>
     </div>
 
-    <div class="answerButtons" id="answerButtons" style="display:none;">
-      <!-- Dynamiskt fyllt av JS -->
-    </div>
+    <div id="questionBox">Välj en kategori för att börja!</div>
+
+    <div class="answerButtons" id="answerButtons" style="display:none;"></div>
   </div>
 
   <!-- Ljud -->
@@ -26,7 +93,6 @@
   <audio id="felSound" src="fel.mp3"></audio>
 
   <script>
-    // Frågor och svar
     const santEllerFejkAll = [
       { text: "Bananskal är radioaktiva.", correct: true },
       { text: "Det är lagligt att ha en krokodil som husdjur i Sverige.", correct: false },
@@ -84,6 +150,8 @@
 
     function nextQuestion() {
       const box = document.getElementById("questionBox");
+      box.classList.remove("correct", "wrong");
+
       if (currentMode === "santfejk") {
         if (santEllerFejk.length === 0) {
           box.textContent = "Alla Sant eller Fejk-frågor är slut!";
@@ -115,14 +183,22 @@
                     (choice.startsWith("Not") && !currentQuestion.correct);
       }
 
+      const box = document.getElementById("questionBox");
+
       if (isCorrect) {
         document.getElementById("rattSound").play();
+        box.textContent = "Correct ✅";
+        box.classList.add("correct");
       } else {
         document.getElementById("felSound").play();
+        box.textContent = "Wrong ❌";
+        box.classList.add("wrong");
       }
 
-      // Gå vidare till nästa
-      nextQuestion();
+      // Vänta 2 sekunder innan nästa fråga visas
+      setTimeout(() => {
+        nextQuestion();
+      }, 2000);
     }
   </script>
 </body>
