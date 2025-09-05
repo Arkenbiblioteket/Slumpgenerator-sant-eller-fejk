@@ -16,20 +16,19 @@
     .container {
       text-align: center;
       width: 90%;
-      max-width: 800px;
+      max-width: 700px;
     }
     h1 {
       margin-bottom: 20px;
-      font-size: 2em;
       color: #333;
     }
     #questionBox {
       margin: 20px auto;
       padding: 40px;
       border-radius: 20px;
-      font-size: 1.8em;
+      font-size: 2em;
       font-weight: bold;
-      min-height: 150px;
+      min-height: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -38,21 +37,28 @@
       transition: 0.3s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .santFejk {
-      background: #ffefd5;
-      border: 4px solid #ff9800;
+    .category-buttons {
+      margin-bottom: 20px;
     }
-    .likeNotLike {
-      background: #e0f7fa;
-      border: 4px solid #00acc1;
-    }
-    .buttons {
-      margin-top: 20px;
-    }
-    button {
+    .category-buttons button {
       margin: 10px;
-      padding: 15px 30px;
-      font-size: 1.2em;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #2196f3;
+      color: white;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .category-buttons button:hover {
+      background: #1976d2;
+      transform: scale(1.05);
+    }
+    .answer-buttons button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 1.1em;
       border: none;
       border-radius: 12px;
       cursor: pointer;
@@ -60,18 +66,19 @@
       color: white;
       transition: background 0.3s, transform 0.2s;
     }
-    button:hover {
+    .answer-buttons button:hover {
       background: #388e3c;
       transform: scale(1.05);
     }
-    .answerButtons {
-      margin-top: 15px;
+    .wrong-answer {
+      background: #e57373 !important;
+      border: 4px solid #c62828;
+      color: white;
     }
-    .answerButtons button {
-      background: #2196f3;
-    }
-    .answerButtons button:hover {
-      background: #1976d2;
+    .correct-answer {
+      background: #81c784 !important;
+      border: 4px solid #2e7d32;
+      color: white;
     }
   </style>
 </head>
@@ -79,152 +86,89 @@
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
 
+    <!-- Kategori-knappar -->
+    <div class="category-buttons">
+      <button onclick="setCategory('santfejk')">Sant eller fejk</button>
+      <button onclick="setCategory('likenotlike')">Like eller Not like</button>
+    </div>
+
+    <!-- Frågeruta -->
     <div id="questionBox">Välj en kategori för att starta!</div>
 
-    <div class="buttons">
-      <button onclick="nextSantFejk()">🎲 Sant eller fejk?</button>
-      <button onclick="nextLikeNotLike()">👍 Like eller 👎 Not Like?</button>
+    <!-- Svarsknappar -->
+    <div class="answer-buttons" id="answerButtons" style="display:none;">
+      <button onclick="checkAnswer(true)">Sant / Like</button>
+      <button onclick="checkAnswer(false)">Fejk / Not like</button>
     </div>
 
-    <div class="answerButtons" id="answerButtons" style="display:none;">
-      <button onclick="checkAnswer(true)">Sant / Like</button>
-      <button onclick="checkAnswer(false)">Fejk / Not Like</button>
-    </div>
+    <!-- Ljudfiler -->
+    <audio id="correctSound" src="ratt.mp3"></audio>
+    <audio id="wrongSound" src="fel.mp3"></audio>
   </div>
 
-  <!-- Ljudfiler -->
-  <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-  <audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-
   <script>
-    // --- Frågor Sant eller Fejk ---
-    const santEllerFejkAll = [
-      {
-        text: "Guld är ätbart.",
-        correct: true,
-        explanation: "Sant ✅ – i mycket små mängder är bladguld ofarligt och används som dekoration på mat/dryck."
-      },
-      {
-        text: "Människan använder bara 10 % av sin hjärna.",
-        correct: false,
-        explanation: "Fejk ❌ – hela hjärnan är aktiv, myten kommer från en gammal misstolkning."
-      },
-      {
-        text: "Blixten slår aldrig ner på samma ställe två gånger.",
-        correct: false,
-        explanation: "Fejk ❌ – blixten slår ofta ner på samma plats, t.ex. i höga byggnader."
-      },
-      {
-        text: "Du kan se Kinesiska muren från rymden med blotta ögat.",
-        correct: false,
-        explanation: "Fejk ❌ – den är för smal och smälter in i landskapet."
-      },
-      {
-        text: "Strutsar gömmer huvudet i sanden när de blir rädda.",
-        correct: false,
-        explanation: "Fejk ❌ – de lägger sig ner och plattar kroppen mot marken istället."
-      },
-      {
-        text: "Hajar kan inte få cancer.",
-        correct: false,
-        explanation: "Fejk ❌ – myten om att hajar inte kan få cancer har använts för att sälja hajpreparat."
-      },
-      {
-        text: "Man kan inte rapa i rymden.",
-        correct: true,
-        explanation: "Sant ✅ – utan gravitation stannar gasen i magen blandad med vätska."
-      },
-      {
-        text: "Cola light flyter i vatten medan vanlig Cola sjunker.",
-        correct: true,
-        explanation: "Sant ✅ – light innehåller mindre socker och är därför mindre tät."
-      },
-      {
-        text: "Det finns fler stjärnor i universum än sandkorn på alla jordens stränder.",
-        correct: true,
-        explanation: "Sant ✅ – astronomerna uppskattar att det är så, även om båda är nästan ofattbart många."
-      }
+    const santFejkQuestions = [
+      { text: "Guld är ätbart.", answer: true },
+      { text: "Människan använder bara 10 % av sin hjärna.", answer: false },
+      { text: "Blixten slår aldrig ner på samma ställe två gånger.", answer: false },
+      { text: "Du kan se Kinesiska muren från rymden med blotta ögat.", answer: false },
+      { text: "Strutsar gömmer huvudet i sanden när de blir rädda.", answer: false },
+      { text: "Hajar kan inte få cancer.", answer: false },
+      { text: "Man kan inte rapa i rymden.", answer: true },
+      { text: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: true },
+      { text: "Det finns fler stjärnor i universum än sandkorn på alla jordens stränder.", answer: true }
     ];
 
-    // --- Frågor Like / Not Like ---
-    const likeNotLikeAll = [
-      { text: "Någon postar en rolig kattvideo.", correct: true, explanation: "LIKE – helt ofarligt och kul!" },
-      { text: "Någon skriver elaka kommentarer.", correct: false, explanation: "NOT LIKE – det kan såra någon." },
-      { text: "En kompis delar ett recept.", correct: true, explanation: "LIKE – bra och ofarligt att dela." },
-      { text: "Någon lägger upp hotfulla meddelanden.", correct: false, explanation: "NOT LIKE – hot är aldrig okej." },
-      { text: "En influencer uppmanar folk att göra en farlig utmaning.", correct: false, explanation: "NOT LIKE – farliga utmaningar kan skada dig." }
+    const likeNotLikeQuestions = [
+      { text: "Någon postar en bild som kan göra en annan person ledsen.", answer: false },
+      { text: "Någon delar en rolig kattvideo.", answer: true },
+      { text: "Någon postar hotfulla meddelanden i en skolgrupp.", answer: false },
+      { text: "En vän delar sin kompis lösenord offentligt.", answer: false },
+      { text: "Någon postar en bild där alla på fotot ser glada ut.", answer: true },
+      { text: "En vän skriver elaka kommentarer om någons utseende.", answer: false },
+      { text: "Någon postar en bild på en lyckad skolresa eller fest.", answer: true },
+      { text: "En influencer uppmanar följare att göra farliga utmaningar.", answer: false },
+      { text: "En vän delar en meme som får dig att skratta högt.", answer: true },
+      { text: "En vän delar ett recept på chokladbollar.", answer: true }
     ];
 
-    let santEllerFejk = shuffle([...santEllerFejkAll]);
-    let likeNotLike = shuffle([...likeNotLikeAll]);
-
+    let currentCategory = null;
+    let questions = [];
     let currentQuestion = null;
-    let currentMode = null;
 
-    const correctSound = document.getElementById("correctSound");
-    const wrongSound = document.getElementById("wrongSound");
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function nextSantFejk() {
-      currentMode = "santfejk";
-      const box = document.getElementById("questionBox");
+    function setCategory(category) {
+      currentCategory = category;
+      questions = category === "santfejk" ? [...santFejkQuestions] : [...likeNotLikeQuestions];
+      nextQuestion();
       document.getElementById("answerButtons").style.display = "block";
-
-      if (santEllerFejk.length === 0) {
-        santEllerFejk = shuffle([...santEllerFejkAll]);
-        box.textContent = "Alla 'Sant eller fejk'-frågor är visade – börjar om!";
-      } else {
-        currentQuestion = santEllerFejk.pop();
-        box.textContent = currentQuestion.text;
-        box.classList.add("santFejk");
-        box.classList.remove("likeNotLike");
-      }
     }
 
-    function nextLikeNotLike() {
-      currentMode = "likenotlike";
-      const box = document.getElementById("questionBox");
-      document.getElementById("answerButtons").style.display = "block";
-
-      if (likeNotLike.length === 0) {
-        likeNotLike = shuffle([...likeNotLikeAll]);
-        box.textContent = "Alla 'Like/Not Like'-frågor är visade – börjar om!";
-      } else {
-        currentQuestion = likeNotLike.pop();
-        box.textContent = currentQuestion.text;
-        box.classList.add("likeNotLike");
-        box.classList.remove("santFejk");
+    function nextQuestion() {
+      if (questions.length === 0) {
+        document.getElementById("questionBox").textContent = "Alla frågor är slut!";
+        return;
       }
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      currentQuestion = questions.splice(randomIndex, 1)[0];
+      document.getElementById("questionBox").textContent = currentQuestion.text;
     }
 
-    function checkAnswer(choice) {
+    function checkAnswer(userAnswer) {
       const box = document.getElementById("questionBox");
-      if (!currentQuestion) return;
-
-      if (choice === currentQuestion.correct) {
-        correctSound.play();
+      if (userAnswer === currentQuestion.answer) {
+        box.textContent = "Correct!";
+        box.classList.add("correct-answer");
+        document.getElementById("correctSound").play();
       } else {
-        wrongSound.play();
+        box.textContent = "Wrong!";
+        box.classList.add("wrong-answer");
+        document.getElementById("wrongSound").play();
       }
 
-      // Visa förklaring
-      box.textContent = currentQuestion.explanation;
-
-      // Vänta 3 sek innan nästa fråga
       setTimeout(() => {
-        if (currentMode === "santfejk") {
-          nextSantFejk();
-        } else {
-          nextLikeNotLike();
-        }
-      }, 3000);
+        box.classList.remove("correct-answer", "wrong-answer");
+        nextQuestion();
+      }, 1500);
     }
   </script>
 </body>
