@@ -9,21 +9,24 @@
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div id="questionBox">Tryck på en knapp för att få en fråga!</div>
+    <div id="questionBox">Välj en kategori för att börja!</div>
 
     <div class="buttons">
-      <button onclick="nextSantFejk()">Sant eller fejk?</button>
-      <button onclick="nextLikeNotLike()">Like eller Not Like?</button>
-      <button onclick="checkAnswer()">Rätt eller fel?</button>
+      <button onclick="startSantFejk()">Sant eller fejk</button>
+      <button onclick="startLikeNotLike()">Like eller Not Like</button>
+    </div>
+
+    <div class="answerButtons" id="answerButtons" style="display:none;">
+      <!-- Dynamiskt fyllt av JS -->
     </div>
   </div>
 
-  <!-- Ljudfiler -->
+  <!-- Ljud -->
   <audio id="rattSound" src="ratt.mp3"></audio>
   <audio id="felSound" src="fel.mp3"></audio>
 
   <script>
-    // Frågor med svar
+    // Frågor och svar
     const santEllerFejkAll = [
       { text: "Bananskal är radioaktiva.", correct: true },
       { text: "Det är lagligt att ha en krokodil som husdjur i Sverige.", correct: false },
@@ -32,16 +35,18 @@
     ];
 
     const likeNotLikeAll = [
-      "Någon postar en rolig kattvideo.",
-      "Någon skriver elaka kommentarer.",
-      "En kompis delar ett recept.",
-      "Någon lägger upp hotfulla meddelanden.",
-      "En influencer uppmanar folk att göra en farlig utmaning."
+      { text: "Någon postar en rolig kattvideo.", correct: true },
+      { text: "Någon skriver elaka kommentarer.", correct: false },
+      { text: "En kompis delar ett recept.", correct: true },
+      { text: "Någon lägger upp hotfulla meddelanden.", correct: false },
+      { text: "En influencer uppmanar följare att göra en farlig utmaning.", correct: false },
+      { text: "Någon postar en bild på en lyckad skolresa.", correct: true }
     ];
 
-    let santEllerFejk = shuffle([...santEllerFejkAll]);
-    let likeNotLike = shuffle([...likeNotLikeAll]);
-    let currentCorrect = null; // sparar om senaste sant/fejk är sant eller falskt
+    let santEllerFejk = [];
+    let likeNotLike = [];
+    let currentQuestion = null;
+    let currentMode = null;
 
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -51,45 +56,73 @@
       return array;
     }
 
-    function nextSantFejk() {
-      const box = document.getElementById("questionBox");
-      if (santEllerFejk.length === 0) {
-        santEllerFejk = shuffle([...santEllerFejkAll]);
-        box.textContent = "Alla 'Sant eller fejk' är visade – börjar om!";
-        currentCorrect = null;
-      } else {
-        const fraga = santEllerFejk.pop();
-        box.textContent = fraga.text;
-        box.classList.remove("likeNotLike");
-        box.classList.add("santFejk");
-        currentCorrect = fraga.correct;
-      }
+    function startSantFejk() {
+      currentMode = "santfejk";
+      santEllerFejk = shuffle([...santEllerFejkAll]);
+      nextQuestion();
+      setupAnswerButtons(["Sant", "Fejk"]);
     }
 
-    function nextLikeNotLike() {
-      const box = document.getElementById("questionBox");
-      if (likeNotLike.length === 0) {
-        likeNotLike = shuffle([...likeNotLikeAll]);
-        box.textContent = "Alla 'Like/Not Like' är visade – börjar om!";
-      } else {
-        const fraga = likeNotLike.pop();
-        box.textContent = fraga;
-        box.classList.remove("santFejk");
-        box.classList.add("likeNotLike");
-        currentCorrect = null; // inte relevant för denna del
-      }
+    function startLikeNotLike() {
+      currentMode = "likenotlike";
+      likeNotLike = shuffle([...likeNotLikeAll]);
+      nextQuestion();
+      setupAnswerButtons(["Like 👍", "Not Like 👎"]);
     }
 
-    function checkAnswer() {
-      if (currentCorrect === null) {
-        alert("Välj först en 'Sant eller fejk'-fråga!");
-        return;
+    function setupAnswerButtons(options) {
+      const box = document.getElementById("answerButtons");
+      box.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        box.appendChild(btn);
+      });
+      box.style.display = "block";
+    }
+
+    function nextQuestion() {
+      const box = document.getElementById("questionBox");
+      if (currentMode === "santfejk") {
+        if (santEllerFejk.length === 0) {
+          box.textContent = "Alla Sant eller Fejk-frågor är slut!";
+          currentQuestion = null;
+          return;
+        }
+        currentQuestion = santEllerFejk.pop();
+      } else if (currentMode === "likenotlike") {
+        if (likeNotLike.length === 0) {
+          box.textContent = "Alla Like/Not Like-frågor är slut!";
+          currentQuestion = null;
+          return;
+        }
+        currentQuestion = likeNotLike.pop();
       }
-      if (currentCorrect) {
+      box.textContent = currentQuestion.text;
+    }
+
+    function checkAnswer(choice) {
+      if (!currentQuestion) return;
+
+      let isCorrect = false;
+
+      if (currentMode === "santfejk") {
+        isCorrect = (choice === "Sant" && currentQuestion.correct) ||
+                    (choice === "Fejk" && !currentQuestion.correct);
+      } else if (currentMode === "likenotlike") {
+        isCorrect = (choice.startsWith("Like") && currentQuestion.correct) ||
+                    (choice.startsWith("Not") && !currentQuestion.correct);
+      }
+
+      if (isCorrect) {
         document.getElementById("rattSound").play();
       } else {
         document.getElementById("felSound").play();
       }
+
+      // Gå vidare till nästa
+      nextQuestion();
     }
   </script>
 </body>
