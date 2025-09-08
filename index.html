@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #d9e4ec);
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,12 +20,13 @@
       background: white;
       border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease;
     }
     h1 {
       margin-bottom: 20px;
       font-size: 2em;
-      color: #333;
+      color: #222;
     }
     #categoryButtons {
       margin-bottom: 20px;
@@ -43,8 +44,14 @@
       text-align: center;
       background: #f9f9f9;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
-      transition: background 0.3s, color 0.3s;
+      transition: background 0.5s, color 0.5s, transform 0.3s;
     }
+    .neutral { background: #f9f9f9; color: #333; }
+    .correct { background: #c8e6c9; color: #1b5e20; transform: scale(1.05); }
+    .wrong   { background: #ffcdd2; color: #b71c1c; transform: scale(1.05); }
+    .like    { background: #bbdefb; color: #0d47a1; transform: scale(1.05); }
+    .notlike { background: #ffe0b2; color: #e65100; transform: scale(1.05); }
+
     button {
       margin: 10px;
       padding: 15px 30px;
@@ -53,26 +60,33 @@
       border-radius: 12px;
       cursor: pointer;
       color: white;
-      transition: transform 0.2s, opacity 0.3s;
+      background: linear-gradient(135deg, #42a5f5, #1e88e5);
+      transition: transform 0.2s, opacity 0.3s, background 0.5s;
     }
     button:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
+      transform: scale(1.08);
+      opacity: 0.95;
     }
     .categoryBtn {
-      background: #007acc;
+      background: linear-gradient(135deg, #29b6f6, #0288d1);
     }
     .answerBtn {
-      background: #4caf50;
+      background: linear-gradient(135deg, #66bb6a, #388e3c);
     }
     .wrongBtn {
-      background: #e53935;
+      background: linear-gradient(135deg, #ef5350, #c62828);
     }
     .nextBtn {
-      background: #ff9800;
+      background: linear-gradient(135deg, #ffb74d, #f57c00);
     }
+
     #answerButtons {
       margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -85,7 +99,7 @@
       <button class="categoryBtn" onclick="setCategory('likeNotLike')">👍 Like eller Not Like</button>
     </div>
 
-    <div id="questionBox">Välj en kategori för att börja!</div>
+    <div id="questionBox" class="neutral">Välj en kategori för att börja!</div>
 
     <div id="answerButtons"></div>
 
@@ -129,6 +143,7 @@
       currentCategory = category;
       currentQuestions = category === 'santFejk' ? [...santFejkQuestions] : [...likeNotLikeQuestions];
       document.getElementById("questionBox").innerText = "Tryck på ➡️ Nästa fråga för att börja!";
+      document.getElementById("questionBox").className = "neutral";
       showAnswerButtons();
     }
 
@@ -154,12 +169,12 @@
         const btnLike = document.createElement("button");
         btnLike.className = "answerBtn";
         btnLike.innerText = "👍 Like";
-        btnLike.onclick = () => showFeedback("👍 Du valde LIKE! Bra om det är något snällt eller roligt.", true);
+        btnLike.onclick = () => showFeedback("👍 Du valde LIKE! Bra om det är något snällt eller roligt.", "like");
 
         const btnNot = document.createElement("button");
         btnNot.className = "wrongBtn";
         btnNot.innerText = "👎 Not like";
-        btnNot.onclick = () => showFeedback("👎 Du valde NOT LIKE! Klokt om det var något elakt eller sårande.", false);
+        btnNot.onclick = () => showFeedback("👎 Du valde NOT LIKE! Klokt om det var något elakt eller sårande.", "notlike");
 
         answerDiv.appendChild(btnLike);
         answerDiv.appendChild(btnNot);
@@ -168,31 +183,37 @@
 
     function showNextQuestion() {
       if (currentQuestions.length === 0) {
-        document.getElementById("questionBox").innerText = "Inga fler frågor kvar!";
+        document.getElementById("questionBox").innerText = "✅ Alla frågor är slut!";
+        document.getElementById("questionBox").className = "neutral";
         return;
       }
       const index = Math.floor(Math.random() * currentQuestions.length);
       currentQuestion = currentQuestions.splice(index, 1)[0];
       document.getElementById("questionBox").innerText = currentCategory === 'santFejk' ? currentQuestion.q : currentQuestion;
+      document.getElementById("questionBox").className = "neutral";
     }
 
     function checkAnswer(userAnswer) {
       const box = document.getElementById("questionBox");
       if (userAnswer === currentQuestion.a) {
-        box.innerText = "✅ Correct! " + currentQuestion.info;
+        box.innerText = "✅ Rätt! " + currentQuestion.info;
+        box.className = "correct";
         document.getElementById("correctSound").play();
       } else {
-        box.innerText = "❌ Wrong! " + currentQuestion.info;
+        box.innerText = "❌ Fel! " + currentQuestion.info;
+        box.className = "wrong";
         document.getElementById("wrongSound").play();
       }
     }
 
-    function showFeedback(msg, isLike) {
+    function showFeedback(msg, type) {
       const box = document.getElementById("questionBox");
       box.innerText = msg;
-      if (isLike) {
+      if (type === "like") {
+        box.className = "like";
         document.getElementById("correctSound").play();
       } else {
+        box.className = "notlike";
         document.getElementById("wrongSound").play();
       }
     }
