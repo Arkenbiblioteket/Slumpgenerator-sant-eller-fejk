@@ -648,7 +648,7 @@
       `;
     }
 
-    // Enhanced fireworks animation
+    // Spectacular fireworks animation (based on original)
     function launchFireworks() {
       const canvas = document.getElementById("fireworksCanvas");
       const ctx = canvas.getContext("2d");
@@ -656,74 +656,49 @@
       canvas.height = window.innerHeight;
 
       let particles = [];
-      let rockets = [];
       
       function random(min, max) { 
         return Math.random() * (max - min) + min; 
       }
 
-      function createRocket() {
-        rockets.push({
-          x: random(100, canvas.width - 100),
-          y: canvas.height,
-          targetY: random(50, canvas.height / 2),
-          speed: random(5, 8),
-          hue: random(0, 360)
-        });
-      }
-
-      function createFirework(x, y, hue) {
-        let count = random(50, 100);
+      function createFirework() {
+        let x = random(100, canvas.width - 100);
+        let y = random(50, canvas.height / 2);
+        let count = 100;
         for (let i = 0; i < count; i++) {
-          let angle = (Math.PI * 2) * (i / count);
-          let speed = random(2, 6);
           particles.push({
             x: x,
             y: y,
-            dx: Math.cos(angle) * speed,
-            dy: Math.sin(angle) * speed,
-            life: random(60, 120),
-            maxLife: 120,
-            hue: hue + random(-20, 20),
-            size: random(2, 4)
+            dx: random(-3, 3),
+            dy: random(-3, 3),
+            life: random(50, 100)
           });
         }
       }
 
       function animate() {
-        ctx.fillStyle = "rgba(0,0,0,0.1)";
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Update rockets
-        rockets.forEach((rocket, index) => {
-          rocket.y -= rocket.speed;
-          
-          // Draw rocket trail
-          ctx.fillStyle = `hsl(${rocket.hue}, 100%, 70%)`;
-          ctx.beginPath();
-          ctx.arc(rocket.x, rocket.y, 3, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Explode when reaching target
-          if (rocket.y <= rocket.targetY) {
-            createFirework(rocket.x, rocket.y, rocket.hue);
-            rockets.splice(index, 1);
-          }
-        });
-
-        // Update particles
+        
         particles.forEach((p, i) => {
-          const alpha = p.life / p.maxLife;
-          ctx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
+          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
           ctx.fill();
-          
           p.x += p.dx;
           p.y += p.dy;
-          p.dy += 0.1; // gravity
           p.life--;
-          
-          if (p.life <= 0) {
-            particles.splice(
-              </html>
+          if (p.life <= 0) particles.splice(i, 1);
+        });
+        
+        if (document.getElementById("endScreen").classList.contains("show")) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      setInterval(createFirework, 1000);
+      animate();
+    }
+  </script>
+</body>
+</html>
