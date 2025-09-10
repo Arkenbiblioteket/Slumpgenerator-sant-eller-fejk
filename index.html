@@ -6,258 +6,235 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #fffde7);
+      background: linear-gradient(135deg, #f0f4f8, #dbeafe);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
     }
+
     .container {
       text-align: center;
-      width: 95%;
-      max-width: 800px;
+      width: 90%;
+      max-width: 750px;
     }
+
     h1 {
       font-size: 2em;
       margin-bottom: 20px;
-      color: #333;
+      color: #1e3a8a;
     }
-    #questionBox {
-      margin: 20px auto;
-      padding: 40px;
-      border-radius: 20px;
-      font-size: 1.8em;
-      font-weight: bold;
-      min-height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: #ffffff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: 0.3s;
+
+    .modeButtons {
+      margin-bottom: 20px;
     }
-    .mode-buttons {
-      margin-bottom: 15px;
-    }
-    .mode-buttons button {
-      background: #2196f3;
-      color: white;
-      padding: 12px 24px;
-      margin: 0 10px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
-    }
-    .mode-buttons button:hover {
-      background: #1976d2;
-      transform: scale(1.05);
-    }
-    .answer-buttons {
-      margin-top: 20px;
-      display: none;
-    }
-    .answer-buttons button {
+
+    .modeButtons button {
+      padding: 15px 25px;
       margin: 10px;
-      padding: 12px 30px;
       font-size: 1.2em;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
+      background: #2563eb;
+      color: white;
+      transition: background 0.3s, transform 0.2s;
     }
-    #trueBtn { background: #4caf50; color: white; }
-    #falseBtn { background: #f44336; color: white; }
-    #likeBtn { background: #ff9800; color: white; }
-    #notLikeBtn { background: #9c27b0; color: white; }
 
-    .answer-buttons button:hover {
+    .modeButtons button:hover {
+      background: #1e40af;
       transform: scale(1.05);
-      opacity: 0.9;
+    }
+
+    #questionBox {
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+
+    .answerButtons {
+      margin-top: 20px;
+    }
+
+    .answerButtons button {
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #4caf50;
+      color: white;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .answerButtons button:hover {
+      background: #388e3c;
+      transform: scale(1.05);
     }
 
     #nextBtn {
-      margin-top: 20px;
-      padding: 12px 24px;
+      margin-top: 15px;
+      padding: 12px 20px;
       font-size: 1em;
       border: none;
       border-radius: 10px;
-      background: #607d8b;
-      color: white;
       cursor: pointer;
+      background: #9333ea;
+      color: white;
       display: none;
     }
+
     #nextBtn:hover {
-      background: #455a64;
+      background: #6b21a8;
     }
 
-    #feedback {
-      margin-top: 25px;
-      font-size: 1.3em;
+    .feedback {
+      margin-top: 10px;
+      font-size: 1.2em;
       font-weight: normal;
-      min-height: 60px;
+      line-height: 1.6;
     }
 
-    #score {
+    .feedback h2 {
+      font-size: 1.6em;
+      margin-bottom: 10px;
+    }
+
+    .correct {
+      color: #16a34a;
+    }
+
+    .wrong {
+      color: #dc2626;
+    }
+
+    .counter {
       margin-top: 15px;
-      font-size: 1.1em;
-      color: #444;
+      font-size: 1em;
+      color: #374151;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
-
-    <div class="mode-buttons">
-      <button onclick="startGame('santfejk')">Sant eller Fejk</button>
-      <button onclick="startGame('like')">Like eller Not like</button>
+    
+    <div class="modeButtons">
+      <button onclick="startGame('santfejk')">Sant eller fejk</button>
+      <button onclick="startGame('likenot')">Like eller not like</button>
     </div>
 
     <div id="questionBox">Välj ett spel för att börja!</div>
 
-    <div class="answer-buttons" id="answerButtons"></div>
-
-    <div id="feedback"></div>
-
-    <button id="nextBtn" onclick="nextQuestion()">Nästa fråga ➡️</button>
-
-    <div id="score"></div>
+    <div class="answerButtons" id="answerButtons"></div>
+    <button id="nextBtn" onclick="showNextQuestion()">Nästa fråga ➡️</button>
   </div>
 
-  <audio id="correctSound" src="correct.mp3"></audio>
-  <audio id="wrongSound" src="wrong.mp3"></audio>
+  <audio id="correctSound" src="ratt.mp3"></audio>
+  <audio id="wrongSound" src="fel.mp3"></audio>
 
   <script>
     const santFejkQuestions = [
-      { q: "Guld är ätbart.", answer: "Sant", explanation: "I mycket små mängder är bladguld ofarligt och används som dekoration på mat/dryck." },
-      { q: "Människan använder bara 10 % av sin hjärna.", answer: "Fejk", explanation: "Hela hjärnan är aktiv – myten kommer från en gammal misstolkning." },
-      { q: "Blixten slår aldrig ner på samma ställe två gånger.", answer: "Fejk", explanation: "Blixten slår ofta ner på samma plats, t.ex. i höga byggnader." },
-      { q: "Du kan se Kinesiska muren från rymden med blotta ögat.", answer: "Fejk", explanation: "Den är för smal och smälter in i landskapet." },
-      { q: "Strutsar gömmer huvudet i sanden när de blir rädda.", answer: "Fejk", explanation: "De lägger sig ner och plattar kroppen mot marken istället." },
-      { q: "Hajar kan inte få cancer.", answer: "Fejk", explanation: "Myten om hajar används för att sälja hajpreparat – men den är falsk." },
-      { q: "Man kan inte rapa i rymden.", answer: "Sant", explanation: "Utan gravitation stannar gasen blandad med vätska i magen." },
-      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: "Sant", explanation: "Light innehåller mindre socker och är därför mindre tät." },
-      { q: "Det finns fler stjärnor i universum än sandkorn på alla jordens stränder.", answer: "Sant", explanation: "Astronomerna uppskattar att det är så – även om båda är nästan ofattbart många." }
+      { q: "Guld är ätbart.", a: "sant", e: "Sant – i mycket små mängder är bladguld ofarligt och används som dekoration på mat/dryck." },
+      { q: "Människan använder bara 10 % av sin hjärna.", a: "fejk", e: "Fejk – hela hjärnan är aktiv, myten kommer från en gammal misstolkning." },
+      { q: "Blixten slår aldrig ner på samma ställe två gånger.", a: "fejk", e: "Fejk – blixten slår ofta ner på samma plats, t.ex. i höga byggnader." },
+      { q: "Du kan se Kinesiska muren från rymden.", a: "fejk", e: "Fejk – muren är för smal och smälter in i landskapet." },
+      { q: "Strutsar gömmer huvudet i sanden när de blir rädda.", a: "fejk", e: "Fejk – de lägger sig ner och plattar kroppen mot marken istället." },
+      { q: "Hajar kan inte få cancer.", a: "fejk", e: "Fejk – myten har använts för att sälja hajpreparat." },
+      { q: "Man kan inte rapa i rymden.", a: "sant", e: "Sant – utan gravitation stannar gasen i magen blandad med vätska." },
+      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", a: "sant", e: "Sant – light innehåller mindre socker och är därför mindre tät." },
+      { q: "Det finns fler stjärnor i universum än sandkorn på jorden.", a: "sant", e: "Sant – astronomer uppskattar att det är så." }
     ];
 
-    const likeQuestions = [
-      { q: "Någon postar en bild som kan göra en annan person ledsen.", correct: "Not like" },
-      { q: "Någon delar en rolig kattvideo.", correct: "Like" },
-      { q: "Någon postar hotfulla meddelanden i en skolgrupp.", correct: "Not like" },
-      { q: "En vän delar sitt kompis lösenord offentligt.", correct: "Not like" },
-      { q: "Någon postar en bild där alla på fotot ser glada ut.", correct: "Like" },
-      { q: "En vän skriver elaka kommentarer om någons utseende.", correct: "Not like" },
-      { q: "En vän delar en meme som får dig att skratta högt.", correct: "Like" },
-      { q: "En influencer uppmanar följare att göra farliga utmaningar.", correct: "Not like" },
-      { q: "En vän delar ett recept på chokladbollar.", correct: "Like" }
+    const likeNotQuestions = [
+      { q: "En kattunge i en tekopp 🐱☕", a: "like", e: "Många gillar söta djurbilder!" },
+      { q: "Spam-mail som lovar gratis pengar 💸", a: "not", e: "Inte ett smart val att gilla – ofta bluffar." },
+      { q: "En video om hållbar miljö 🌍", a: "like", e: "Att gilla miljöfrågor kan sprida viktig kunskap." },
+      { q: "En rubrik som låter för bra för att vara sann 😲", a: "not", e: "Klickbete – bättre att vara källkritisk." }
     ];
 
     let currentGame = null;
     let questions = [];
+    let usedQuestions = [];
     let currentQuestion = null;
-    let answered = false;
-    let score = { correct: 0, wrong: 0 };
+    let correctCount = 0;
+    let wrongCount = 0;
 
-    const questionBox = document.getElementById("questionBox");
-    const feedbackDiv = document.getElementById("feedback");
-    const answerButtons = document.getElementById("answerButtons");
-    const nextBtn = document.getElementById("nextBtn");
-    const scoreDiv = document.getElementById("score");
-    const correctSound = document.getElementById("correctSound");
-    const wrongSound = document.getElementById("wrongSound");
-
-    function startGame(mode) {
-      currentGame = mode;
-      score = { correct: 0, wrong: 0 };
-
-      if (mode === "santfejk") {
-        questions = [...santFejkQuestions];
-        answerButtons.innerHTML = `
-          <button id="trueBtn" onclick="checkAnswer('Sant')">Sant</button>
-          <button id="falseBtn" onclick="checkAnswer('Fejk')">Fejk</button>
-        `;
-      } else {
-        questions = [...likeQuestions];
-        answerButtons.innerHTML = `
-          <button id="likeBtn" onclick="checkAnswer('Like')">👍 Like</button>
-          <button id="notLikeBtn" onclick="checkAnswer('Not like')">👎 Not like</button>
-        `;
-      }
-
-      shuffleArray(questions);
-      answerButtons.style.display = "block";
-      nextBtn.style.display = "none";
+    function startGame(type) {
+      currentGame = type;
+      questions = [...(type === 'santfejk' ? santFejkQuestions : likeNotQuestions)];
+      usedQuestions = [];
+      correctCount = 0;
+      wrongCount = 0;
+      document.getElementById("answerButtons").innerHTML = "";
+      document.getElementById("nextBtn").style.display = "none";
       showNextQuestion();
-      updateScore();
     }
 
     function showNextQuestion() {
       if (questions.length === 0) {
-        questionBox.innerHTML = "Spelet är slut! 🎉";
-        answerButtons.style.display = "none";
-        nextBtn.style.display = "none";
-        feedbackDiv.innerHTML = "";
+        document.getElementById("questionBox").innerHTML = 
+          `<h2>Spelet är slut!</h2><div class="counter">Rätt: ${correctCount} | Fel: ${wrongCount}</div>`;
+        document.getElementById("answerButtons").innerHTML = "";
+        document.getElementById("nextBtn").style.display = "none";
         return;
       }
 
-      currentQuestion = questions.shift();
-      questionBox.innerHTML = currentQuestion.q;
-      feedbackDiv.innerHTML = "";
-      answered = false;
-    }
+      currentQuestion = questions.splice(Math.floor(Math.random() * questions.length), 1)[0];
 
-    function checkAnswer(choice) {
-      if (answered) return;
-      answered = true;
+      document.getElementById("questionBox").innerHTML = currentQuestion.q;
+      document.getElementById("answerButtons").innerHTML = "";
 
       if (currentGame === "santfejk") {
-        if (choice === currentQuestion.answer) {
-          feedbackDiv.innerHTML = `<div style="font-size:2em; color:green;">✅ Rätt!</div>
-                                   <div style="margin-top:15px;">${currentQuestion.explanation}</div>`;
-          correctSound.play();
-          score.correct++;
-        } else {
-          feedbackDiv.innerHTML = `<div style="font-size:2em; color:red;">❌ Fel!</div>
-                                   <div style="margin-top:15px;">${currentQuestion.explanation}</div>`;
-          wrongSound.play();
-          score.wrong++;
-        }
+        document.getElementById("answerButtons").innerHTML = `
+          <button onclick="checkAnswer('sant')">Sant</button>
+          <button onclick="checkAnswer('fejk')">Fejk</button>
+        `;
       } else {
-        if (choice === currentQuestion.correct) {
-          feedbackDiv.innerHTML = `<div style="font-size:2em; color:green;">✅ Rätt!</div>
-                                   <div style="margin-top:15px;">Bra val – det här var rätt att göra.</div>`;
-          correctSound.play();
-          score.correct++;
-        } else {
-          feedbackDiv.innerHTML = `<div style="font-size:2em; color:red;">❌ Fel!</div>
-                                   <div style="margin-top:15px;">Inte ett bra val här – tänk på att ditt like också kan påverka andra.</div>`;
-          wrongSound.play();
-          score.wrong++;
-        }
+        document.getElementById("answerButtons").innerHTML = `
+          <button onclick="checkAnswer('like')">Like 👍</button>
+          <button onclick="checkAnswer('not')">Not like 👎</button>
+        `;
       }
 
-      updateScore();
-      nextBtn.style.display = "inline-block";
+      document.getElementById("nextBtn").style.display = "none";
     }
 
-    function updateScore() {
-      scoreDiv.innerHTML = `Rätt: ${score.correct} | Fel: ${score.wrong}`;
-    }
-
-    function nextQuestion() {
-      showNextQuestion();
-      nextBtn.style.display = "none";
-    }
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    function checkAnswer(answer) {
+      let feedbackHTML = "";
+      if (answer === currentQuestion.a) {
+        document.getElementById("correctSound").play();
+        correctCount++;
+        feedbackHTML = `
+          <h2 class="correct">✅ Rätt!</h2>
+          <div class="feedback">${currentQuestion.e}</div>
+        `;
+      } else {
+        document.getElementById("wrongSound").play();
+        wrongCount++;
+        feedbackHTML = `
+          <h2 class="wrong">❌ Fel!</h2>
+          <div class="feedback">${currentQuestion.e}</div>
+        `;
       }
+
+      document.getElementById("questionBox").innerHTML = feedbackHTML + 
+        `<div class="counter">Rätt: ${correctCount} | Fel: ${wrongCount}</div>`;
+
+      document.getElementById("answerButtons").innerHTML = "";
+      document.getElementById("nextBtn").style.display = "inline-block";
     }
   </script>
 </body>
