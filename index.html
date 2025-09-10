@@ -40,6 +40,7 @@
       background: linear-gradient(135deg, #fff, #e0f7fa);
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       transition: background 0.5s ease;
+      cursor: pointer; /* visar att rutan är klickbar */
     }
     .feedback {
       margin-top: 20px;
@@ -214,6 +215,7 @@
     let currentIndex = 0;
     let correctCount = 0;
     let wrongCount = 0;
+    let waitingForNext = false;
 
     function startGame(gameType) {
       currentGame = gameType;
@@ -221,6 +223,7 @@
       currentIndex = 0;
       correctCount = 0;
       wrongCount = 0;
+      waitingForNext = false;
       document.getElementById("endScreen").style.display = "none";
       document.body.style.background = "#f0f4f8";
       document.getElementById("answerButtons").style.display = "block";
@@ -258,7 +261,7 @@
       let feedback = "";
       if (answer === q.answer) {
         correctCount++;
-        document.getElementById("correctSound").play();  // spelar nu "applaus.wav"
+        document.getElementById("correctSound").play();
         feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
         document.getElementById("questionBox").style.background = "#c8e6c9";
       } else {
@@ -268,15 +271,18 @@
         document.getElementById("questionBox").style.background = "#ffcdd2";
       }
       document.getElementById("questionBox").innerHTML = q.q + feedback;
-
-      currentIndex++;
-      setTimeout(() => {
-        document.getElementById("questionBox").style.background = "linear-gradient(135deg, #fff, #e0f7fa)";
-        showQuestion();
-      }, 1500);
+      waitingForNext = true; // nu väntar vi på klick
       updateScore();
       updateProgress();
     }
+
+    document.getElementById("questionBox").addEventListener("click", () => {
+      if (!waitingForNext) return;
+      waitingForNext = false;
+      currentIndex++;
+      document.getElementById("questionBox").style.background = "linear-gradient(135deg, #fff, #e0f7fa)";
+      showQuestion();
+    });
 
     function updateScore() {
       document.getElementById("score").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
