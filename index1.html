@@ -40,7 +40,7 @@
       background: linear-gradient(135deg, #fff, #e0f7fa);
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       transition: background 0.5s ease;
-      cursor: pointer; 
+      cursor: pointer;
     }
     .feedback {
       margin-top: 20px;
@@ -89,10 +89,10 @@
     }
     #score {
       margin-top: 15px;
-      font-size: 1.5em;        
+      font-size: 1.5em;
       font-weight: bold;
-      color: #00796b;          
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
+      color: #00796b;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
     #progressContainer {
       width: 100%;
@@ -124,6 +124,8 @@
       font-size: 2.5em;
       margin-bottom: 20px;
       animation: pulse 1s infinite;
+      position: relative; /* text ovanpå canvas */
+      z-index: 2;
     }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
@@ -136,11 +138,14 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      z-index: 1; /* canvas bakom text */
     }
     .attribution {
       margin-top: 60px;
       font-size: 0.8em;
       color: #bbb;
+      position: relative;
+      z-index: 2;
     }
     .attribution a {
       color: #4fc3f7;
@@ -216,7 +221,7 @@
     let correctCount = 0;
     let wrongCount = 0;
     let waitingForNext = false;
-    let answeredThisQuestion = false; // Ny flagga
+    let answeredThisQuestion = false;
 
     function startGame(gameType) {
       currentGame = gameType;
@@ -234,22 +239,16 @@
 
     function showQuestion() {
       if (currentIndex >= questions.length) {
-        if (currentGame === "like") {
-          showEndScreen();
-        } else {
-          document.getElementById("questionBox").innerHTML = "Spelet är slut! 🎉<br>Rätt: " + correctCount + " | Fel: " + wrongCount;
-          document.getElementById("answerButtons").style.display = "none";
-        }
+        showEndScreen();
         return;
       }
       const q = questions[currentIndex];
       document.getElementById("questionBox").innerHTML = q.q;
       document.getElementById("questionBox").style.background = "linear-gradient(135deg, #fff, #e0f7fa)";
-      answeredThisQuestion = false; // återställ för varje ny fråga
+      answeredThisQuestion = false;
 
       const buttonsDiv = document.getElementById("answerButtons");
       buttonsDiv.innerHTML = "";
-
       if (currentGame === "santfejk") {
         buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
         buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
@@ -262,7 +261,7 @@
     }
 
     function checkAnswer(answer) {
-      if (waitingForNext || answeredThisQuestion) return; // poäng endast en gång
+      if (waitingForNext || answeredThisQuestion) return;
       answeredThisQuestion = true;
       waitingForNext = true;
 
