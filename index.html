@@ -87,9 +87,11 @@
       background: #388e3c;
     }
     #score {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #333;
+      margin-top: 15px;
+      font-size: 1.5em;        /* större text */
+      font-weight: bold;
+      color: #00796b;          /* tydlig färg */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* lite skugga för pop */
     }
     #progressContainer {
       width: 100%;
@@ -152,6 +154,9 @@
         font-size: 1em;
         padding: 10px 20px;
       }
+      #score {
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
@@ -173,15 +178,15 @@
       <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
       <canvas id="fireworksCanvas"></canvas>
       <div class="attribution">
-        🎵 Ljud: "shortapplause_01.wav" by xtrgamr — 
+        🎵 Ljud: "applaus.wav" by xtrgamr — 
         <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
         License: Attribution 4.0
       </div>
     </div>
   </div>
 
-  <audio id="correctSound" src="shortapplause_01.wav"></audio>
-  <audio id="wrongSound" src="fel.mp3"></audio>
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="fel.mp3" preload="auto"></audio>
 
   <script>
     const santFejkQuestions = [
@@ -253,7 +258,7 @@
       let feedback = "";
       if (answer === q.answer) {
         correctCount++;
-        document.getElementById("correctSound").play();
+        document.getElementById("correctSound").play();  // spelar nu "applaus.wav"
         feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
         document.getElementById("questionBox").style.background = "#c8e6c9";
       } else {
