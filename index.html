@@ -12,12 +12,15 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      overflow: hidden;
     }
 
     .container {
       text-align: center;
       width: 90%;
       max-width: 750px;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
@@ -125,10 +128,33 @@
       font-size: 1em;
       color: #374151;
     }
+
+    /* Avslutningssidan */
+    #endScreen {
+      display: none;
+      text-align: center;
+      font-size: 2em;
+      color: #fff;
+      font-weight: bold;
+      z-index: 3;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="gameContainer">
     <h1>Bli ett proffs på smarta val online!</h1>
     
     <div class="modeButtons">
@@ -142,7 +168,12 @@
     <button id="nextBtn" onclick="showNextQuestion()">Nästa fråga ➡️</button>
   </div>
 
-  <audio id="correctSound" src="ratt.mp3"></audio>
+  <!-- Avslutningssida -->
+  <div id="endScreen">🎉 Grattis! Du är nu ett proffs på smarta val online! 🎉</div>
+  <canvas id="fireworks"></canvas>
+
+  <!-- Ljud -->
+  <audio id="correctSound" src="applaus.wav"></audio>
   <audio id="wrongSound" src="fel.mp3"></audio>
 
   <script>
@@ -167,7 +198,6 @@
 
     let currentGame = null;
     let questions = [];
-    let usedQuestions = [];
     let currentQuestion = null;
     let correctCount = 0;
     let wrongCount = 0;
@@ -175,7 +205,6 @@
     function startGame(type) {
       currentGame = type;
       questions = [...(type === 'santfejk' ? santFejkQuestions : likeNotQuestions)];
-      usedQuestions = [];
       correctCount = 0;
       wrongCount = 0;
       document.getElementById("answerButtons").innerHTML = "";
@@ -185,15 +214,11 @@
 
     function showNextQuestion() {
       if (questions.length === 0) {
-        document.getElementById("questionBox").innerHTML = 
-          `<h2>Spelet är slut!</h2><div class="counter">Rätt: ${correctCount} | Fel: ${wrongCount}</div>`;
-        document.getElementById("answerButtons").innerHTML = "";
-        document.getElementById("nextBtn").style.display = "none";
+        endGame();
         return;
       }
 
       currentQuestion = questions.splice(Math.floor(Math.random() * questions.length), 1)[0];
-
       document.getElementById("questionBox").innerHTML = currentQuestion.q;
       document.getElementById("answerButtons").innerHTML = "";
 
@@ -232,9 +257,60 @@
 
       document.getElementById("questionBox").innerHTML = feedbackHTML + 
         `<div class="counter">Rätt: ${correctCount} | Fel: ${wrongCount}</div>`;
-
       document.getElementById("answerButtons").innerHTML = "";
       document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function endGame() {
+      document.getElementById("gameContainer").style.display = "none";
+      document.getElementById("endScreen").style.display = "block";
+      launchFireworks();
+    }
+
+    /* Fyrverkeri */
+    function launchFireworks() {
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+
+      function createFirework(x, y) {
+        for (let i = 0; i < 100; i++) {
+          particles.push({
+            x: x,
+            y: y,
+            angle: Math.random() * 2 * Math.PI,
+            speed: Math.random() * 5 + 2,
+            radius: 2,
+            life: 100
+          });
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+          p.life -= 1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${Math.random() * 360},100%,50%,${p.life/100})`;
+          ctx.fill();
+          if (p.life <= 0) particles.splice(i, 1);
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      setInterval(() => {
+        createFirework(Math.random() * canvas.width, Math.random() * canvas.height / 2);
+      }, 1000);
+
+      animate();
     }
   </script>
 </body>
