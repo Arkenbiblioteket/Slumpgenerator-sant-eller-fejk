@@ -3,21 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Bli ett proffs på smarta val online!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #111; /* mörk bakgrund */
-      color: white;
+      background: #f0f4f8;
+      color: #222;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      transition: background 0.5s ease;
     }
     .container {
       text-align: center;
       width: 90%;
       max-width: 800px;
+    }
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      color: #00796b;
     }
     #questionBox {
       margin: 20px auto;
@@ -25,17 +31,38 @@
       border-radius: 15px;
       font-size: 1.5em;
       font-weight: bold;
-      min-height: 150px;
+      min-height: 180px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      background: #222;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      flex-direction: column;
+      background: linear-gradient(135deg, #fff, #e0f7fa);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: background 0.5s ease;
+      cursor: pointer; 
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 1em;
+      font-weight: normal;
+      color: #444;
+      animation: pop 0.5s ease forwards;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
     .mode-buttons {
       margin-bottom: 20px;
+    }
+    .mode-buttons button, .answer-buttons button {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .mode-buttons button:hover, .answer-buttons button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     .mode-buttons button {
       background: #00acc1;
@@ -60,22 +87,47 @@
     .answer-buttons button:hover {
       background: #388e3c;
     }
-    #feedback {
-      margin-top: 15px;
-      font-size: 1.2em;
-    }
     #score {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #ddd;
+      margin-top: 15px;
+      font-size: 1.5em;        
+      font-weight: bold;
+      color: #00796b;          
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
+    }
+    #progressContainer {
+      width: 100%;
+      background: #ddd;
+      border-radius: 10px;
+      margin: 10px 0;
+      height: 10px;
+    }
+    #progressBar {
+      height: 10px;
+      width: 0%;
+      background: #4caf50;
+      border-radius: 10px;
+      transition: width 0.5s;
     }
     #endScreen {
       display: none;
       text-align: center;
+      background: #111;
+      color: white;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding-top: 80px;
     }
     #endScreen h1 {
       font-size: 2.5em;
       margin-bottom: 20px;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
     #fireworksCanvas {
       position: absolute;
@@ -94,8 +146,18 @@
       color: #4fc3f7;
       text-decoration: none;
     }
-    .attribution a:hover {
-      text-decoration: underline;
+    @media (max-width: 600px) {
+      #questionBox {
+        font-size: 1.2em;
+        padding: 20px;
+      }
+      .answer-buttons button {
+        font-size: 1em;
+        padding: 10px 20px;
+      }
+      #score {
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
@@ -109,23 +171,23 @@
     </div>
 
     <div id="questionBox">Välj ett spel för att börja!</div>
+    <div id="progressContainer"><div id="progressBar"></div></div>
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-    <div id="feedback"></div>
     <div id="score"></div>
 
     <div id="endScreen">
       <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
       <canvas id="fireworksCanvas"></canvas>
       <div class="attribution">
-        🎵 Ljud: "shortapplause_01.wav" by xtrgamr — 
+        🎵 Ljud: "applaus.wav" by xtrgamr — 
         <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
         License: Attribution 4.0
       </div>
     </div>
   </div>
 
-  <audio id="correctSound" src="shortapplause_01.wav"></audio>
-  <audio id="wrongSound" src="bu.wav"></audio>
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="bu.mp3" preload="auto"></audio>
 
   <script>
     const santFejkQuestions = [
@@ -144,130 +206,149 @@
       { q: "Någon postar en rolig kattvideo.", answer: "like", explanation: "Like – ofarligt och roligt." },
       { q: "Någon skriver elaka kommentarer.", answer: "not like", explanation: "Not like – att sprida hat gör andra ledsna." },
       { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." },
-      { q: "Någon lägger upp hotfulla meddelanden.", answer: "not like", explanation: "Not like – hot är aldrig okej." }
+      { q: "Någon du inte känner skickar en konstig länk.", answer: "not like", explanation: "Not like – kan vara virus eller bluff." },
+      { q: "En vän delar en fin komplimang.", answer: "like", explanation: "Like – alltid bra att sprida snällhet." }
     ];
 
     let currentGame = null;
     let questions = [];
-    let currentQuestion = null;
-    let score = { correct: 0, wrong: 0 };
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let waitingForNext = false;
+    let answeredThisQuestion = false; // Ny flagga
 
-    const questionBox = document.getElementById("questionBox");
-    const answerButtons = document.getElementById("answerButtons");
-    const feedbackDiv = document.getElementById("feedback");
-    const scoreDiv = document.getElementById("score");
-    const endScreen = document.getElementById("endScreen");
-    const correctSound = document.getElementById("correctSound");
-    const wrongSound = document.getElementById("wrongSound");
-
-    function startGame(mode) {
-      currentGame = mode;
-      questions = [...(mode === "santfejk" ? santFejkQuestions : likeQuestions)];
-      score = { correct: 0, wrong: 0 };
-      feedbackDiv.innerHTML = "";
-      scoreDiv.innerHTML = "";
-      endScreen.style.display = "none";
-      questionBox.style.display = "flex";
-      answerButtons.style.display = "block";
-      nextQuestion();
+    function startGame(gameType) {
+      currentGame = gameType;
+      questions = (gameType === "santfejk" ? santFejkQuestions : likeQuestions);
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      waitingForNext = false;
+      answeredThisQuestion = false;
+      document.getElementById("endScreen").style.display = "none";
+      document.body.style.background = "#f0f4f8";
+      document.getElementById("answerButtons").style.display = "block";
+      showQuestion();
     }
 
-    function nextQuestion() {
-      if (questions.length === 0) {
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
         if (currentGame === "like") {
           showEndScreen();
         } else {
-          questionBox.innerHTML = "👏 Bra jobbat! Du är klar med Sant eller Fejk!";
-          answerButtons.style.display = "none";
+          document.getElementById("questionBox").innerHTML = "Spelet är slut! 🎉<br>Rätt: " + correctCount + " | Fel: " + wrongCount;
+          document.getElementById("answerButtons").style.display = "none";
         }
         return;
       }
-      const randomIndex = Math.floor(Math.random() * questions.length);
-      currentQuestion = questions.splice(randomIndex, 1)[0];
-      questionBox.innerHTML = currentQuestion.q;
-      feedbackDiv.innerHTML = "";
+      const q = questions[currentIndex];
+      document.getElementById("questionBox").innerHTML = q.q;
+      document.getElementById("questionBox").style.background = "linear-gradient(135deg, #fff, #e0f7fa)";
+      answeredThisQuestion = false; // återställ för varje ny fråga
+
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = "";
 
       if (currentGame === "santfejk") {
-        answerButtons.innerHTML = `
-          <button onclick="checkAnswer('sant')">Sant</button>
-          <button onclick="checkAnswer('fejk')">Fejk</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
       } else {
-        answerButtons.innerHTML = `
-          <button onclick="checkAnswer('like')">Like 👍</button>
-          <button onclick="checkAnswer('not like')">Not like 👎</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('like')">👍 Like</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('not like')">👎 Not like</button>`;
       }
+      updateScore();
+      updateProgress();
     }
 
-    function checkAnswer(chosenAnswer) {
-      if (chosenAnswer === currentQuestion.answer) {
-        feedbackDiv.innerHTML = `<div style="font-size:2em; color:lightgreen;">✅ Rätt!</div><div style="margin-top:15px;">${currentQuestion.explanation}</div>`;
-        correctSound.play();
-        score.correct++;
+    function checkAnswer(answer) {
+      if (waitingForNext || answeredThisQuestion) return; // poäng endast en gång
+      answeredThisQuestion = true;
+      waitingForNext = true;
+
+      const q = questions[currentIndex];
+      let feedback = "";
+      if (answer === q.answer) {
+        correctCount++;
+        document.getElementById("correctSound").play();
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
+        document.getElementById("questionBox").style.background = "#c8e6c9";
       } else {
-        feedbackDiv.innerHTML = `<div style="font-size:2em; color:red;">❌ Fel!</div><div style="margin-top:15px;">${currentQuestion.explanation}</div>`;
-        wrongSound.play();
-        score.wrong++;
+        wrongCount++;
+        document.getElementById("wrongSound").play();
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
+        document.getElementById("questionBox").style.background = "#ffcdd2";
       }
-      scoreDiv.innerHTML = `Rätt: ${score.correct} | Fel: ${score.wrong}`;
-      setTimeout(nextQuestion, 3000);
+
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
+      updateScore();
+      updateProgress();
+    }
+
+    document.getElementById("questionBox").addEventListener("click", () => {
+      if (!waitingForNext) return;
+      waitingForNext = false;
+      currentIndex++;
+      showQuestion();
+    });
+
+    function updateScore() {
+      document.getElementById("score").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
+    }
+
+    function updateProgress() {
+      const progress = ((currentIndex) / questions.length) * 100;
+      document.getElementById("progressBar").style.width = progress + "%";
     }
 
     function showEndScreen() {
-      document.querySelector(".container").style.display = "none";
-      endScreen.style.display = "block";
-      startFireworks();
+      document.getElementById("endScreen").style.display = "block";
+      document.body.style.background = "#111";
+      launchFireworks();
     }
 
-    function startFireworks() {
+    function launchFireworks() {
       const canvas = document.getElementById("fireworksCanvas");
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
       let particles = [];
-
-      function random(min, max) {
-        return Math.random() * (max - min) + min;
-      }
+      function random(min, max) { return Math.random() * (max - min) + min; }
 
       function createFirework() {
-        const x = random(0, canvas.width);
-        const y = random(0, canvas.height / 2);
-        const count = random(50, 100);
+        let x = random(100, canvas.width - 100);
+        let y = random(50, canvas.height / 2);
+        let count = 100;
         for (let i = 0; i < count; i++) {
           particles.push({
             x: x,
             y: y,
-            angle: random(0, 2 * Math.PI),
-            speed: random(2, 7),
-            radius: 2,
-            alpha: 1
+            dx: random(-3, 3),
+            dy: random(-3, 3),
+            life: random(50, 100)
           });
         }
       }
 
-      function update() {
+      function animate() {
         ctx.fillStyle = "rgba(0,0,0,0.2)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         particles.forEach((p, i) => {
-          p.x += Math.cos(p.angle) * p.speed;
-          p.y += Math.sin(p.angle) * p.speed;
-          p.alpha -= 0.01;
-          if (p.alpha <= 0) particles.splice(i, 1);
-
+          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
-          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
           ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.life--;
+          if (p.life <= 0) particles.splice(i, 1);
         });
-
-        if (Math.random() < 0.05) createFirework();
-
-        requestAnimationFrame(update);
+        requestAnimationFrame(animate);
       }
 
-      update();
+      setInterval(createFirework, 1000);
+      animate();
     }
   </script>
 </body>
