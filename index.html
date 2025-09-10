@@ -196,11 +196,11 @@
     function checkAnswer(userAnswer) {
       const box = document.getElementById("questionBox");
       if (userAnswer === currentQuestion.a) {
-        box.innerText = "✅ Rätt! <br> <br>" + currentQuestion.info;
+        box.innerText = "✅ Rätt!" <br> <br> + currentQuestion.info;
         box.className = "correct";
         document.getElementById("correctSound").play();
       } else {
-        box.innerText = "❌ Fel! <br> <br>" + currentQuestion.info;
+        box.innerText = "❌ Fel!" <br> <br> + currentQuestion.info;
         box.className = "wrong";
         document.getElementById("wrongSound").play();
       }
