@@ -6,73 +6,60 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+      background: #f0f4f8;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      overflow: hidden;
+      transition: background 0.5s;
     }
-
     .container {
       text-align: center;
       width: 90%;
-      max-width: 750px;
-      position: relative;
-      z-index: 2;
+      max-width: 700px;
     }
-
     h1 {
       font-size: 2em;
       margin-bottom: 20px;
-      color: #1e3a8a;
+      color: #333;
     }
-
+    #questionBox {
+      margin: 20px auto;
+      padding: 40px;
+      border-radius: 20px;
+      font-size: 1.6em;
+      font-weight: bold;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #eee;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+      white-space: pre-line;
+    }
     .modeButtons {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
-
     .modeButtons button {
-      padding: 15px 25px;
-      margin: 10px;
+      margin: 8px;
+      padding: 12px 24px;
       font-size: 1.2em;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      background: #2563eb;
-      color: white;
       transition: background 0.3s, transform 0.2s;
     }
-
-    .modeButtons button:hover {
-      background: #1e40af;
-      transform: scale(1.05);
-    }
-
-    #questionBox {
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 20px;
-      font-size: 1.5em;
-      font-weight: bold;
-      min-height: 220px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      background: #fff;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-      transition: 0.3s;
-    }
-
-    .answerButtons {
-      margin-top: 20px;
-    }
+    .santBtn { background: #ff9800; color: white; }
+    .santBtn:hover { background: #e68900; transform: scale(1.05); }
+    .likeBtn { background: #00acc1; color: white; }
+    .likeBtn:hover { background: #008b9a; transform: scale(1.05); }
 
     .answerButtons button {
-      padding: 15px 25px;
       margin: 10px;
+      padding: 14px 28px;
       font-size: 1.2em;
       border: none;
       border-radius: 12px;
@@ -81,95 +68,63 @@
       color: white;
       transition: background 0.3s, transform 0.2s;
     }
-
     .answerButtons button:hover {
       background: #388e3c;
       transform: scale(1.05);
     }
-
     #nextBtn {
+      display: none;
       margin-top: 15px;
-      padding: 12px 20px;
-      font-size: 1em;
+      padding: 10px 22px;
+      font-size: 1.1em;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background: #9333ea;
+      background: #607d8b;
       color: white;
-      display: none;
     }
-
-    #nextBtn:hover {
-      background: #6b21a8;
-    }
-
-    .feedback {
-      margin-top: 10px;
-      font-size: 1.2em;
-      font-weight: normal;
-      line-height: 1.6;
-    }
-
-    .feedback h2 {
-      font-size: 1.6em;
-      margin-bottom: 10px;
-    }
-
-    .correct {
-      color: #16a34a;
-    }
-
-    .wrong {
-      color: #dc2626;
-    }
-
-    .counter {
-      margin-top: 15px;
-      font-size: 1em;
-      color: #374151;
-    }
-
-    /* Avslutningssidan */
+    /* Slutskärm */
     #endScreen {
       display: none;
       text-align: center;
       font-size: 2em;
-      color: #fff;
-      font-weight: bold;
-      z-index: 3;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      color: white;
     }
-
+    #attribution {
+      font-size: 0.6em;
+      margin-top: 15px;
+      color: #ddd;
+    }
     canvas {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
   <div class="container" id="gameContainer">
     <h1>Bli ett proffs på smarta val online!</h1>
-    
+
     <div class="modeButtons">
-      <button onclick="startGame('santfejk')">Sant eller fejk</button>
-      <button onclick="startGame('likenot')">Like eller not like</button>
+      <button class="santBtn" onclick="startGame('sant')">Sant eller fejk</button>
+      <button class="likeBtn" onclick="startGame('like')">Like eller Not like</button>
     </div>
 
     <div id="questionBox">Välj ett spel för att börja!</div>
-
     <div class="answerButtons" id="answerButtons"></div>
-    <button id="nextBtn" onclick="showNextQuestion()">Nästa fråga ➡️</button>
+    <button id="nextBtn" onclick="nextQuestion()">➡️ Nästa</button>
   </div>
 
-  <!-- Avslutningssida -->
-  <div id="endScreen">🎉 Grattis! Du är nu ett proffs på smarta val online! 🎉</div>
+  <div id="endScreen">
+    🎉 Grattis! 🎉  
+    <br><br>Du har gått igenom alla påståenden i Like eller Not like-spelet!  
+    <div id="attribution">
+      Ljudeffekt: "Applause" från Pixabay (gratis för användning utan licenskrav).
+    </div>
+  </div>
+
   <canvas id="fireworks"></canvas>
 
   <!-- Ljud -->
@@ -177,97 +132,93 @@
   <audio id="wrongSound" src="fel.mp3"></audio>
 
   <script>
-    const santFejkQuestions = [
-      { q: "Guld är ätbart.", a: "sant", e: "Sant – i mycket små mängder är bladguld ofarligt och används som dekoration på mat/dryck." },
-      { q: "Människan använder bara 10 % av sin hjärna.", a: "fejk", e: "Fejk – hela hjärnan är aktiv, myten kommer från en gammal misstolkning." },
-      { q: "Blixten slår aldrig ner på samma ställe två gånger.", a: "fejk", e: "Fejk – blixten slår ofta ner på samma plats, t.ex. i höga byggnader." },
-      { q: "Du kan se Kinesiska muren från rymden.", a: "fejk", e: "Fejk – muren är för smal och smälter in i landskapet." },
-      { q: "Strutsar gömmer huvudet i sanden när de blir rädda.", a: "fejk", e: "Fejk – de lägger sig ner och plattar kroppen mot marken istället." },
-      { q: "Hajar kan inte få cancer.", a: "fejk", e: "Fejk – myten har använts för att sälja hajpreparat." },
-      { q: "Man kan inte rapa i rymden.", a: "sant", e: "Sant – utan gravitation stannar gasen i magen blandad med vätska." },
-      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", a: "sant", e: "Sant – light innehåller mindre socker och är därför mindre tät." },
-      { q: "Det finns fler stjärnor i universum än sandkorn på jorden.", a: "sant", e: "Sant – astronomer uppskattar att det är så." }
+    const santQuestions = [
+      { q: "Guld är ätbart.", a: "sant", e: "Sant!\nI mycket små mängder är bladguld ofarligt och används som dekoration." },
+      { q: "Människan använder bara 10 % av sin hjärna.", a: "fejk", e: "Fejk!\nHela hjärnan är aktiv, myten bygger på en misstolkning." },
+      { q: "Blixten slår aldrig ner på samma ställe två gånger.", a: "fejk", e: "Fejk!\nDen kan slå ner flera gånger på samma plats, t.ex. i höga byggnader." },
+      { q: "Du kan se Kinesiska muren från rymden med blotta ögat.", a: "fejk", e: "Fejk!\nDen är för smal och smälter in i landskapet." },
+      { q: "Strutsar gömmer huvudet i sanden när de blir rädda.", a: "fejk", e: "Fejk!\nDe lägger sig ner och plattar kroppen mot marken." },
+      { q: "Hajar kan inte få cancer.", a: "fejk", e: "Fejk!\nHajar kan också få cancer, myten användes för att sälja hajpreparat." },
+      { q: "Man kan inte rapa i rymden.", a: "sant", e: "Sant!\nUtan gravitation stannar gasen blandad med vätska i magen." },
+      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", a: "sant", e: "Sant!\nLight innehåller mindre socker och är därför mindre tät." },
+      { q: "Det finns fler stjärnor i universum än sandkorn på alla jordens stränder.", a: "sant", e: "Sant!\nAstronomer uppskattar det så, även om båda är ofattbart många." }
     ];
 
-    const likeNotQuestions = [
-      { q: "En kattunge i en tekopp 🐱☕", a: "like", e: "Många gillar söta djurbilder!" },
-      { q: "Spam-mail som lovar gratis pengar 💸", a: "not", e: "Inte ett smart val att gilla – ofta bluffar." },
-      { q: "En video om hållbar miljö 🌍", a: "like", e: "Att gilla miljöfrågor kan sprida viktig kunskap." },
-      { q: "En rubrik som låter för bra för att vara sann 😲", a: "not", e: "Klickbete – bättre att vara källkritisk." }
+    const likeQuestions = [
+      { q: "Någon lägger ut en rolig kattvideo.", a: "like", e: "👍 Det är något positivt och ofarligt att gilla." },
+      { q: "Någon skriver elaka kommentarer.", a: "notlike", e: "👎 Bra att inte gilla eller sprida elakheter." },
+      { q: "En kompis delar ett recept.", a: "like", e: "👍 Kul att visa uppskattning för vänliga saker online." },
+      { q: "Någon lägger upp hotfulla meddelanden.", a: "notlike", e: "👎 Det ska man inte uppmuntra." }
     ];
 
     let currentGame = null;
     let questions = [];
-    let currentQuestion = null;
-    let correctCount = 0;
-    let wrongCount = 0;
+    let currentIndex = 0;
 
-    function startGame(type) {
-      currentGame = type;
-      questions = [...(type === 'santfejk' ? santFejkQuestions : likeNotQuestions)];
-      correctCount = 0;
-      wrongCount = 0;
-      document.getElementById("answerButtons").innerHTML = "";
-      document.getElementById("nextBtn").style.display = "none";
-      showNextQuestion();
+    function startGame(mode) {
+      currentGame = mode;
+      questions = (mode === "sant") ? [...santQuestions] : [...likeQuestions];
+      currentIndex = 0;
+      document.getElementById("endScreen").style.display = "none";
+      document.getElementById("gameContainer").style.display = "block";
+      document.body.style.background = "#f0f4f8";
+      showQuestion();
     }
 
-    function showNextQuestion() {
-      if (questions.length === 0) {
-        endGame();
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
+        if (currentGame === "like") {
+          endGame();
+        } else {
+          document.getElementById("questionBox").innerText = "Spelet är slut!";
+        }
+        document.getElementById("answerButtons").innerHTML = "";
+        document.getElementById("nextBtn").style.display = "none";
         return;
       }
-
-      currentQuestion = questions.splice(Math.floor(Math.random() * questions.length), 1)[0];
-      document.getElementById("questionBox").innerHTML = currentQuestion.q;
-      document.getElementById("answerButtons").innerHTML = "";
-
-      if (currentGame === "santfejk") {
-        document.getElementById("answerButtons").innerHTML = `
-          <button onclick="checkAnswer('sant')">Sant</button>
-          <button onclick="checkAnswer('fejk')">Fejk</button>
-        `;
+      const q = questions[currentIndex];
+      document.getElementById("questionBox").innerText = q.q;
+      const ab = document.getElementById("answerButtons");
+      ab.innerHTML = "";
+      if (currentGame === "sant") {
+        ab.innerHTML = `
+          <button onclick="checkAnswer('sant')">Sant ✅</button>
+          <button onclick="checkAnswer('fejk')">Fejk ❌</button>`;
       } else {
-        document.getElementById("answerButtons").innerHTML = `
-          <button onclick="checkAnswer('like')">Like 👍</button>
-          <button onclick="checkAnswer('not')">Not like 👎</button>
-        `;
+        ab.innerHTML = `
+          <button onclick="checkAnswer('like')">👍 Like</button>
+          <button onclick="checkAnswer('notlike')">👎 Not Like</button>`;
       }
-
       document.getElementById("nextBtn").style.display = "none";
     }
 
     function checkAnswer(answer) {
-      let feedbackHTML = "";
-      if (answer === currentQuestion.a) {
+      const q = questions[currentIndex];
+      const box = document.getElementById("questionBox");
+      if (answer === q.a) {
         document.getElementById("correctSound").play();
-        correctCount++;
-        feedbackHTML = `
-          <h2 class="correct">✅ Rätt!</h2>
-          <div class="feedback">${currentQuestion.e}</div>
-        `;
+        box.innerText = "✅ Rätt!\n\n" + q.e;
       } else {
         document.getElementById("wrongSound").play();
-        wrongCount++;
-        feedbackHTML = `
-          <h2 class="wrong">❌ Fel!</h2>
-          <div class="feedback">${currentQuestion.e}</div>
-        `;
+        box.innerText = "❌ Fel!\n\n" + q.e;
       }
-
-      document.getElementById("questionBox").innerHTML = feedbackHTML + 
-        `<div class="counter">Rätt: ${correctCount} | Fel: ${wrongCount}</div>`;
       document.getElementById("answerButtons").innerHTML = "";
       document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      showQuestion();
     }
 
     function endGame() {
       document.getElementById("gameContainer").style.display = "none";
       document.getElementById("endScreen").style.display = "block";
+      document.body.style.background = "#111"; // mörkare bakgrund
       launchFireworks();
     }
 
-    /* Fyrverkeri */
+    // Enkel fyrverkeri-effekt
     function launchFireworks() {
       const canvas = document.getElementById("fireworks");
       const ctx = canvas.getContext("2d");
@@ -275,41 +226,32 @@
       canvas.height = window.innerHeight;
 
       let particles = [];
-
-      function createFirework(x, y) {
+      function createFirework() {
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height / 2;
         for (let i = 0; i < 100; i++) {
           particles.push({
-            x: x,
-            y: y,
+            x, y,
             angle: Math.random() * 2 * Math.PI,
             speed: Math.random() * 5 + 2,
-            radius: 2,
-            life: 100
+            life: 100,
+            color: `hsl(${Math.random() * 360},100%,50%)`
           });
         }
       }
-
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         particles.forEach((p, i) => {
           p.x += Math.cos(p.angle) * p.speed;
           p.y += Math.sin(p.angle) * p.speed;
-          p.life -= 1;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${Math.random() * 360},100%,50%,${p.life/100})`;
-          ctx.fill();
+          p.life--;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, 2, 2);
           if (p.life <= 0) particles.splice(i, 1);
         });
-
+        if (Math.random() < 0.05) createFirework();
         requestAnimationFrame(animate);
       }
-
-      setInterval(() => {
-        createFirework(Math.random() * canvas.width, Math.random() * canvas.height / 2);
-      }, 1000);
-
       animate();
     }
   </script>
