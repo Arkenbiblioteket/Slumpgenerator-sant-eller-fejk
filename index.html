@@ -14,118 +14,250 @@
       height: 100vh;
       margin: 0;
     }
-    #game {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .container {
       text-align: center;
-      max-width: 500px;
       width: 90%;
+      max-width: 800px;
     }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 18px;
-      color: #fff;
-    }
-    .bluff { background-color: #e74c3c; }      /* Röd */
-    .säkert { background-color: #27ae60; }     /* Grön */
-    .näthat { background-color: #c0392b; }     /* Mörkröd */
-    .snällt { background-color: #2980b9; }     /* Blå */
-    #feedback {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-    #result {
-      font-size: 24px;
+    #questionBox {
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 15px;
+      font-size: 1.5em;
       font-weight: bold;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    .feedback {
       margin-top: 20px;
+      font-size: 1em;
+      font-weight: normal;
+      color: #444;
+    }
+    .mode-buttons {
+      margin-bottom: 20px;
+    }
+    .mode-buttons button {
+      background: #00acc1;
+      color: white;
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .answer-buttons button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #4caf50;
+      color: white;
+    }
+    .answer-buttons button.red {
+      background: #e53935;
+    }
+    .answer-buttons button:hover {
+      opacity: 0.85;
+    }
+    #scoreCounter {
+      margin-top: 15px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #00796b;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    #progress {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.3s;
+    }
+    #endScreen {
+      display: none;
+      text-align: center;
+      background: #fff;
+      color: #222;
+      padding: 60px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    #endScreen h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #4caf50;
+    }
+    #endScreen p {
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Bli ett proffs på smarta val online!</h1>
 
-<div id="game">
-  <h2>Är detta Bluff eller Säkert? <br>Snällt eller Näthat?</h2>
-  <div id="question"></div>
-  <div>
-    <button class="bluff" onclick="checkAnswer('Bluff')">Bluff</button>
-    <button class="säkert" onclick="checkAnswer('Säkert')">Säkert</button>
-    <button class="snällt" onclick="checkAnswer('Snällt')">Snällt</button>
-    <button class="näthat" onclick="checkAnswer('Näthat')">Näthat</button>
+    <div class="mode-buttons">
+      <button onclick="startGame('bluff')">🎣 Bluff eller Säkert</button>
+      <button onclick="startGame('hat')">💬 Snällt eller Näthat</button>
+    </div>
+
+    <div id="progress"><div id="progressBar"></div></div>
+
+    <div id="questionBox">Välj ett spel för att börja!</div>
+    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
+    <div id="scoreCounter"></div>
+
+    <div id="endScreen">
+      <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
+      <p>Ni har klarat alla frågor i quizet. Bra jobbat!</p>
+    </div>
   </div>
-  <div id="feedback"></div>
-  <div id="result"></div>
-</div>
 
-<!-- Konfetti-bibliotek -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
-<script>
-const questions = [
-  { text: "Du har vunnit en ny iPhone – klicka här!", answer: "Bluff", feedback: "Detta är ett klassiskt bluffmeddelande. Verkar det för bra för att vara sant, så är det oftast bluff." },
-  { text: "Din skola postar matsedel på Instagram.", answer: "Säkert", feedback: "Detta är en trovärdig och vardaglig information från en känd källa." },
-  { text: "Du är ful och borde inte vara här.", answer: "Näthat", feedback: "Detta är elakt och kränkande. Spara bevis, blockera och berätta för en vuxen." },
-  { text: "Bra jobbat på provet!", answer: "Snällt", feedback: "Detta är en snäll kommentar som gör andra glada." },
-  { text: "En artikel säger att hundar kan prata om de får rätt mat.", answer: "Bluff", feedback: "Detta är en fejknyhet. Kolla alltid om flera källor säger samma sak." },
-  { text: "Du får ett meddelande om att uppge dina lösenord.", answer: "Bluff", feedback: "Du ska aldrig lämna ut lösenord – detta är ett försök till nätfiske." },
-  { text: "Du ser en video från din kompis födelsedagskalas.", answer: "Säkert", feedback: "Detta är en verklig händelse från någon du känner." },
-  { text: "Jag gillar din nya tröja!", answer: "Snällt", feedback: "Detta är en vänlig kommentar." },
-  { text: "Ingen vill vara med dig, du är värdelös.", answer: "Näthat", feedback: "Detta är mobbning. Säg till en vuxen och blockera personen." }
-];
+  <script>
+    const bluffQuestions = [
+      { q: "Du får ett meddelande: 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
+        answer: "bluff", 
+        explanation: "Bluff – klicka inte på konstiga länkar, det kan vara virus eller försök att lura dig." },
+      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
+        answer: "säkert", 
+        explanation: "Säkert – det är någon du känner och det är inget misstänkt." },
+      { q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
+        answer: "bluff", 
+        explanation: "Bluff – okända personer kan försöka stjäla uppgifter eller lura dig." },
+      { q: "Du ser en nyhet: 'Hundar kan prata om de får rätt mat!'", 
+        answer: "bluff", 
+        explanation: "Bluff – låter det för bra för att vara sant? Kolla flera källor." },
+      { q: "Din skola lägger upp veckans matsedel på Instagram.", 
+        answer: "säkert", 
+        explanation: "Säkert – officiella konton är pålitliga." }
+    ];
 
-let currentQuestion = 0;
-let score = 0;
+    const hatQuestions = [
+      { q: "Någon skriver 'Du är ful och borde inte få vara här' i en kommentar.", 
+        answer: "näthat", 
+        explanation: "Näthat – elaka ord kan göra andra ledsna. Berätta för en vuxen." },
+      { q: "En klasskompis skriver 'Bra jobbat på provet!'", 
+        answer: "snällt", 
+        explanation: "Snällt – att uppmuntra andra är fint." },
+      { q: "Någon sprider rykten om en elev i en chatt.", 
+        answer: "näthat", 
+        explanation: "Näthat – rykten kan såra. Spara bevis och blockera." },
+      { q: "Du skickar en glad emoji till en vän.", 
+        answer: "snällt", 
+        explanation: "Snällt – små positiva saker gör stor skillnad." },
+      { q: "Någon skriver 'Du borde ta bort dig själv från nätet'", 
+        answer: "näthat", 
+        explanation: "Näthat – allvarligt. Anmäl, blockera och be en vuxen om hjälp." }
+    ];
 
-function showQuestion() {
-  if (currentQuestion < questions.length) {
-    document.getElementById('question').textContent = questions[currentQuestion].text;
-    document.getElementById('feedback').textContent = '';
-  } else {
-    document.getElementById('game').innerHTML = `
-      <h2>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h2>
-      <p>Ni fick ${score} av ${questions.length} rätt.</p>
-    `;
-    startConfetti();
-  }
-}
+    let currentGame = null;
+    let questions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answered = false;
 
-function checkAnswer(choice) {
-  const q = questions[currentQuestion];
-  if (choice === q.answer) {
-    score++;
-    document.getElementById('feedback').textContent = "Rätt! " + q.feedback;
-    new Audio('applause.wav').play();
-  } else {
-    document.getElementById('feedback').textContent = "Fel. " + q.feedback;
-    new Audio('bu.wav').play();
-  }
-  currentQuestion++;
-  setTimeout(showQuestion, 2000);
-}
-
-function startConfetti() {
-  const duration = 3 * 1000;
-  const end = Date.now() + duration;
-
-  (function frame() {
-    confetti({
-      particleCount: 5,
-      spread: 70,
-      origin: { y: 0.6 }
+    document.getElementById("questionBox").addEventListener("click", () => {
+      if (!answered) return;
+      showQuestion();
     });
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
+
+    function startGame(gameType) {
+      currentGame = gameType;
+      questions = (gameType === "bluff" ? bluffQuestions : hatQuestions);
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      answered = false;
+      document.getElementById("endScreen").style.display = "none";
+      document.getElementById("questionBox").style.display = "flex";
+      document.getElementById("progress").style.display = "block";
+      document.getElementById("scoreCounter").style.display = "block";
+      document.getElementById("answerButtons").style.display = "block";
+      updateProgress();
+      showQuestion();
     }
-  })();
-}
 
-showQuestion();
-</script>
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
+        showEndScreen();
+        return;
+      }
+      const q = questions[currentIndex];
+      document.getElementById("questionBox").innerHTML = q.q;
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = "";
 
+      if (currentGame === "bluff") {
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('säkert')">✅ Säkert</button>`;
+      } else {
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('snällt')">😊 Snällt</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('näthat')" class="red">🚫 Näthat</button>`;
+      }
+      updateScore();
+      answered = false;
+    }
+
+    function checkAnswer(answer) {
+      if (answered) return;
+      answered = true;
+
+      const q = questions[currentIndex];
+      let feedback = "";
+      if (answer === q.answer) {
+        correctCount++;
+        document.getElementById("correctSound").play();
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
+      } else {
+        wrongCount++;
+        document.getElementById("wrongSound").play();
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
+      }
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
+
+      currentIndex++;
+      updateScore();
+      updateProgress();
+    }
+
+    function updateScore() {
+      document.getElementById("scoreCounter").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
+    }
+
+    function updateProgress() {
+      const percent = (currentIndex / questions.length) * 100;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function showEndScreen() {
+      document.getElementById("questionBox").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+      document.getElementById("scoreCounter").style.display = "none";
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("endScreen").style.display = "block";
+    }
+  </script>
 </body>
 </html>
