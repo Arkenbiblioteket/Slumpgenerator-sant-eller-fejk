@@ -2,191 +2,139 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Bli ett proffs på smarta val online!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <title>Quiz-spel</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      text-align: center;
       background: #f0f4f8;
-      color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
-      transition: background 0.5s ease;
+      padding: 0;
     }
-    .container {
-      text-align: center;
-      width: 90%;
-      max-width: 800px;
-    }
-    h1 {
-      font-family: 'Fredoka One', cursive;
-      color: #00796b;
-    }
-    #questionBox {
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: linear-gradient(135deg, #fff, #e0f7fa);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: background 0.5s ease;
-      cursor: pointer;
-    }
-    .feedback {
-      margin-top: 20px;
-      font-size: 1em;
-      font-weight: normal;
-      color: #444;
-      animation: pop 0.5s ease forwards;
-    }
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .mode-buttons {
-      margin-bottom: 20px;
-    }
-    .mode-buttons button, .answer-buttons button {
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .mode-buttons button:hover, .answer-buttons button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    .mode-buttons button {
-      background: #00acc1;
-      color: white;
-      margin: 10px;
-      padding: 15px 25px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .answer-buttons button {
-      margin: 10px;
-      padding: 15px 30px;
-      font-size: 1.2em;
-      border: none;
+
+    #gameContainer {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 20px;
+      background: white;
       border-radius: 12px;
-      cursor: pointer;
-      background: #4caf50;
-      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .answer-buttons button:hover {
-      background: #388e3c;
-    }
-    #score {
-      margin-top: 15px;
+
+    #questionBox {
       font-size: 1.5em;
-      font-weight: bold;
-      color: #00796b;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      padding: 30px;
+      background: linear-gradient(135deg, #fff, #e0f7fa);
+      border-radius: 12px;
+      min-height: 120px;
+      cursor: pointer;
     }
+
+    #answerButtons button {
+      margin: 15px;
+      padding: 12px 24px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #1976d2;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    #answerButtons button:hover {
+      background: #0d47a1;
+    }
+
+    #score {
+      font-size: 1.5em;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
     #progressContainer {
       width: 100%;
-      background: #ddd;
-      border-radius: 10px;
-      margin: 10px 0;
-      height: 10px;
+      background: #ccc;
+      border-radius: 8px;
+      margin: 20px 0;
     }
+
     #progressBar {
-      height: 10px;
-      width: 0%;
+      width: 0;
+      height: 20px;
       background: #4caf50;
-      border-radius: 10px;
-      transition: width 0.5s;
+      border-radius: 8px;
     }
+
+    .feedback {
+      margin-top: 15px;
+      font-size: 1em;
+    }
+
+    /* Slutsidan */
     #endScreen {
       display: none;
-      text-align: center;
-      background: #111;
-      color: white;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      padding-top: 80px;
+      background: #111;
+      overflow: hidden;
     }
-    #endScreen h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-      animation: pulse 1s infinite;
-      position: relative; /* text ovanpå canvas */
-      z-index: 2;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
+
     #fireworksCanvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 1; /* canvas bakom text */
+      z-index: 0; /* bakom texten */
     }
-    .attribution {
-      margin-top: 60px;
-      font-size: 0.8em;
-      color: #bbb;
+
+    #endContent {
       position: relative;
-      z-index: 2;
+      z-index: 2; /* ovanpå canvasen */
+      text-align: center;
+      color: white;
+      padding-top: 100px;
     }
-    .attribution a {
-      color: #4fc3f7;
-      text-decoration: none;
+
+    #endContent h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      animation: pulse 1s infinite;
     }
-    @media (max-width: 600px) {
-      #questionBox {
-        font-size: 1.2em;
-        padding: 20px;
-      }
-      .answer-buttons button {
-        font-size: 1em;
-        padding: 10px 20px;
-      }
-      #score {
-        font-size: 1.2em;
-      }
+
+    .attribution {
+      font-size: 0.9em;
+      margin-top: 20px;
+      opacity: 0.7;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bli ett proffs på smarta val online!</h1>
-
-    <div class="mode-buttons">
-      <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
-      <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
+  <div id="gameContainer">
+    <div id="questionBox">Klicka för att starta!</div>
+    <div id="answerButtons"></div>
+    <div id="progressContainer">
+      <div id="progressBar"></div>
     </div>
+    <div id="score">Rätt: 0 | Fel: 0</div>
+  </div>
 
-    <div id="questionBox">Välj ett spel för att börja!</div>
-    <div id="progressContainer"><div id="progressBar"></div></div>
-    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-    <div id="score"></div>
-
-    <div id="endScreen">
+  <div id="endScreen">
+    <canvas id="fireworksCanvas"></canvas>
+    <div id="endContent">
       <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
-      <canvas id="fireworksCanvas"></canvas>
       <div class="attribution">
-        🎵 Ljud: "applaus.wav" by xtrgamr — 
-        <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
-        License: Attribution 4.0
+        🎵 Ljud: "applaus.wav" och "bu.mp3"
       </div>
     </div>
   </div>
@@ -196,36 +144,19 @@
 
   <script>
     const santFejkQuestions = [
-      { q: "Guld är ätbart.", answer: "sant", explanation: "Sant – i mycket små mängder, bladguld används på mat och dryck." },
-      { q: "Människan använder bara 10 % av sin hjärna.", answer: "fejk", explanation: "Fejk – hela hjärnan är aktiv, myten bygger på en misstolkning." },
-      { q: "Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader träffas ofta flera gånger." },
-      { q: "Du kan se Kinesiska muren från rymden.", answer: "fejk", explanation: "Fejk – den är för smal och smälter in i landskapet." },
-      { q: "Strutsar gömmer huvudet i sanden.", answer: "fejk", explanation: "Fejk – de lägger sig ner mot marken istället." },
-      { q: "Hajar kan inte få cancer.", answer: "fejk", explanation: "Fejk – hajar kan få cancer, myten används för att sälja preparat." },
-      { q: "Man kan inte rapa i rymden.", answer: "sant", explanation: "Sant – utan gravitation blandas gasen med vätska i magen." },
-      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: "sant", explanation: "Sant – light innehåller mindre socker och är mindre tät." },
-      { q: "Det finns fler stjärnor än sandkorn på alla jordens stränder.", answer: "sant", explanation: "Sant – astronomer uppskattar att det är så." }
+      { q: "Internet är alltid en säker plats.", answer: "fejk", explanation: "Nej, internet innehåller både säkra och osäkra delar." },
+      { q: "Du bör aldrig dela ditt lösenord med någon.", answer: "sant", explanation: "Lösenord är privata och bör alltid hållas hemliga." }
     ];
 
-    const likeQuestions = [
-      { q: "Någon postar en rolig kattvideo.", answer: "like", explanation: "Like – ofarligt och roligt." },
-      { q: "Någon skriver elaka kommentarer.", answer: "not like", explanation: "Not like – att sprida hat gör andra ledsna." },
-      { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." },
-      { q: "Någon du inte känner skickar en konstig länk.", answer: "not like", explanation: "Not like – kan vara virus eller bluff." },
-      { q: "En vän delar en fin komplimang.", answer: "like", explanation: "Like – alltid bra att sprida snällhet." }
-    ];
-
-    let currentGame = null;
-    let questions = [];
     let currentIndex = 0;
     let correctCount = 0;
     let wrongCount = 0;
     let waitingForNext = false;
     let answeredThisQuestion = false;
+    let questions = [];
 
-    function startGame(gameType) {
-      currentGame = gameType;
-      questions = (gameType === "santfejk" ? santFejkQuestions : likeQuestions);
+    function startGame() {
+      questions = santFejkQuestions;
       currentIndex = 0;
       correctCount = 0;
       wrongCount = 0;
@@ -249,13 +180,9 @@
 
       const buttonsDiv = document.getElementById("answerButtons");
       buttonsDiv.innerHTML = "";
-      if (currentGame === "santfejk") {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
-      } else {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('like')">👍 Like</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('not like')">👎 Not like</button>`;
-      }
+      buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
+      buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
+
       updateScore();
       updateProgress();
     }
@@ -285,7 +212,10 @@
     }
 
     document.getElementById("questionBox").addEventListener("click", () => {
-      if (!waitingForNext) return;
+      if (!waitingForNext) {
+        startGame();
+        return;
+      }
       waitingForNext = false;
       currentIndex++;
       showQuestion();
