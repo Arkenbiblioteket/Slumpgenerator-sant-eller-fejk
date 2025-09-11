@@ -748,4 +748,116 @@
       
       document.getElementById("progressBar").style.width = percentage + "%";
       document.getElementById("progressText").textContent = `Fråga ${current} av ${total}`;
-      document.getElementById("scoreDisplay").textContent = `Po
+      document.getElementById("scoreDisplay").textContent = `Poäng: ${correctCount}/${correctCount + wrongCount}`;
+      document.getElementById("streakDisplay").textContent = `🔥 Streak: ${streak}`;
+    }
+
+    function createFloatingEmoji(emoji) {
+      const floatingEmoji = document.createElement("div");
+      floatingEmoji.className = "floating-emoji";
+      floatingEmoji.textContent = emoji;
+      floatingEmoji.style.left = Math.random() * (window.innerWidth - 100) + "px";
+      floatingEmoji.style.top = "50%";
+      document.body.appendChild(floatingEmoji);
+      
+      setTimeout(() => {
+        if (document.body.contains(floatingEmoji)) {
+          document.body.removeChild(floatingEmoji);
+        }
+      }, 2500);
+    }
+
+    function showEndScreen() {
+      const endScreen = document.getElementById("endScreen");
+      const totalQuestions = correctCount + wrongCount;
+      const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+      
+      let performanceText = "";
+      if (percentage >= 90) performanceText = "🏆 Perfekt! Du är en riktig expert!";
+      else if (percentage >= 75) performanceText = "⭐ Fantastiskt bra jobbat!";
+      else if (percentage >= 60) performanceText = "👍 Bra gjort! Du lär dig snabbt!";
+      else performanceText = "💪 Bra försök! Övning ger färdighet!";
+      
+      document.getElementById("finalScore").innerHTML = `
+        <div class="performance-text">${performanceText}</div>
+        <div style="margin: 15px 0;">📊 Resultat: ${correctCount}/${totalQuestions} rätt (${percentage}%)</div>
+        <div style="margin: 10px 0;">🔥 Längsta streak: ${maxStreak}</div>
+        <div style="margin: 10px 0;">🎯 Spelläge: ${currentGame === 'santfejk' ? 'Sant eller Fejk' : 'Like eller Not like'}</div>
+      `;
+      
+      endScreen.classList.add("show");
+      launchFireworks();
+    }
+
+    function restartGame() {
+      document.getElementById("endScreen").classList.remove("show");
+      document.getElementById("modeButtons").style.display = "block";
+      document.getElementById("gameHeader").classList.remove("show");
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("questionBox").innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
+        <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
+      `;
+      document.getElementById("questionBox").style.background = "rgba(255,255,255,0.95)";
+    }
+
+    function launchFireworks() {
+      const canvas = document.getElementById("fireworksCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      
+      function random(min, max) { 
+        return Math.random() * (max - min) + min; 
+      }
+
+      function createFirework() {
+        let x = random(100, canvas.width - 100);
+        let y = random(50, canvas.height / 2);
+        let count = 100;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: x,
+            y: y,
+            dx: random(-3, 3),
+            dy: random(-3, 3),
+            life: random(50, 100)
+          });
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach((p, i) => {
+          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.life--;
+          if (p.life <= 0) particles.splice(i, 1);
+        });
+        
+        if (document.getElementById("endScreen").classList.contains("show")) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      const fireworkInterval = setInterval(() => {
+        if (document.getElementById("endScreen").classList.contains("show")) {
+          createFirework();
+        } else {
+          clearInterval(fireworkInterval);
+        }
+      }, 1000);
+      
+      animate();
+    }
+  </script>
+</body>
+</html>
