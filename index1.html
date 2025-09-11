@@ -1,198 +1,198 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>Bli ett proffs på smarta val online!</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      width: 90%;
-      max-width: 800px;
-    }
-    #questionBox {
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: #fff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-    .feedback {
-      margin-top: 20px;
-      font-size: 1em;
-      font-weight: normal;
-      color: #444;
-    }
-    .mode-buttons button,
-    .answer-buttons button {
-      margin: 10px;
-      padding: 15px 25px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      background: #00acc1;
-      color: white;
-    }
-    .answer-buttons button {
-      background: #4caf50;
-    }
-    .answer-buttons button:hover {
-      background: #388e3c;
-    }
-    #score {
-      margin-top: 10px;
-      font-size: 1.3em;
-      color: #333;
-      font-weight: bold;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: #333;
+    text-align: center;
+    padding: 20px;
+  }
 
-    /* Slutsidan utan fyrverkerier */
-    #endScreen {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, #4caf50, #00acc1);
-      color: white;
-      text-align: center;
-      padding-top: 140px;
-      z-index: 1000;
-    }
-    #endScreen h1 {
-      font-size: 2.8em;
-      margin-bottom: 30px;
-      animation: fadeIn 2s ease-out;
-    }
-    #endScreen p {
-      font-size: 1.3em;
-      opacity: 0.9;
-      animation: fadeIn 3s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  </style>
+  #questionBox {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+  }
+
+  .option {
+    background: #f1f1f1;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .option:hover {
+    background: #d1f7ff;
+  }
+
+  #progress {
+    width: 100%;
+    background: #ddd;
+    border-radius: 20px;
+    margin-top: 30px;
+    height: 25px;
+  }
+
+  #progressBar {
+    height: 25px;
+    width: 0;
+    background: #4caf50;
+    border-radius: 20px;
+    transition: width 0.3s;
+  }
+
+  #scoreCounter {
+    margin-top: 20px;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #222;
+  }
+
+  #endScreen {
+    display: none;
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  #endScreen h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #4caf50;
+  }
+
+  #endScreen p {
+    font-size: 1.2em;
+  }
+
+  .attribution {
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #777;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div class="mode-buttons">
-      <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
-      <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
-    </div>
+<div id="questionBox">
+  <h2 id="question">Fråga kommer här</h2>
+  <div id="options"></div>
+</div>
 
-    <div id="questionBox">Välj ett spel för att börja!</div>
-    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-    <div id="score"></div>
+<div id="progress">
+  <div id="progressBar"></div>
+</div>
 
-    <!-- Slutsida -->
-    <div id="endScreen">
-      <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
-      <p>Ni har klarat alla frågor – bra jobbat! 💪</p>
-    </div>
+<div id="scoreCounter">Rätt: 0 | Fel: 0</div>
+
+<div id="endScreen">
+  <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
+  <p>Ni har klarat alla frågor i quizet. Bra jobbat!</p>
+  <div class="attribution">
+    🎵 Ljud: "applaus.wav" by xtrgamr —
+    <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> —
+    License: Attribution 4.0
   </div>
+</div>
 
-  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
-  <audio id="wrongSound" src="bu.mp3" preload="auto"></audio>
+<audio id="correctSound" src="applaus.wav"></audio>
+<audio id="wrongSound" src="bu.wav"></audio>
 
-  <script>
-    const santFejkQuestions = [
-      { q: "Guld är ätbart.", answer: "sant", explanation: "Sant – i mycket små mängder, bladguld används på mat och dryck." },
-      { q: "Människan använder bara 10 % av sin hjärna.", answer: "fejk", explanation: "Fejk – hela hjärnan är aktiv, myten bygger på en misstolkning." },
-      { q: "Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader träffas ofta flera gånger." },
-      { q: "Du kan se Kinesiska muren från rymden.", answer: "fejk", explanation: "Fejk – den är för smal och smälter in i landskapet." },
-      { q: "Strutsar gömmer huvudet i sanden.", answer: "fejk", explanation: "Fejk – de lägger sig ner mot marken istället." }
-    ];
+<script>
+const questions = [
+  {
+    question: "Vad ska du göra om du får ett konstigt mejl?",
+    options: ["Öppna länken direkt", "Radera det eller fråga en vuxen", "Svara med dina personuppgifter"],
+    correct: 1
+  },
+  {
+    question: "Vad betyder att vara källkritisk?",
+    options: ["Att tro på allt du ser", "Att tänka efter om informationen är sann", "Att alltid fråga kompisar"],
+    correct: 1
+  }
+];
 
-    const likeQuestions = [
-      { q: "Någon postar en rolig kattvideo.", answer: "like", explanation: "Like – ofarligt och roligt." },
-      { q: "Någon skriver elaka kommentarer.", answer: "not like", explanation: "Not like – att sprida hat gör andra ledsna." },
-      { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." }
-    ];
+let currentQuestion = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+let answeredQuestions = new Set();
 
-    let currentGame = null;
-    let questions = [];
-    let currentIndex = 0;
-    let correctCount = 0;
-    let wrongCount = 0;
+function loadQuestion() {
+  const q = questions[currentQuestion];
+  document.getElementById("question").textContent = q.question;
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  q.options.forEach((option, index) => {
+    const div = document.createElement("div");
+    div.textContent = option;
+    div.className = "option";
+    div.onclick = () => checkAnswer(index);
+    optionsDiv.appendChild(div);
+  });
+}
 
-    function startGame(gameType) {
-      currentGame = gameType;
-      questions = (gameType === "santfejk" ? santFejkQuestions : likeQuestions);
-      currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
-      document.getElementById("endScreen").style.display = "none";
-      document.getElementById("answerButtons").style.display = "block";
-      showQuestion();
+function checkAnswer(selected) {
+  if (answeredQuestions.has(currentQuestion)) return;
+
+  const correctSound = document.getElementById("correctSound");
+  const wrongSound = document.getElementById("wrongSound");
+
+  if (selected === questions[currentQuestion].correct) {
+    correctAnswers++;
+    correctSound.play();
+  } else {
+    wrongAnswers++;
+    wrongSound.play();
+  }
+
+  answeredQuestions.add(currentQuestion);
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById("scoreCounter").textContent = `Rätt: ${correctAnswers} | Fel: ${wrongAnswers}`;
+}
+
+document.getElementById("questionBox").addEventListener("click", () => {
+  if (answeredQuestions.has(currentQuestion)) {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+      document.getElementById("progressBar").style.width = ((currentQuestion) / questions.length) * 100 + "%";
+    } else {
+      showEndScreen();
     }
+  }
+});
 
-    function showQuestion() {
-      if (currentIndex >= questions.length) {
-        showEndScreen();
-        return;
-      }
-      const q = questions[currentIndex];
-      document.getElementById("questionBox").innerHTML = q.q;
-      const buttonsDiv = document.getElementById("answerButtons");
-      buttonsDiv.innerHTML = "";
+function showEndScreen() {
+  document.getElementById("questionBox").style.display = "none";
+  document.getElementById("progress").style.display = "none";
+  document.getElementById("scoreCounter").style.display = "none";
+  document.getElementById("endScreen").style.display = "block";
+}
 
-      if (currentGame === "santfejk") {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
-      } else {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('like')">👍 Like</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('not like')">👎 Not like</button>`;
-      }
-      updateScore();
-    }
-
-    function checkAnswer(answer) {
-      const q = questions[currentIndex];
-      let feedback = "";
-      if (answer === q.answer) {
-        correctCount++;
-        document.getElementById("correctSound").play();
-        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
-      } else {
-        wrongCount++;
-        document.getElementById("wrongSound").play();
-        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
-      }
-      document.getElementById("questionBox").innerHTML = q.q + feedback;
-      currentIndex++;
-      setTimeout(showQuestion, 2500);
-      updateScore();
-    }
-
-    function updateScore() {
-      document.getElementById("score").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
-    }
-
-    function showEndScreen() {
-      document.getElementById("endScreen").style.display = "block";
-    }
-  </script>
+loadQuestion();
+</script>
 </body>
 </html>
