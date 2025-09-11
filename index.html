@@ -595,15 +595,18 @@
     let waitingForNext = false;
     let answeredThisQuestion = false;
 
-    // Sound effects (with error handling)
-    const correctSound = new Audio();
-    const wrongSound = new Audio();
+    // Sound effects with better error handling
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
     
+    // Set volume and test if sounds can be loaded
     try {
-      correctSound.src = "applaus.wav";
-      wrongSound.src = "bu.mp3";
-      correctSound.volume = 0.5;
-      wrongSound.volume = 0.5;
+      correctSound.volume = 0.6;
+      wrongSound.volume = 0.6;
+      
+      // Test load sounds
+      correctSound.load();
+      wrongSound.load();
     } catch (e) {
       console.log("Sound files not found, continuing without sound");
     }
@@ -757,7 +760,7 @@
       floatingEmoji.className = "floating-emoji";
       floatingEmoji.textContent = emoji;
       floatingEmoji.style.left = Math.random() * (window.innerWidth - 100) + "px";
-      floatingEmoji.style.top = "50%";
+      floatingEmoji.style.top = "60%";
       document.body.appendChild(floatingEmoji);
       
       setTimeout(() => {
@@ -786,6 +789,7 @@
       `;
       
       endScreen.classList.add("show");
+      document.body.style.background = "linear-gradient(135deg, #1a1a1a, #2d2d2d)";
       launchFireworks();
     }
 
@@ -794,6 +798,8 @@
       document.getElementById("modeButtons").style.display = "block";
       document.getElementById("gameHeader").classList.remove("show");
       document.getElementById("answerButtons").style.display = "none";
+      document.body.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+      
       document.getElementById("questionBox").innerHTML = `
         <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
         <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
@@ -801,6 +807,7 @@
       document.getElementById("questionBox").style.background = "rgba(255,255,255,0.95)";
     }
 
+    // Spectacular fireworks animation
     function launchFireworks() {
       const canvas = document.getElementById("fireworksCanvas");
       const ctx = canvas.getContext("2d");
