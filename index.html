@@ -135,29 +135,20 @@
   <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
   <script>
-const bluffQuestions = [
-  { 
-    q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
-    answer: "bluff", 
-    explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." 
-  },
-  { 
-    q: "En kompis skickar en rolig kattvideo på Snapchat.", 
-    answer: "säkert", 
-    explanation: "Det är någon du känner och det är inget misstänkt innehåll." 
-  },
-  { 
-    q: "En främling skriver: <br> 'Följ den här länken för att vinna gratis presentkort!'", 
-    answer: "bluff", 
-    explanation: "Om du klickar på länken kan okända personer <br>försöka stjäla uppgifter eller lura dig." 
-  },
-  { 
-     q: "Det dyker upp ett popup-fönster på en hemsida: <br>'Din dator är infekterad, klicka här!'", 
-    answer: "bluff", 
-    explanation: "Popup-fönster är nästan alltid bluff. <br>Klicka inte på länken, utan stäng bara ner sidan." 
-  }
-];
-
+    const bluffQuestions = [
+      { q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
+        answer: "bluff", 
+        explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." },
+      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
+        answer: "säkert", 
+        explanation: "Det är någon du känner och det är inget misstänkt innehåll." },
+      { q: "En främling skriver: <br> 'Följ den här länken för att vinna gratis presentkort!'", 
+        answer: "bluff", 
+        explanation: "Om du klickar på länken kan okända personer <br>försöka stjäla uppgifter eller lura dig." },
+      { q: "Det dyker upp ett popup-fönster på en hemsida: <br>'Din dator är infekterad, klicka här!'", 
+        answer: "bluff", 
+        explanation: "Popup-fönster är nästan alltid bluff. <br>Klicka inte på länken, utan stäng bara ner sidan." }
+    ];
 
     const hatQuestions = [
       { q: "Någon skriver 'Du är ful och borde inte få vara här' i en kommentar.", 
@@ -207,9 +198,14 @@ const bluffQuestions = [
 
     function showQuestion() {
       if (currentIndex >= questions.length) {
-        showEndScreen();
+        if (currentGame === "bluff") {
+          resetToStart(); // Bluff går tillbaka till start
+        } else {
+          showEndScreen(); // OK/Näthat visar slutsida
+        }
         return;
       }
+
       const q = questions[currentIndex];
       document.getElementById("questionBox").innerHTML = q.q;
       const buttonsDiv = document.getElementById("answerButtons");
@@ -263,6 +259,18 @@ const bluffQuestions = [
       document.getElementById("scoreCounter").style.display = "none";
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("endScreen").style.display = "block";
+    }
+
+    function resetToStart() {
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      answered = false;
+      document.getElementById("questionBox").innerHTML = "Välj ett spel för att börja!";
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+      document.getElementById("scoreCounter").style.display = "none";
+      document.getElementById("questionBox").style.display = "flex";
     }
   </script>
 </body>
