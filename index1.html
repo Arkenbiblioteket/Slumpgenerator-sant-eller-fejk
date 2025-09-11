@@ -1,204 +1,132 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8">
   <title>Bli ett proffs på smarta val online!</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --accent:#00acc1;
-      --right:#4caf50;
-      --wrong:#f44336;
-    }
-
-    html,body{
-      height:100%;
-      margin:0;
+    body {
       font-family: Arial, sans-serif;
-      background:#f0f4f8;
-      color:#222;
+      background: #f0f4f8;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 800px;
+    }
+    #questionBox {
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 15px;
+      font-size: 1.5em;
+      font-weight: bold;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 1em;
+      font-weight: normal;
+      color: #444;
+    }
+    .mode-buttons button,
+    .answer-buttons button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #00acc1;
+      color: white;
+    }
+    .answer-buttons button {
+      background: #4caf50;
+    }
+    .answer-buttons button:hover {
+      background: #388e3c;
+    }
+    #score {
+      margin-top: 10px;
+      font-size: 1.3em;
+      color: #333;
+      font-weight: bold;
     }
 
-    .container{
-      max-width:900px;
-      margin:28px auto;
-      padding:22px;
-      text-align:center;
+    /* Slutsidan */
+    #endScreen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #111;
+      overflow: hidden;
+      z-index: 1000;
     }
-
-    h1.title {
-      font-family:'Fredoka One', cursive;
-      color:#00796b;
-      margin:0 0 16px 0;
-      font-size:1.8rem;
+    #fireworksCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
-
-    .mode-buttons{
-      margin-bottom:18px;
+    #endContent {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-align: center;
+      padding-top: 120px;
     }
-    .mode-buttons button{
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      padding:12px 20px;
-      margin:0 8px;
-      border-radius:10px;
-      font-size:1rem;
-      cursor:pointer;
-      transition:transform .14s,box-shadow .14s;
+    #endContent h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
     }
-    .mode-buttons button:hover{ transform:scale(1.03); box-shadow:0 6px 18px rgba(0,0,0,.12); }
-
-    #questionBox{
-      margin:18px auto;
-      padding:28px;
-      min-height:160px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#fff,#e0f7fa);
-      box-shadow:0 6px 20px rgba(0,0,0,0.08);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:1.25rem;
-      font-weight:600;
-      text-align:center;
-      cursor:pointer;
-      transition:background .25s,transform .12s;
+    .attribution {
+      margin-top: 40px;
+      font-size: 0.8em;
+      color: #bbb;
     }
-    #questionBox:active{ transform:translateY(1px); }
-
-    .answer-buttons{
-      margin-top:14px;
-    }
-    .answer-buttons button{
-      padding:12px 26px;
-      margin:8px;
-      border-radius:12px;
-      border:none;
-      background:var(--right);
-      color:#fff;
-      font-size:1.05rem;
-      cursor:pointer;
-      transition:transform .12s,opacity .12s;
-    }
-    .answer-buttons button:hover{ transform:scale(1.03) }
-    .answer-buttons button[disabled]{ opacity:.6; cursor:not-allowed; transform:none; }
-
-    #score{
-      margin-top:16px;
-      font-size:1.35rem;
-      font-weight:700;
-      color:#00796b;
-      text-shadow:1px 1px 2px rgba(0,0,0,.12);
-    }
-
-    #progressContainer{
-      width:100%;
-      background:#e6e6e6;
-      border-radius:12px;
-      height:18px;
-      margin:16px 0;
-      overflow:hidden;
-    }
-    #progressBar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg,var(--right), #81c784);
-      transition:width .4s ease;
-    }
-
-    .feedback{ margin-top:12px; font-size:1rem; color:#444; animation:pop .45s; }
-    @keyframes pop{
-      0% { transform:scale(.85); opacity:0 }
-      60% { transform:scale(1.05); opacity:1 }
-      100% { transform:scale(1) }
-    }
-
-    /* SLUTSKÄRM */
-    #endScreen{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:#111;
-      overflow:hidden;
-      z-index:900; /* ovanför allt annat på sidan */
-    }
-
-    /* Canvas bakgrund för fyrverkerier */
-    #fireworksCanvas{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      z-index:1; /* ligger bakom innehållet */
-      pointer-events:none;
-    }
-
-    /* End-content ovanpå canvas */
-    #endContent{
-      position:relative;
-      z-index:2; /* ovanför canvas */
-      color:white;
-      text-align:center;
-      padding-top:80px;
-    }
-    #endContent .message{
-      display:inline-block;
-      background: rgba(0,0,0,0.45); /* semi-transparent bakgrund för maximal läsbarhet */
-      padding:22px 28px;
-      border-radius:12px;
-      box-shadow:0 8px 30px rgba(0,0,0,0.4);
-    }
-    #endContent h1{
-      margin:0 0 8px 0;
-      font-size:2.2rem;
-      line-height:1.05;
-      text-shadow:0 6px 18px rgba(0,0,0,0.6);
-      animation:pulse 1s infinite;
-    }
-    #endContent .attribution{ margin-top:12px; opacity:0.8; font-size:0.9rem; }
-
-    @keyframes pulse{
-      0%{ transform:scale(1) }
-      50%{ transform:scale(1.05) }
-      100%{ transform:scale(1) }
-    }
-
-    /* Responsivt */
-    @media (max-width:600px){
-      #questionBox{ font-size:1.05rem; padding:18px; min-height:140px; }
-      .answer-buttons button{ padding:10px 18px; font-size:1rem; }
-      #endContent h1{ font-size:1.6rem; }
-      h1.title{ font-size:1.4rem; }
+    .attribution a {
+      color: #4fc3f7;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">Bli ett proffs på smarta val online!</h1>
+    <h1>Bli ett proffs på smarta val online!</h1>
 
     <div class="mode-buttons">
       <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
       <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
     </div>
 
-    <div id="questionBox">Välj ett spel eller klicka en spelknapp för att starta.</div>
-
+    <div id="questionBox">Välj ett spel för att börja!</div>
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
+    <div id="score"></div>
 
-    <div id="progressContainer"><div id="progressBar"></div></div>
-
-    <div id="score">Rätt: 0 | Fel: 0</div>
-  </div>
-
-  <!-- Slutskärm med canvas bakom innehållet -->
-  <div id="endScreen" aria-hidden="true">
-    <canvas id="fireworksCanvas"></canvas>
-    <div id="endContent">
-      <div class="message">
+    <!-- Slutsida -->
+    <div id="endScreen">
+      <canvas id="fireworksCanvas"></canvas>
+      <div id="endContent">
         <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
-        <div class="attribution">🎵 Ljud: "applaus.wav" och "bu.mp3" (byt filerna i samma mapp)</div>
+        <div class="attribution">
+          🎵 Ljud: "applaus.wav" by xtrgamr — 
+          <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
+          License: Attribution 4.0
+        </div>
       </div>
     </div>
   </div>
@@ -207,231 +135,118 @@
   <audio id="wrongSound" src="bu.mp3" preload="auto"></audio>
 
   <script>
-    // Frågebanker
     const santFejkQuestions = [
       { q: "Guld är ätbart.", answer: "sant", explanation: "Sant – i mycket små mängder, bladguld används på mat och dryck." },
       { q: "Människan använder bara 10 % av sin hjärna.", answer: "fejk", explanation: "Fejk – hela hjärnan är aktiv, myten bygger på en misstolkning." },
       { q: "Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader träffas ofta flera gånger." },
       { q: "Du kan se Kinesiska muren från rymden.", answer: "fejk", explanation: "Fejk – den är för smal och smälter in i landskapet." },
-      { q: "Strutsar gömmer huvudet i sanden.", answer: "fejk", explanation: "Fejk – de lägger sig ner mot marken istället." },
-      { q: "Hajar kan inte få cancer.", answer: "fejk", explanation: "Fejk – hajar kan få cancer, myten används för att sälja preparat." },
-      { q: "Man kan inte rapa i rymden.", answer: "sant", explanation: "Sant – utan gravitation blandas gasen med vätska i magen." },
-      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: "sant", explanation: "Sant – light innehåller mindre socker och är mindre tät." },
-      { q: "Det finns fler stjärnor än sandkorn på alla jordens stränder.", answer: "sant", explanation: "Sant – astronomer uppskattar att det är så." }
+      { q: "Strutsar gömmer huvudet i sanden.", answer: "fejk", explanation: "Fejk – de lägger sig ner mot marken istället." }
     ];
 
     const likeQuestions = [
       { q: "Någon postar en rolig kattvideo.", answer: "like", explanation: "Like – ofarligt och roligt." },
       { q: "Någon skriver elaka kommentarer.", answer: "not like", explanation: "Not like – att sprida hat gör andra ledsna." },
-      { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." },
-      { q: "Någon du inte känner skickar en konstig länk.", answer: "not like", explanation: "Not like – kan vara virus eller bluff." },
-      { q: "En vän delar en fin komplimang.", answer: "like", explanation: "Like – alltid bra att sprida snällhet." }
+      { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." }
     ];
 
-    // State
     let currentGame = null;
     let questions = [];
     let currentIndex = 0;
     let correctCount = 0;
     let wrongCount = 0;
-    let waitingForNext = false;
-    let answeredThisQuestion = false;
 
-    // Fireworks interval id så vi kan rensa vid omstart
-    let fireworksIntervalId = null;
-
-    // DOM shortcuts
-    const qBox = document.getElementById('questionBox');
-    const answerButtons = document.getElementById('answerButtons');
-    const scoreEl = document.getElementById('score');
-    const progressBar = document.getElementById('progressBar');
-    const endScreen = document.getElementById('endScreen');
-
-    // Starta spel (välj speltyp)
-    function startGame(gameType){
-      currentGame = gameType || 'santfejk';
-      questions = (currentGame === 'santfejk') ? santFejkQuestions.slice() : likeQuestions.slice();
+    function startGame(gameType) {
+      currentGame = gameType;
+      questions = (gameType === "santfejk" ? santFejkQuestions : likeQuestions);
       currentIndex = 0;
       correctCount = 0;
       wrongCount = 0;
-      waitingForNext = false;
-      answeredThisQuestion = false;
-      endScreen.style.display = 'none';
-      clearFireworks();
-      document.body.style.background = '#f0f4f8';
-      answerButtons.style.display = 'block';
+      document.getElementById("endScreen").style.display = "none";
+      document.getElementById("answerButtons").style.display = "block";
       showQuestion();
     }
 
-    // Visa fråga
-    function showQuestion(){
-      if(currentIndex >= questions.length){
-        // klart
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
         showEndScreen();
         return;
       }
       const q = questions[currentIndex];
-      qBox.innerHTML = q.q;
-      qBox.style.background = 'linear-gradient(135deg,#fff,#e0f7fa)';
-      answerButtons.innerHTML = '';
-      // bygg knappar utifrån speltyp
-      if(currentGame === 'santfejk'){
-        addAnswerButton('sant','Sant');
-        addAnswerButton('fejk','Fejk');
+      document.getElementById("questionBox").innerHTML = q.q;
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = "";
+
+      if (currentGame === "santfejk") {
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
       } else {
-        addAnswerButton('like','👍 Like');
-        addAnswerButton('not like','👎 Not like');
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('like')">👍 Like</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('not like')">👎 Not like</button>`;
       }
-      answeredThisQuestion = false;
-      waitingForNext = false;
       updateScore();
-      updateProgress();
     }
 
-    // Lägg till svarsknapp (hjälpfunktion)
-    function addAnswerButton(value, label){
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.innerText = label;
-      btn.dataset.value = value;
-      btn.onclick = () => checkAnswer(value);
-      answerButtons.appendChild(btn);
-    }
-
-    // Kontroll av svar
-    function checkAnswer(answer){
-      // säkerställ att vi bara räknar EN gång per fråga
-      if(waitingForNext || answeredThisQuestion) return;
-      answeredThisQuestion = true;
-      waitingForNext = true;
-
+    function checkAnswer(answer) {
       const q = questions[currentIndex];
-      let feedbackHtml = '';
-      if(answer === q.answer){
+      let feedback = "";
+      if (answer === q.answer) {
         correctCount++;
-        playSound('correctSound');
-        feedbackHtml = `<div class="feedback">✅ Rätt!<br>${q.explanation}</div>`;
-        qBox.style.background = '#c8e6c9';
+        document.getElementById("correctSound").play();
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
       } else {
         wrongCount++;
-        playSound('wrongSound');
-        feedbackHtml = `<div class="feedback">❌ Fel!<br>${q.explanation}</div>`;
-        qBox.style.background = '#ffcdd2';
+        document.getElementById("wrongSound").play();
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
       }
-
-      // Disable buttons visuellt så det inte ser ut som man kan klicka fler gånger
-      const btns = answerButtons.querySelectorAll('button');
-      btns.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
-
-      qBox.innerHTML = q.q + feedbackHtml;
-      updateScore();
-      updateProgress();
-    }
-
-    // Klick på frågerutan: gå vidare ENDAST efter svar (waitingForNext true)
-    qBox.addEventListener('click', () => {
-      // Om inget spel valt, starta standard (santfejk)
-      if(!currentGame){
-        startGame('santfejk');
-        return;
-      }
-      if(!waitingForNext) return; // ignorera klick om vi inte väntar på nästa
-      waitingForNext = false;
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
       currentIndex++;
-      showQuestion();
-    });
-
-    // Score / progress
-    function updateScore(){
-      scoreEl.innerText = `Rätt: ${correctCount} | Fel: ${wrongCount}`;
-    }
-    function updateProgress(){
-      const total = questions.length || 1;
-      const pct = Math.round((currentIndex / total) * 100);
-      progressBar.style.width = pct + '%';
+      setTimeout(showQuestion, 2500);
+      updateScore();
     }
 
-    // SLUTSKÄRM
-    function showEndScreen(){
-      endScreen.style.display = 'block';
-      document.body.style.background = '#111';
-      answerButtons.style.display = 'none';
+    function updateScore() {
+      document.getElementById("score").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
+    }
+
+    function showEndScreen() {
+      document.getElementById("endScreen").style.display = "block";
       launchFireworks();
     }
 
-    // Ljudspelare
-    function playSound(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      try { el.currentTime = 0; el.play(); } catch(e){ /* ignore */ }
-    }
-
-    // Fyrverkeri — robust implementation
-    function launchFireworks(){
-      clearFireworks(); // rensa ev tidigare
-      const canvas = document.getElementById('fireworksCanvas');
-      const ctx = canvas.getContext('2d');
-      function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-      resize();
-      window.addEventListener('resize', resize);
+    function launchFireworks() {
+      const canvas = document.getElementById("fireworksCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
       let particles = [];
-      function random(min,max){ return Math.random()*(max-min)+min; }
+      function random(min, max) { return Math.random() * (max - min) + min; }
 
-      function createFirework(){
-        const x = random(80, canvas.width-80);
-        const y = random(60, canvas.height/2);
-        const count = 120;
-        for(let i=0;i<count;i++){
-          particles.push({
-            x, y,
-            dx: random(-4,4),
-            dy: random(-4,4),
-            life: Math.floor(random(40,120)),
-            hue: Math.floor(random(0,360))
-          });
+      function createFirework() {
+        let x = random(100, canvas.width - 100);
+        let y = random(50, canvas.height / 2);
+        for (let i = 0; i < 100; i++) {
+          particles.push({ x, y, dx: random(-3, 3), dy: random(-3, 3), life: random(50, 100) });
         }
       }
 
-      function animate(){
-        // lätt "fade" så partiklar lämnar spår, men canvas ligger bakom texten så det påverkar ej text
-        ctx.fillStyle = 'rgba(0,0,0,0.12)';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-
-        for(let i = particles.length-1; i>=0; i--){
-          const p = particles[i];
-          ctx.fillStyle = `hsl(${p.hue}, 90%, 60%)`;
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 2.4, 0, Math.PI*2);
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
           ctx.fill();
-          p.x += p.dx;
-          p.y += p.dy;
-          p.life--;
-          if(p.life <= 0) particles.splice(i,1);
-        }
+          p.x += p.dx; p.y += p.dy; p.life--;
+          if (p.life <= 0) particles.splice(i, 1);
+        });
         requestAnimationFrame(animate);
       }
 
-      // skapa och animera
+      setInterval(createFirework, 1000);
       animate();
-      fireworksIntervalId = setInterval(createFirework, 900);
     }
-
-    function clearFireworks(){
-      if(fireworksIntervalId) { clearInterval(fireworksIntervalId); fireworksIntervalId = null; }
-      // töm canvas
-      const canvas = document.getElementById('fireworksCanvas');
-      if(canvas && canvas.getContext){
-        const ctx = canvas.getContext('2d');
-        ctx && ctx.clearRect(0,0,canvas.width,canvas.height);
-      }
-    }
-
-    // Startknappar (OM användaren klickar på mode-knapp)
-    // Dessa knappar finns i HTML med onclick=startGame('santfejk') etc.
-
-    // --- valfri initialisering: visa instruktion i rutan ---
-    qBox.innerText = 'Välj ett spel ovan eller klicka i rutan för att starta standard (Sant/Fejk).';
   </script>
 </body>
 </html>
