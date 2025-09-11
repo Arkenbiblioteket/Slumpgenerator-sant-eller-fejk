@@ -65,42 +65,31 @@
       font-weight: bold;
     }
 
-    /* Slutsidan */
+    /* Slutsidan utan fyrverkerier */
     #endScreen {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: #111;
-      overflow: hidden;
-      z-index: 1000;
-    }
-    #fireworksCanvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-    #endContent {
-      position: relative;
-      z-index: 2;
+      background: linear-gradient(135deg, #4caf50, #00acc1);
       color: white;
       text-align: center;
-      padding-top: 120px;
+      padding-top: 140px;
+      z-index: 1000;
     }
-    #endContent h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
+    #endScreen h1 {
+      font-size: 2.8em;
+      margin-bottom: 30px;
+      animation: fadeIn 2s ease-out;
     }
-    .attribution {
-      margin-top: 40px;
-      font-size: 0.8em;
-      color: #bbb;
+    #endScreen p {
+      font-size: 1.3em;
+      opacity: 0.9;
+      animation: fadeIn 3s ease-out;
     }
-    .attribution a {
-      color: #4fc3f7;
-      text-decoration: none;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
@@ -119,15 +108,8 @@
 
     <!-- Slutsida -->
     <div id="endScreen">
-      <canvas id="fireworksCanvas"></canvas>
-      <div id="endContent">
-        <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
-        <div class="attribution">
-          🎵 Ljud: "applaus.wav" by xtrgamr — 
-          <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
-          License: Attribution 4.0
-        </div>
-      </div>
+      <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
+      <p>Ni har klarat alla frågor – bra jobbat! 💪</p>
     </div>
   </div>
 
@@ -210,42 +192,6 @@
 
     function showEndScreen() {
       document.getElementById("endScreen").style.display = "block";
-      launchFireworks();
-    }
-
-    function launchFireworks() {
-      const canvas = document.getElementById("fireworksCanvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      let particles = [];
-      function random(min, max) { return Math.random() * (max - min) + min; }
-
-      function createFirework() {
-        let x = random(100, canvas.width - 100);
-        let y = random(50, canvas.height / 2);
-        for (let i = 0; i < 100; i++) {
-          particles.push({ x, y, dx: random(-3, 3), dy: random(-3, 3), life: random(50, 100) });
-        }
-      }
-
-      function animate() {
-        ctx.fillStyle = "rgba(0,0,0,0.2)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p, i) => {
-          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-          ctx.fill();
-          p.x += p.dx; p.y += p.dy; p.life--;
-          if (p.life <= 0) particles.splice(i, 1);
-        });
-        requestAnimationFrame(animate);
-      }
-
-      setInterval(createFirework, 1000);
-      animate();
     }
   </script>
 </body>
