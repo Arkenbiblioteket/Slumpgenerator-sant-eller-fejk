@@ -64,8 +64,11 @@
       background: #4caf50;
       color: white;
     }
+    .answer-buttons button.red {
+      background: #e53935;
+    }
     .answer-buttons button:hover {
-      background: #388e3c;
+      opacity: 0.85;
     }
     #scoreCounter {
       margin-top: 15px;
@@ -112,8 +115,8 @@
     <h1>Bli ett proffs på smarta val online!</h1>
 
     <div class="mode-buttons">
-      <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
-      <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
+      <button onclick="startGame('bluff')">🎣 Bluff eller Säkert</button>
+      <button onclick="startGame('hat')">💬 Snällt eller Näthat</button>
     </div>
 
     <div id="progress"><div id="progressBar"></div></div>
@@ -132,32 +135,42 @@
   <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
   <script>
-    const santFejkQuestions = [
-      { q: "Guld är ätbart.", answer: "sant", explanation: "Sant – i mycket små mängder, bladguld används på mat och dryck." },
-      { q: "Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader träffas ofta flera gånger." },
-      { q: "Du kan se Kinesiska muren från rymden.", answer: "fejk", explanation: "Fejk – den är för smal och smälter in i landskapet." },
-      { q: "Hajar kan inte få cancer.", answer: "fejk", explanation: "Fejk – hajar kan få cancer, myten används för att sälja preparat." },
-      { q: "Man kan inte rapa i rymden.", answer: "sant", explanation: "Sant – utan gravitation blandas gasen med vätska i magen." },
-      { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: "sant", explanation: "Sant – light innehåller mindre socker och är mindre tät." },
-      ];
-
     const bluffQuestions = [
-  { q: "Du får ett meddelande: 'Grattis! Du har vunnit en ny :contentReference[oaicite:1]{index=1} – klicka här!'", 
-    answer: "bluff", 
-    explanation: "Bluff – okända länkar kan innehålla virus eller försöka lura dig." },
-  { q: "En kompis skickar en rolig :contentReference[oaicite:2]{index=2}-video på :contentReference[oaicite:3]{index=3}.", 
-    answer: "säkert", 
-    explanation: "Säkert – det är någon du känner och det är inget misstänkt." },
-  { q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
-    answer: "bluff", 
-    explanation: "Bluff – okända personer kan försöka lura dig eller stjäla uppgifter." },
-  { q: "Du ser en nyhet: ':contentReference[oaicite:4]{index=4}ar kan prata om de får rätt mat!'", 
-    answer: "bluff", 
-    explanation: "Bluff – kolla alltid vem som har skrivit artikeln." },
-  { q: "Din skola lägger upp veckans matsedel på :contentReference[oaicite:5]{index=5}.", 
-    answer: "säkert", 
-    explanation: "Säkert – officiella konton är pålitliga." }
-];
+      { q: "Du får ett meddelande: 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
+        answer: "bluff", 
+        explanation: "Bluff – klicka inte på konstiga länkar, det kan vara virus eller försök att lura dig." },
+      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
+        answer: "säkert", 
+        explanation: "Säkert – det är någon du känner och det är inget misstänkt." },
+      { q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
+        answer: "bluff", 
+        explanation: "Bluff – okända personer kan försöka stjäla uppgifter eller lura dig." },
+      { q: "Du ser en nyhet: 'Hundar kan prata om de får rätt mat!'", 
+        answer: "bluff", 
+        explanation: "Bluff – låter det för bra för att vara sant? Kolla flera källor." },
+      { q: "Din skola lägger upp veckans matsedel på Instagram.", 
+        answer: "säkert", 
+        explanation: "Säkert – officiella konton är pålitliga." }
+    ];
+
+    const hatQuestions = [
+      { q: "Någon skriver 'Du är ful och borde inte få vara här' i en kommentar.", 
+        answer: "näthat", 
+        explanation: "Näthat – elaka ord kan göra andra ledsna. Berätta för en vuxen." },
+      { q: "En klasskompis skriver 'Bra jobbat på provet!'", 
+        answer: "snällt", 
+        explanation: "Snällt – att uppmuntra andra är fint." },
+      { q: "Någon sprider rykten om en elev i en chatt.", 
+        answer: "näthat", 
+        explanation: "Näthat – rykten kan såra. Spara bevis och blockera." },
+      { q: "Du skickar en glad emoji till en vän.", 
+        answer: "snällt", 
+        explanation: "Snällt – små positiva saker gör stor skillnad." },
+      { q: "Någon skriver 'Du borde ta bort dig själv från nätet'", 
+        answer: "näthat", 
+        explanation: "Näthat – allvarligt. Anmäl, blockera och be en vuxen om hjälp." }
+    ];
+
     let currentGame = null;
     let questions = [];
     let currentIndex = 0;
@@ -172,7 +185,7 @@
 
     function startGame(gameType) {
       currentGame = gameType;
-      questions = (gameType === "santfejk" ? santFejkQuestions : likeQuestions);
+      questions = (gameType === "bluff" ? bluffQuestions : hatQuestions);
       currentIndex = 0;
       correctCount = 0;
       wrongCount = 0;
@@ -196,12 +209,12 @@
       const buttonsDiv = document.getElementById("answerButtons");
       buttonsDiv.innerHTML = "";
 
-      if (currentGame === "santfejk") {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('sant')">Sant</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('fejk')">Fejk</button>`;
+      if (currentGame === "bluff") {
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('säkert')">✅ Säkert</button>`;
       } else {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('like')">👍 Like</button>`;
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('not like')">👎 Not like</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('snällt')">😊 Snällt</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('näthat')" class="red">🚫 Näthat</button>`;
       }
       updateScore();
       answered = false;
