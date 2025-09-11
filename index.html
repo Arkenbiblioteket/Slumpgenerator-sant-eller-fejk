@@ -716,9 +716,8 @@
         questionBox.style.background = "linear-gradient(135deg, #ffcdd2, #f8bbd9)";
         createFloatingEmoji("💡");
         
-        try {
-          wrongSound.play().catch(e => console.log("Could not play wrong sound"));
-        } catch (e) {}
+        // Play wrong sound with fallback
+        playSound(wrongSound, 'bu');
       }
       
       questionBox.innerHTML = q.q + feedback;
