@@ -116,7 +116,7 @@
 
     <div class="mode-buttons">
       <button onclick="startGame('bluff')">🎣 Bluff eller Säkert</button>
-      <button onclick="startGame('hat')">💬 Snällt eller Näthat</button>
+      <button onclick="startGame('hat')">💬 OK eller Näthat</button>
     </div>
 
     <div id="progress"><div id="progressBar"></div></div>
@@ -158,14 +158,14 @@
         answer: "näthat", 
         explanation: "Näthat – elaka ord kan göra andra ledsna. Berätta för en vuxen." },
       { q: "En klasskompis skriver 'Bra jobbat på provet!'", 
-        answer: "snällt", 
-        explanation: "Snällt – att uppmuntra andra är fint." },
+        answer: "OK", 
+        explanation: "OK – att uppmuntra andra är fint." },
       { q: "Någon sprider rykten om en elev i en chatt.", 
         answer: "näthat", 
         explanation: "Näthat – rykten kan såra. Spara bevis och blockera." },
       { q: "Du skickar en glad emoji till en vän.", 
-        answer: "snällt", 
-        explanation: "Snällt – små positiva saker gör stor skillnad." },
+        answer: "OK", 
+        explanation: "OK – små positiva saker gör stor skillnad." },
       { q: "Någon skriver 'Du borde ta bort dig själv från nätet'", 
         answer: "näthat", 
         explanation: "Näthat – allvarligt. Anmäl, blockera och be en vuxen om hjälp." }
@@ -213,7 +213,7 @@
         buttonsDiv.innerHTML += `<button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>`;
         buttonsDiv.innerHTML += `<button onclick="checkAnswer('säkert')">✅ Säkert</button>`;
       } else {
-        buttonsDiv.innerHTML += `<button onclick="checkAnswer('snällt')">😊 Snällt</button>`;
+        buttonsDiv.innerHTML += `<button onclick="checkAnswer('OK')">😊 OK</button>`;
         buttonsDiv.innerHTML += `<button onclick="checkAnswer('näthat')" class="red">🚫 Näthat</button>`;
       }
       updateScore();
