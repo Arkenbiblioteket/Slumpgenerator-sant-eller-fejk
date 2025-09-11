@@ -135,26 +135,39 @@
   <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
   <script>
-    const bluffQuestions = [
-      { q: "Du får ett meddelande: 'Grattis! Du har <br> vunnit en ny iPhone – klicka här!'", 
-        answer: "bluff", 
-        explanation: "Bluff – klicka inte på konstiga länkar, det kan vara virus eller försök att lura dig." },
-      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
-        answer: "säkert", 
-        explanation: "Säkert – det är någon du känner och det är inget misstänkt." },
-      { q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
-        answer: "bluff", 
-        explanation: "Bluff – okända personer kan försöka stjäla uppgifter eller lura dig." },
-      { q: "Du ser en nyhet: 'Hundar kan prata om de får rätt mat!'", 
-        answer: "bluff", 
-        explanation: "Bluff – låter det för bra för att vara sant? Kolla flera källor." },
-      { q: "Din skola lägger upp veckans matsedel på Instagram.", 
-        answer: "säkert", 
-        explanation: "Säkert – officiella konton är pålitliga." }
-      { q: "Det dyker upp ett popup-fönster på en hemsida: 'Din dator är infekterad, klicka här!*" 
-        answer: "Bluff", 
-        explanation: "Stäng sidan.Popup-fönster är nästan alltid bluff" }
-    ];
+const bluffQuestions = [
+  { 
+    q: "Du får ett meddelande: 'Grattis! Du har <br> vunnit en ny iPhone – klicka här!'", 
+    answer: "bluff", 
+    explanation: "Bluff – klicka inte på konstiga länkar, det kan vara virus eller försök att lura dig." 
+  },
+  { 
+    q: "En kompis skickar en rolig kattvideo på Snapchat.", 
+    answer: "säkert", 
+    explanation: "Säkert – det är någon du känner och det är inget misstänkt." 
+  },
+  { 
+    q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
+    answer: "bluff", 
+    explanation: "Bluff – okända personer kan försöka stjäla uppgifter eller lura dig." 
+  },
+  { 
+    q: "Du ser en nyhet: 'Hundar kan prata om de får rätt mat!'", 
+    answer: "bluff", 
+    explanation: "Bluff – låter det för bra för att vara sant? Kolla flera källor." 
+  },
+  { 
+    q: "Din skola lägger upp veckans matsedel på Instagram.", 
+    answer: "säkert", 
+    explanation: "Säkert – officiella konton är pålitliga." 
+  },
+  { 
+    q: "Det dyker upp ett popup-fönster på en hemsida: 'Din dator är infekterad, klicka här!'", 
+    answer: "bluff", 
+    explanation: "Bluff – stäng sidan. Popup-fönster är nästan alltid bluff." 
+  }
+];
+
 
     const hatQuestions = [
       { q: "Någon skriver 'Du är ful och borde inte få vara här' i en kommentar.", 
