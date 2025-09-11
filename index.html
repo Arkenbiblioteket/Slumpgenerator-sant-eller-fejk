@@ -14,200 +14,88 @@
       height: 100vh;
       margin: 0;
     }
-    .container {
-      text-align: center;
-      width: 90%;
-      max-width: 800px;
-    }
-    #questionBox {
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      min-height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    #game {
       background: #fff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .feedback {
-      margin-top: 20px;
-      font-size: 1em;
-      font-weight: normal;
-      color: #444;
-    }
-    .answer-buttons button {
-      margin: 10px;
-      padding: 15px 30px;
-      font-size: 1.2em;
-      border: none;
+      padding: 20px;
       border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      color: white;
+      font-size: 18px;
+      color: #fff;
     }
-    .bluff-btn { background: #e53935; }
-    .säkert-btn { background: #43a047; }
-    .snällt-btn { background: #1e88e5; }
-    .taskigt-btn { background: #fb8c00; }
-    #scoreCounter {
+    .bluff { background-color: #e74c3c; }      /* Röd */
+    .säkert { background-color: #27ae60; }     /* Grön */
+    .näthat { background-color: #c0392b; }     /* Mörkröd */
+    .snällt { background-color: #2980b9; }     /* Blå */
+    #feedback {
       margin-top: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      color: #00796b;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    }
-    #progress {
-      width: 100%;
-      background: #ddd;
-      height: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-      overflow: hidden;
-    }
-    #progressBar {
-      height: 100%;
-      width: 0%;
-      background: #4caf50;
-      transition: width 0.3s;
-    }
-    canvas#confetti {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 9999;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div id="progress"><div id="progressBar"></div></div>
-
-    <div id="questionBox">Klicka för att starta quizet!</div>
-    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-    <div id="scoreCounter"></div>
+<div id="game">
+  <h2>Är detta Bluff eller Säkert? <br>Snällt eller Näthat?</h2>
+  <div id="question"></div>
+  <div>
+    <button class="bluff" onclick="checkAnswer('Bluff')">Bluff</button>
+    <button class="säkert" onclick="checkAnswer('Säkert')">Säkert</button>
+    <button class="snällt" onclick="checkAnswer('Snällt')">Snällt</button>
+    <button class="näthat" onclick="checkAnswer('Näthat')">Näthat</button>
   </div>
+  <div id="feedback"></div>
+</div>
 
-  <canvas id="confetti"></canvas>
+<script>
+const questions = [
+  { text: "Du har vunnit en ny iPhone – klicka här!", answer: "Bluff", feedback: "Detta är ett klassiskt bluffmeddelande. Verkar det för bra för att vara sant, så är det oftast bluff." },
+  { text: "Din skola postar matsedel på Instagram.", answer: "Säkert", feedback: "Detta är en trovärdig och vardaglig information från en känd källa." },
+  { text: "Du är ful och borde inte vara här.", answer: "Näthat", feedback: "Detta är elakt och kränkande. Spara bevis, blockera och berätta för en vuxen." },
+  { text: "Bra jobbat på provet!", answer: "Snällt", feedback: "Detta är en snäll kommentar som gör andra glada." },
+  { text: "En artikel säger att hundar kan prata om de får rätt mat.", answer: "Bluff", feedback: "Detta är en fejknyhet. Kolla alltid om flera källor säger samma sak." },
+  { text: "Du får ett meddelande om att uppge dina lösenord.", answer: "Bluff", feedback: "Du ska aldrig lämna ut lösenord – detta är ett försök till nätfiske." },
+  { text: "Du ser en video från din kompis födelsedagskalas.", answer: "Säkert", feedback: "Detta är en verklig händelse från någon du känner." },
+  { text: "Jag gillar din nya tröja!", answer: "Snällt", feedback: "Detta är en vänlig kommentar." },
+  { text: "Ingen vill vara med dig, du är värdelös.", answer: "Näthat", feedback: "Detta är mobbning. Säg till en vuxen och blockera personen." }
+];
 
-  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
-  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
+let currentQuestion = 0;
 
-  <script>
-    const questions = [
-      // Bluff eller Säkert
-      { q: "Du har vunnit en ny iPhone – klicka här!", category: "bluff", answer: "bluff", explanation: "Bluff – Ingen ger bort dyra saker på nätet, det är ofta bedrägeri." },
-      { q: "En webbplats har ett hänglås i adressfältet.", category: "bluff", answer: "säkert", explanation: "Säkert – Hänglåset visar att sidan är krypterad och mer pålitlig." },
-      { q: "Du får ett mejl från banken som ber om ditt lösenord.", category: "bluff", answer: "bluff", explanation: "Bluff – Banker ber aldrig om lösenord via mejl." },
-      // Snällt eller Taskigt
-      { q: "Någon skriver: 'Du är så ful och borde sluta posta saker.'", category: "snällt", answer: "taskigt", explanation: "Taskigt – Sådant gör andra ledsna, det är näthat." },
-      { q: "Någon skriver: 'Vad kul att du delar det här!'", category: "snällt", answer: "snällt", explanation: "Snällt – Positivt och uppmuntrande att vara snäll online." },
-      { q: "En klasskompis sprider ett rykte om någon.", category: "snällt", answer: "taskigt", explanation: "Taskigt – Att sprida rykten är en form av nätmobbning." }
-    ];
+function showQuestion() {
+  if (currentQuestion < questions.length) {
+    document.getElementById('question').textContent = questions[currentQuestion].text;
+    document.getElementById('feedback').textContent = '';
+  } else {
+    document.getElementById('question').textContent = "Du har gjort alla frågor! 👏";
+    document.getElementById('feedback').textContent = "";
+  }
+}
 
-    let currentIndex = 0;
-    let correctCount = 0;
-    let wrongCount = 0;
-    let answered = false;
+function checkAnswer(choice) {
+  const q = questions[currentQuestion];
+  if (choice === q.answer) {
+    document.getElementById('feedback').textContent = "Rätt! " + q.feedback;
+    new Audio('applause.wav').play();
+  } else {
+    document.getElementById('feedback').textContent = "Fel. " + q.feedback;
+    new Audio('bu.wav').play();
+  }
+  currentQuestion++;
+  setTimeout(showQuestion, 2000);
+}
 
-    document.getElementById("questionBox").addEventListener("click", () => {
-      if (!answered && currentIndex === 0) {
-        showQuestion();
-      }
-    });
+showQuestion();
+</script>
 
-    function showQuestion() {
-      if (currentIndex >= questions.length) {
-        launchConfetti();
-        return;
-      }
-      const q = questions[currentIndex];
-      document.getElementById("questionBox").innerHTML = q.q;
-      const buttonsDiv = document.getElementById("answerButtons");
-      buttonsDiv.innerHTML = "";
-
-      if (q.category === "bluff") {
-        buttonsDiv.innerHTML += `<button class="bluff-btn" onclick="checkAnswer('bluff')">Bluff</button>`;
-        buttonsDiv.innerHTML += `<button class="säkert-btn" onclick="checkAnswer('säkert')">Säkert</button>`;
-      } else {
-        buttonsDiv.innerHTML += `<button class="snällt-btn" onclick="checkAnswer('snällt')">Snällt</button>`;
-        buttonsDiv.innerHTML += `<button class="taskigt-btn" onclick="checkAnswer('taskigt')">Taskigt</button>`;
-      }
-
-      document.getElementById("answerButtons").style.display = "block";
-      updateScore();
-      answered = false;
-    }
-
-    function checkAnswer(answer) {
-      if (answered) return;
-      answered = true;
-
-      const q = questions[currentIndex];
-      let feedback = "";
-      if (answer === q.answer) {
-        correctCount++;
-        document.getElementById("correctSound").play();
-        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
-      } else {
-        wrongCount++;
-        document.getElementById("wrongSound").play();
-        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
-      }
-      document.getElementById("questionBox").innerHTML = q.q + feedback;
-
-      currentIndex++;
-      updateScore();
-      updateProgress();
-
-      setTimeout(showQuestion, 2500);
-    }
-
-    function updateScore() {
-      document.getElementById("scoreCounter").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
-    }
-
-    function updateProgress() {
-      const percent = (currentIndex / questions.length) * 100;
-      document.getElementById("progressBar").style.width = percent + "%";
-    }
-
-    // Konfetti-animation
-    function launchConfetti() {
-      const duration = 3000;
-      const end = Date.now() + duration;
-      const canvas = document.getElementById('confetti');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const pieces = Array.from({ length: 150 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        size: 5 + Math.random() * 5,
-        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-        speed: 2 + Math.random() * 3
-      }));
-
-      function frame() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pieces.forEach(p => {
-          p.y += p.speed;
-          if (p.y > canvas.height) p.y = -p.size;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(p.x, p.y, p.size, p.size);
-        });
-        if (Date.now() < end) requestAnimationFrame(frame);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      frame();
-    }
-  </script>
 </body>
 </html>
