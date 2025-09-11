@@ -40,6 +40,11 @@
       margin-top: 15px;
       font-size: 18px;
     }
+    #result {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -54,7 +59,11 @@
     <button class="näthat" onclick="checkAnswer('Näthat')">Näthat</button>
   </div>
   <div id="feedback"></div>
+  <div id="result"></div>
 </div>
+
+<!-- Konfetti-bibliotek -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script>
 const questions = [
@@ -70,20 +79,25 @@ const questions = [
 ];
 
 let currentQuestion = 0;
+let score = 0;
 
 function showQuestion() {
   if (currentQuestion < questions.length) {
     document.getElementById('question').textContent = questions[currentQuestion].text;
     document.getElementById('feedback').textContent = '';
   } else {
-    document.getElementById('question').textContent = "Du har gjort alla frågor! 👏";
-    document.getElementById('feedback').textContent = "";
+    document.getElementById('game').innerHTML = `
+      <h2>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h2>
+      <p>Ni fick ${score} av ${questions.length} rätt.</p>
+    `;
+    startConfetti();
   }
 }
 
 function checkAnswer(choice) {
   const q = questions[currentQuestion];
   if (choice === q.answer) {
+    score++;
     document.getElementById('feedback').textContent = "Rätt! " + q.feedback;
     new Audio('applause.wav').play();
   } else {
@@ -92,6 +106,22 @@ function checkAnswer(choice) {
   }
   currentQuestion++;
   setTimeout(showQuestion, 2000);
+}
+
+function startConfetti() {
+  const duration = 3 * 1000;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
 }
 
 showQuestion();
