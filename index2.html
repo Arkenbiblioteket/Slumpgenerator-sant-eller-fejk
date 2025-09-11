@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Bli ett proffs på smarta val online! 🌟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow-x: hidden; transition: all 0.5s ease; }
+    .container { text-align: center; width: 95%; max-width: 900px; padding: 20px; }
+    h1 { font-family: 'Fredoka One', cursive; color: white; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 30px; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); animation: titleGlow 3s ease-in-out infinite alternate; }
+    @keyframes titleGlow { from { text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); } to { text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 35px rgba(255,255,255,0.5); } }
+    .game-header { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); backdrop-filter: blur(20px); display: none; }
+    .game-header.show { display: block; animation: slideDown 0.5s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .progress-section { margin-bottom: 15px; }
+    .progress-container { width: 100%; height: 12px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #4CAF50, #8BC34A); width: 0%; transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-radius: 10px; position: relative; }
+    .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite; }
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .stats-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-weight: 600; }
+    .score-display { color: #2196F3; font-size: 1.1em; }
+    .progress-text { color: #666; font-size: 0.95em; }
+    .streak-display { color: #FF9800; font-size: 1.1em; }
+    .mode-buttons { margin-bottom: 30px; }
+    .mode-buttons button { background: linear-gradient(145deg, #00bcd4, #0097a7); color: white; margin: 15px; padding: 20px 35px; font-size: 1.3em; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 8px 25px rgba(0,188,212,0.3); text-transform: uppercase; letter-spacing: 1px; position: relative; overflow: hidden; }
+    .mode-buttons button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.6s; }
+    .mode-buttons button:hover::before { left: 100%; }
+    .mode-buttons button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 35px rgba(0,188,212,0.4); background: linear-gradient(145deg, #00acc1, #00838f); }
+    .mode-buttons button:active { transform: translateY(-2px) scale(1.02); }
+    #questionBox { margin: 20px auto; padding: 40px; border-radius: 25px; font-size: clamp(1.3rem, 3vw, 1.9rem); font-weight: 600; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(255,255,255,0.95); box-shadow: 0 10px 30px rgba(0,0,0,0.15); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.5s ease; line-height: 1.5; cursor: pointer; }
+    .question-enter { animation: questionSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    @keyframes questionSlideIn { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .feedback { margin-top: 25px; font-size: 1.1rem; font-weight: 500; padding: 25px; border-radius: 20px; animation: feedbackSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); line-height: 1.4; }
+    .feedback.correct { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); color: #2e7d32; box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3); }
+    .feedback.incorrect { background: linear-gradient(135deg, #ffcdd2, #f8bbd9); color: #c62828; box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3); }
+    @keyframes feedbackSlideIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .answer-buttons { margin: 25px 0; }
+    .answer-buttons button { margin: 15px; padding: 20px 45px; font-size: 1.4em; font-weight: 700; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-transform: uppercase; letter-spacing: 1px; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .sant-btn { background: linear-gradient(145deg, #4CAF50, #66BB6A); color: white; }
+    .fejk-btn { background: linear-gradient(145deg, #f44336, #ef5350); color: white; }
+    .like-btn { background: linear-gradient(145deg, #2196F3, #42A5F5); color: white; }
+    .not-like-btn { background: linear-gradient(145deg, #FF9800, #FFB74D); color: white; }
+    .answer-buttons button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
+    .answer-buttons button:hover::before { left: 100%; }
+    .answer-buttons button:hover { transform: translateY(-8px) scale(1.08); box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
+    .answer-buttons button:active { transform: translateY(-4px) scale(1.04); }
+    .answer-buttons button:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+    .click-hint { margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-radius: 15px; color: #e65100; font-weight: 500; animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2); }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.02); opacity: 0.8; } }
+    #endScreen { display: none; text-align: center; background: linear-gradient(135deg, #1a1a1a, #2d2d2d); color: white; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    #endScreen.show { display: flex; animation: endScreenFadeIn 1s ease; }
+    @keyframes endScreenFadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    #endScreen h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 30px; animation: celebration 2s ease-in-out infinite alternate; font-family: 'Fredoka One', cursive; }
+    @keyframes celebration { from { transform: scale(1); color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); } to { transform: scale(1.05); color: #FFA500; text-shadow: 0 0 30px rgba(255, 165, 0, 0.8); } }
+    .final-score { font-size: 1.4em; margin: 30px 0; padding: 30px; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2); line-height: 1.6; }
+    .performance-text { font-size: 1.8em; margin-bottom: 20px; font-weight: 700; }
+    .restart-btn { background: linear-gradient(145deg, #4CAF50, #66BB6A); color: white; padding: 18px 40px; font-size: 1.3em; font-weight: 700; border: none; border-radius: 25px; cursor: pointer; margin-top: 25px; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+    .restart-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 35px rgba(76, 175, 80, 0.5); }
+    #fireworksCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+    .attribution { margin-top: 40px; font-size: 0.9em; color: #bbb; opacity: 0.8; }
+    .attribution a { color: #4fc3f7; text-decoration: none; }
+    .floating-emoji { position: absolute; font-size: 2.5rem; pointer-events: none; animation: floatUp 2.5s ease-out forwards; z-index: 100; }
+    @keyframes floatUp { from { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); } to { opacity: 0; transform: translateY(-120px) rotate(360deg) scale(1.3); } }
+  </style>
+</head>
+<body>
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="container">
+    <h1>🧠 Bli ett proffs på smarta val online! 🌟</h1>
+    <div class="mode-buttons">
+      <button id="trueFalseBtn">Sant / Falskt</button>
+      <button id="likeDislikeBtn">Gilla / Ogilla</button>
+    </div>
+    <div id="questionBox"></div>
+    <div class="game-header" id="gameHeader">
+      <div class="progress-section">
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="stats-row">
+          <span class="score-display">Rätt: <span id="correctCount">0</span></span>
+          <span class="streak-display">Streak: <span id="streakCount">0</span></span>
+          <span class="progress-text"><span id="questionNumber">0</span>/<span id="totalQuestions">0</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="endScreen">
+    <h1>🎉 Grattis! 🎉</h1>
+    <div class="final-score" id="finalScore"></div>
+    <button class="restart-btn" id="restartBtn">Börja om</button>
+  </div>
+
+  <audio id="correctSound" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3"></audio>
+  <audio id="wrongSound" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3"></audio>
+
+  <script>
+    let questions = [
+      { q: "Internet är alltid säkert att använda.", answer: false, explanation: "Fel! Internet är inte alltid säkert. Var alltid försiktig med personlig information." },
+      { q: "Det är viktigt att kolla källan på information online.", answer: true, explanation: "Rätt! Att kolla källan hjälper dig avgöra om informationen är pålitlig." }
+    ];
+
+    const questionBox = document.getElementById("questionBox");
+    const progressBar = document.getElementById("progressBar");
+    const correctSound = document.getElementById("correctSound");
+    const wrongSound = document.getElementById("wrongSound");
+
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let streak = 0;
+    let maxStreak = 0;
+    let waitingForNext = false;
+    let answeredThisQuestion = false;
+
+    function startGame(mode) {
+      document.querySelector(".mode-buttons").style.display = "none";
+      document.getElementById("gameHeader").classList.add("show");
+      showQuestion();
+    }
+
+    document.getElementById("trueFalseBtn").addEventListener("click", () => startGame("tf"));
+    document.getElementById("likeDislikeBtn").addEventListener("click", () => startGame("like"));
+
+    function showQuestion() {
+      answeredThisQuestion = false;
+      waitingForNext = false;
+      if(currentIndex >= questions.length) return endGame();
+
+      const q = questions[currentIndex];
+      questionBox.innerHTML = q.q;
+      questionBox.classList.add("question-enter");
+
+      // Add answer buttons
+      questionBox.innerHTML += `<div class="answer-buttons">
+        <button class="sant-btn" onclick="checkAnswer(true)">Sant</button>
+        <button class="fejk-btn" onclick="checkAnswer(false)">Falskt</button>
+      </div>`;
+
+      document.getElementById("questionNumber").innerText = currentIndex + 1;
+      document.getElementById("totalQuestions").innerText = questions.length;
+    }
+
+    function checkAnswer(answer) {
+      if (waitingForNext || answeredThisQuestion) return;
+      answeredThisQuestion = true;
+      waitingForNext = true;
+
+      const q = questions[currentIndex];
+      const isCorrect = answer === q.answer;
+
+      let feedback = "";
+      let feedbackClass = "";
+
+      const buttons = document.querySelectorAll(".answer-buttons button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if(isCorrect) {
+        correctCount++;
+        streak++;
+        maxStreak = Math.max(maxStreak, streak);
+        feedbackClass = "correct";
+        feedback = `<div class='feedback ${feedbackClass}'>✅ Perfekt!<br><br>${q.explanation}</div>`;
+        questionBox.style.background = "linear-gradient(135deg, #c8e6c9, #a5d6a7)";
+        createFloatingEmoji("🎉");
+        try { correctSound.currentTime = 0; correctSound.play(); } catch(e) {}
+      } else {
+        wrongCount++;
+        streak = 0;
+        feedbackClass = "incorrect";
+        feedback = `<div class='feedback ${feedbackClass}'>❌ Nästan där!<br><br>${q.explanation}</div>`;
+        questionBox.style.background = "linear-gradient(135deg, #ffcdd2, #f8bbd9)";
+        createFloatingEmoji("💡");
+        try { wrongSound.currentTime = 0; wrongSound.play(); } catch(e) {}
+      }
+
+      questionBox.innerHTML = q.q + feedback + `<div class='click-hint'>👆 Klicka här för nästa fråga!</div>`;
+      updateProgress();
+
+      questionBox.onclick = () => {
+        currentIndex++;
+        showQuestion();
+      };
+    }
+
+    function updateProgress() {
+      progressBar.style.width = `${((currentIndex+1)/questions.length)*100}%`;
+      document.getElementById("correctCount").innerText = correctCount;
+      document.getElementById("streakCount").innerText = streak;
+    }
+
+    function endGame() {
+      document.getElementById("endScreen").classList.add("show");
+      document.querySelector(".container").style.display = "none";
+      document.getElementById("finalScore").innerHTML = `
+        Rätt svar: ${correctCount}/${questions.length} <br>
+        Max streak: ${maxStreak} <br>
+      `;
+    }
+
+    document.getElementById("restartBtn").addEventListener("click", () => {
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      streak = 0;
+      maxStreak = 0;
+      document.getElementById("endScreen").classList.remove("show");
+      document.querySelector(".container").style.display = "block";
+      document.querySelector(".mode-buttons").style.display = "block";
+      document.getElementById("gameHeader").classList.remove("show");
+      questionBox.style.background = "rgba(255,255,255,0.95)";
+    });
+
+    function createFloatingEmoji(emoji) {
+      const span = document.createElement("span");
+      span.className = "floating-emoji";
+      span.innerText = emoji;
+      span.style.left = `${Math.random() * 80 + 10}%`;
+      span.style.top = "80%";
+      document.body.appendChild(span);
+      setTimeout(() => span.remove(), 2500);
+    }
+  </script>
+</body>
+</html>
