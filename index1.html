@@ -1,198 +1,869 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Quiz</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-    color: #333;
-    text-align: center;
-    padding: 20px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Bli ett proffs på smarta val online! 🌟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  #questionBox {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    margin: 20px auto;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    cursor: pointer;
-  }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      transition: all 0.5s ease;
+    }
 
-  .option {
-    background: #f1f1f1;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
+    .container {
+      text-align: center;
+      width: 95%;
+      max-width: 900px;
+      padding: 20px;
+    }
 
-  .option:hover {
-    background: #d1f7ff;
-  }
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      color: white;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 30px;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
 
-  #progress {
-    width: 100%;
-    background: #ddd;
-    border-radius: 20px;
-    margin-top: 30px;
-    height: 25px;
-  }
+    @keyframes titleGlow {
+      from { 
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2); 
+      }
+      to { 
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 35px rgba(255,255,255,0.5); 
+      }
+    }
 
-  #progressBar {
-    height: 25px;
-    width: 0;
-    background: #4caf50;
-    border-radius: 20px;
-    transition: width 0.3s;
-  }
+    .game-header {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      backdrop-filter: blur(20px);
+      display: none;
+    }
 
-  #scoreCounter {
-    margin-top: 20px;
-    font-size: 1.4em;
-    font-weight: bold;
-    color: #222;
-  }
+    .game-header.show {
+      display: block;
+      animation: slideDown 0.5s ease;
+    }
 
-  #endScreen {
-    display: none;
-    background: white;
-    border-radius: 20px;
-    padding: 50px;
-    margin: 20px auto;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-  #endScreen h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #4caf50;
-  }
+    .progress-section {
+      margin-bottom: 15px;
+    }
 
-  #endScreen p {
-    font-size: 1.2em;
-  }
+    .progress-container {
+      width: 100%;
+      height: 12px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
 
-  .attribution {
-    margin-top: 20px;
-    font-size: 0.8em;
-    color: #777;
-  }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 10px;
+      position: relative;
+    }
 
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-</style>
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .score-display {
+      color: #2196F3;
+      font-size: 1.1em;
+    }
+
+    .progress-text {
+      color: #666;
+      font-size: 0.95em;
+    }
+
+    .streak-display {
+      color: #FF9800;
+      font-size: 1.1em;
+    }
+
+    .mode-buttons {
+      margin-bottom: 30px;
+    }
+
+    .mode-buttons button {
+      background: linear-gradient(145deg, #00bcd4, #0097a7);
+      color: white;
+      margin: 15px;
+      padding: 20px 35px;
+      font-size: 1.3em;
+      font-weight: 600;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 25px rgba(0,188,212,0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-buttons button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .mode-buttons button:hover::before {
+      left: 100%;
+    }
+
+    .mode-buttons button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0,188,212,0.4);
+      background: linear-gradient(145deg, #00acc1, #00838f);
+    }
+
+    .mode-buttons button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    #questionBox {
+      margin: 20px auto;
+      padding: 40px;
+      border-radius: 25px;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-weight: 600;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.5s ease;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .question-enter {
+      animation: questionSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes questionSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .feedback {
+      margin-top: 25px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 25px;
+      border-radius: 20px;
+      animation: feedbackSlideIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      line-height: 1.4;
+    }
+
+    .feedback.correct {
+      background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+      color: #2e7d32;
+      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+    }
+
+    .feedback.incorrect {
+      background: linear-gradient(135deg, #ffcdd2, #f8bbd9);
+      color: #c62828;
+      box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+    }
+
+    @keyframes feedbackSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .answer-buttons {
+      margin: 25px 0;
+    }
+
+    .answer-buttons button {
+      margin: 15px;
+      padding: 20px 45px;
+      font-size: 1.4em;
+      font-weight: 700;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .sant-btn {
+      background: linear-gradient(145deg, #4CAF50, #66BB6A);
+      color: white;
+    }
+
+    .fejk-btn {
+      background: linear-gradient(145deg, #f44336, #ef5350);
+      color: white;
+    }
+
+    .like-btn {
+      background: linear-gradient(145deg, #2196F3, #42A5F5);
+      color: white;
+    }
+
+    .not-like-btn {
+      background: linear-gradient(145deg, #FF9800, #FFB74D);
+      color: white;
+    }
+
+    .answer-buttons button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .answer-buttons button:hover::before {
+      left: 100%;
+    }
+
+    .answer-buttons button:hover {
+      transform: translateY(-8px) scale(1.08);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+
+    .answer-buttons button:active {
+      transform: translateY(-4px) scale(1.04);
+    }
+
+    .answer-buttons button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .click-hint {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border-radius: 15px;
+      color: #e65100;
+      font-weight: 500;
+      animation: pulse 2s infinite;
+      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.02); opacity: 0.8; }
+    }
+
+    #endScreen {
+      display: none;
+      text-align: center;
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #endScreen.show {
+      display: flex;
+      animation: endScreenFadeIn 1s ease;
+    }
+
+    @keyframes endScreenFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    #endScreen h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      margin-bottom: 30px;
+      animation: celebration 2s ease-in-out infinite alternate;
+      font-family: 'Fredoka One', cursive;
+    }
+
+    @keyframes celebration {
+      from {
+        transform: scale(1);
+        color: #FFD700;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      }
+      to {
+        transform: scale(1.05);
+        color: #FFA500;
+        text-shadow: 0 0 30px rgba(255, 165, 0, 0.8);
+      }
+    }
+
+    .final-score {
+      font-size: 1.4em;
+      margin: 30px 0;
+      padding: 30px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.2);
+      line-height: 1.6;
+    }
+
+    .performance-text {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .restart-btn {
+      background: linear-gradient(145deg, #4CAF50, #66BB6A);
+      color: white;
+      padding: 18px 40px;
+      font-size: 1.3em;
+      font-weight: 700;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(76, 175, 80, 0.5);
+    }
+
+    #fireworksCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .attribution {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #bbb;
+      opacity: 0.8;
+    }
+
+    .attribution a {
+      color: #4fc3f7;
+      text-decoration: none;
+    }
+
+    .floating-emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      pointer-events: none;
+      animation: floatUp 2.5s ease-out forwards;
+      z-index: 100;
+    }
+
+    @keyframes floatUp {
+      from {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-120px) rotate(360deg) scale(1.5);
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .stats-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .answer-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .answer-buttons button {
+        width: 280px;
+        margin: 8px;
+      }
+      
+      #questionBox {
+        padding: 30px 20px;
+        min-height: 180px;
+      }
+
+      .mode-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .mode-buttons button {
+        width: 280px;
+        margin: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>🧠 Bli ett proffs på smarta val online! 🌟</h1>
 
-<div id="questionBox">
-  <h2 id="question">Fråga kommer här</h2>
-  <div id="options"></div>
-</div>
+    <div class="game-header" id="gameHeader">
+      <div class="progress-section">
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="stats-row">
+          <div class="score-display" id="scoreDisplay">Poäng: 0/0</div>
+          <div class="progress-text" id="progressText">Fråga 0 av 0</div>
+          <div class="streak-display" id="streakDisplay">🔥 Streak: 0</div>
+        </div>
+      </div>
+    </div>
 
-<div id="progress">
-  <div id="progressBar"></div>
-</div>
+    <div class="mode-buttons" id="modeButtons">
+      <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
+      <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
+    </div>
 
-<div id="scoreCounter">Rätt: 0 | Fel: 0</div>
+    <div id="questionBox">
+      <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
+      <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
+    </div>
+    
+    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
 
-<div id="endScreen">
-  <h1>🎉 Grattis, ni är nu proffs på smarta val online! 🎉</h1>
-  <p>Ni har klarat alla frågor i quizet. Bra jobbat!</p>
-  <div class="attribution">
-    🎵 Ljud: "applaus.wav" by xtrgamr —
-    <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> —
-    License: Attribution 4.0
+    <div id="endScreen">
+      <h1>🎉 Fantastiskt jobbat! 🎉</h1>
+      <div class="final-score" id="finalScore"></div>
+      <button class="restart-btn" onclick="restartGame()">🔄 Spela igen</button>
+      <canvas id="fireworksCanvas"></canvas>
+      <div class="attribution">
+        🎵 Ljud: "applaus.wav" by xtrgamr — 
+        <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
+        License: Attribution 4.0
+      </div>
+    </div>
   </div>
-</div>
 
-<audio id="correctSound" src="applaus.wav"></audio>
-<audio id="wrongSound" src="bu.wav"></audio>
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="bu.mp3" preload="auto"></audio>
 
-<script>
-const questions = [
-  {
-    question: "Vad ska du göra om du får ett konstigt mejl?",
-    options: ["Öppna länken direkt", "Radera det eller fråga en vuxen", "Svara med dina personuppgifter"],
-    correct: 1
-  },
-  {
-    question: "Vad betyder att vara källkritisk?",
-    options: ["Att tro på allt du ser", "Att tänka efter om informationen är sann", "Att alltid fråga kompisar"],
-    correct: 1
-  }
-];
+  <script>
+    const santFejkQuestions = [
+      { q: "🥇 Guld är ätbart och används ibland som dekoration på lyxmat.", answer: "sant", explanation: "Sant – bladguld i mycket små mängder används verkligen som dekoration på dyra maträtter och drinkar!" },
+      { q: "🧠 Människan använder bara 10% av sin hjärna.", answer: "fejk", explanation: "Fejk – hela hjärnan är aktiv! Denna myt bygger på en gammal misstolkning av hjärnforskning." },
+      { q: "⚡ Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader som Empire State Building träffas av blixtar flera gånger varje år!" },
+      { q: "🏯 Du kan se Kinesiska muren från rymden med blotta ögat.", answer: "fejk", explanation: "Fejk – muren är för smal och smälter in i landskapet. Astronauter bekräftar att det inte går att se den!" },
+      { q: "🦓 Strutsar gömmer huvudet i sanden när de blir rädda.", answer: "fejk", explanation: "Fejk – strutsar lägger sig ner mot marken för att gömma sig, men stoppar aldrig huvudet i sand!" },
+      { q: "🦈 Hajar kan aldrig få cancer på grund av sitt kranskben.", answer: "fejk", explanation: "Fejk – hajar kan definitivt få cancer. Denna myt har missbrukats för att sälja oprovade mediciner!" },
+      { q: "👨‍🚀 Det är omöjligt att rapa i rymden.", answer: "sant", explanation: "Sant – utan gravitation blandas gas med vätska i magen, så rapen blir mer som kräkningar!" },
+      { q: "🥤 Cola Light flyter i vatten medan vanlig Cola sjunker.", answer: "sant", explanation: "Sant – Light-varianten innehåller konstgjorda sötningsmedel istället för socker, vilket gör den mindre tät!" },
+      { q: "⭐ Det finns fler stjärnor i universum än sandkorn på alla jordens stränder.", answer: "sant", explanation: "Sant – astronomer uppskattar att antalet stjärnor är ofattbart mycket större än alla sandkorn på jorden!" },
+      { q: "🐄 Kor har bästa vänner och blir ledsna när de separeras.", answer: "sant", explanation: "Sant – forskning visar att kor bildar starka vänskapsband och upplever stress när de skiljs från sina vänner!" },
+      { q: "🍯 Honung blir aldrig dåligt och kan ätas efter tusentals år.", answer: "sant", explanation: "Sant – honungens låga vattenhalt och sura pH-värde gör att bakterier inte kan överleva i det!" },
+      { q: "🐧 Pingviner kan bara se i svartvitt som gamla TV-apparater.", answer: "fejk", explanation: "Fejk – pingviner ser i färg och har särskilt bra syn för blått och grönt som hjälper dem jaga under vatten!" }
+    ];
 
-let currentQuestion = 0;
-let correctAnswers = 0;
-let wrongAnswers = 0;
-let answeredQuestions = new Set();
+    const likeQuestions = [
+      { q: "🐱 En kompis delar en söt kattvideo som fick dig att skratta högt.", answer: "like", explanation: "👍 Like – att dela roligt och positivt innehåll sprider glädje och gör dagen bättre för andra!" },
+      { q: "😠 Någon skriver elaka kommentarer om andra personers utseende.", answer: "not like", explanation: "👎 Not like – att sprida hat och elaka kommentarer skadar andra människor och skapar en giftig atmosfär online." },
+      { q: "🍰 En vän delar sitt hemliga recept på världens godaste chokladkaka.", answer: "like", explanation: "👍 Like – att dela recept och kreativa idéer är ett fantastiskt sätt att hjälpa och inspirera andra!" },
+      { q: "🔗 Någon du aldrig träffat skickar en mystisk länk och säger 'klicka här för överraskning'.", answer: "not like", explanation: "👎 Not like – okända länkar kan innehålla virus, phishing eller andra faror. Var alltid försiktig med okända källor!" },
+      { q: "💝 En vän skriver en riktigt fin komplimang till någon som haft en dålig dag.", answer: "like", explanation: "👍 Like – att sprida vänlighet och stötta andra när de mår dåligt är precis vad internet behöver mer av!" },
+      { q: "📰 Någon delar sensationella nyheter utan att kolla om de är sanna först.", answer: "not like", explanation: "👎 Not like – att sprida falska nyheter är skadligt för samhället. Kontrollera alltid källor innan du delar!" },
+      { q: "🎨 En kreativ person delar sin konst och ber om konstruktiv feedback för att bli bättre.", answer: "like", explanation: "👍 Like – att dela kreativt arbete och be om hjälp för att utvecklas hjälper människor att växa och lära sig!" },
+      { q: "📸 Någon postar bilder på andra personer utan att fråga om lov först.", answer: "not like", explanation: "👎 Not like – alla har rätt till sin integritet. Fråga alltid om tillåtelse innan du delar bilder på andra människor!" },
+      { q: "🤝 En grupp organiserar en lokal välgörenhetsinsamling för att hjälpa hemlösa.", answer: "like", explanation: "👍 Like – att använda internet för att organisera hjälp och göra gott i samhället är helt fantastiskt!" },
+      { q: "💸 Någon marknadsför en 'bli-rik-snabbt'-plan som verkar för bra för att vara sant.", answer: "not like", explanation: "👎 Not like – om något verkar för bra för att vara sant, så är det troligen det. Var försiktig med bedrägerier online!" }
+    ];
 
-function loadQuestion() {
-  const q = questions[currentQuestion];
-  document.getElementById("question").textContent = q.question;
-  const optionsDiv = document.getElementById("options");
-  optionsDiv.innerHTML = "";
-  q.options.forEach((option, index) => {
-    const div = document.createElement("div");
-    div.textContent = option;
-    div.className = "option";
-    div.onclick = () => checkAnswer(index);
-    optionsDiv.appendChild(div);
-  });
-}
+    let currentGame = null;
+    let questions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let streak = 0;
+    let maxStreak = 0;
+    let waitingForNext = false;
+    let answeredThisQuestion = false;
 
-function checkAnswer(selected) {
-  if (answeredQuestions.has(currentQuestion)) return;
-
-  const correctSound = document.getElementById("correctSound");
-  const wrongSound = document.getElementById("wrongSound");
-
-  if (selected === questions[currentQuestion].correct) {
-    correctAnswers++;
-    correctSound.play();
-  } else {
-    wrongAnswers++;
-    wrongSound.play();
-  }
-
-  answeredQuestions.add(currentQuestion);
-  updateScore();
-}
-
-function updateScore() {
-  document.getElementById("scoreCounter").textContent = `Rätt: ${correctAnswers} | Fel: ${wrongAnswers}`;
-}
-
-document.getElementById("questionBox").addEventListener("click", () => {
-  if (answeredQuestions.has(currentQuestion)) {
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-      loadQuestion();
-      document.getElementById("progressBar").style.width = ((currentQuestion) / questions.length) * 100 + "%";
-    } else {
-      showEndScreen();
+    // Sound effects with better error handling
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
+    
+    // Set volume and test if sounds can be loaded
+    try {
+      correctSound.volume = 0.6;
+      wrongSound.volume = 0.6;
+      
+      // Test load sounds
+      correctSound.load();
+      wrongSound.load();
+    } catch (e) {
+      console.log("Sound files not found, continuing without sound");
     }
-  }
-});
 
-function showEndScreen() {
-  document.getElementById("questionBox").style.display = "none";
-  document.getElementById("progress").style.display = "none";
-  document.getElementById("scoreCounter").style.display = "none";
-  document.getElementById("endScreen").style.display = "block";
-}
+    function startGame(gameType) {
+      currentGame = gameType;
+      questions = shuffleArray(gameType === "santfejk" ? [...santFejkQuestions] : [...likeQuestions]);
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      streak = 0;
+      maxStreak = 0;
+      waitingForNext = false;
+      answeredThisQuestion = false;
+      
+      document.getElementById("endScreen").classList.remove("show");
+      document.getElementById("modeButtons").style.display = "none";
+      document.getElementById("gameHeader").classList.add("show");
+      document.getElementById("answerButtons").style.display = "block";
+      
+      updateProgress();
+      showQuestion();
+    }
 
-loadQuestion();
-</script>
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
+        showEndScreen();
+        return;
+      }
+      
+      const q = questions[currentIndex];
+      const questionBox = document.getElementById("questionBox");
+      
+      // Reset state
+      answeredThisQuestion = false;
+      waitingForNext = false;
+      
+      // Add entrance animation
+      questionBox.classList.remove("question-enter");
+      questionBox.style.background = "rgba(255,255,255,0.95)";
+      
+      setTimeout(() => {
+        questionBox.innerHTML = q.q;
+        questionBox.classList.add("question-enter");
+      }, 100);
+      
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = "";
+
+      if (currentGame === "santfejk") {
+        buttonsDiv.innerHTML = `
+          <button class="sant-btn" onclick="checkAnswer('sant')">✅ Sant</button>
+          <button class="fejk-btn" onclick="checkAnswer('fejk')">❌ Fejk</button>
+        `;
+      } else {
+        buttonsDiv.innerHTML = `
+          <button class="like-btn" onclick="checkAnswer('like')">👍 Like</button>
+          <button class="not-like-btn" onclick="checkAnswer('not like')">👎 Not like</button>
+        `;
+      }
+      
+      updateProgress();
+    }
+
+    function checkAnswer(answer) {
+      if (waitingForNext || answeredThisQuestion) return;
+      
+      answeredThisQuestion = true;
+      waitingForNext = true;
+
+      const q = questions[currentIndex];
+      const questionBox = document.getElementById("questionBox");
+      const isCorrect = answer === q.answer;
+      
+      let feedback = "";
+      let feedbackClass = "";
+      
+      // Disable buttons
+      const buttons = document.querySelectorAll(".answer-buttons button");
+      buttons.forEach(btn => btn.disabled = true);
+      
+      if (isCorrect) {
+        correctCount++;
+        streak++;
+        maxStreak = Math.max(maxStreak, streak);
+        feedbackClass = "correct";
+        feedback = `<div class='feedback ${feedbackClass}'>✅ Perfekt!<br><br>${q.explanation}</div>`;
+        questionBox.style.background = "linear-gradient(135deg, #c8e6c9, #a5d6a7)";
+        createFloatingEmoji("🎉");
+        
+        try {
+          correctSound.play().catch(e => console.log("Could not play correct sound"));
+        } catch (e) {}
+      } else {
+        wrongCount++;
+        streak = 0;
+        feedbackClass = "incorrect";
+        feedback = `<div class='feedback ${feedbackClass}'>❌ Nästan där!<br><br>${q.explanation}</div>`;
+        questionBox.style.background = "linear-gradient(135deg, #ffcdd2, #f8bbd9)";
+        createFloatingEmoji("💡");
+        
+        // Play wrong sound with fallback
+        playSound(wrongSound, 'bu');
+      }
+      
+      questionBox.innerHTML = q.q + feedback;
+      
+      // Add click hint
+      const clickHint = `<div class='click-hint'>👆 Klicka här för nästa fråga!</div>`;
+      questionBox.innerHTML += clickHint;
+      
+      updateProgress();
+    }
+
+    // Click to continue
+    document.getElementById("questionBox").addEventListener("click", () => {
+      if (!waitingForNext) return;
+      
+      waitingForNext = false;
+      currentIndex++;
+      
+      // Re-enable buttons
+      const buttons = document.querySelectorAll(".answer-buttons button");
+      buttons.forEach(btn => btn.disabled = false);
+      
+      showQuestion();
+    });
+
+    function updateProgress() {
+      const total = questions.length;
+      const current = Math.min(currentIndex + 1, total);
+      const percentage = total > 0 ? (currentIndex / total) * 100 : 0;
+      
+      document.getElementById("progressBar").style.width = percentage + "%";
+      document.getElementById("progressText").textContent = `Fråga ${current} av ${total}`;
+      document.getElementById("scoreDisplay").textContent = `Poäng: ${correctCount}/${correctCount + wrongCount}`;
+      document.getElementById("streakDisplay").textContent = `🔥 Streak: ${streak}`;
+    }
+
+    function createFloatingEmoji(emoji) {
+      const floatingEmoji = document.createElement("div");
+      floatingEmoji.className = "floating-emoji";
+      floatingEmoji.textContent = emoji;
+      floatingEmoji.style.left = Math.random() * (window.innerWidth - 100) + "px";
+      floatingEmoji.style.top = "60%";
+      document.body.appendChild(floatingEmoji);
+      
+      setTimeout(() => {
+        if (document.body.contains(floatingEmoji)) {
+          document.body.removeChild(floatingEmoji);
+        }
+      }, 2500);
+    }
+
+    function showEndScreen() {
+      const endScreen = document.getElementById("endScreen");
+      const totalQuestions = correctCount + wrongCount;
+      const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+      
+      let performanceText = "";
+      if (percentage >= 90) performanceText = "🏆 Perfekt! Du är en riktig expert!";
+      else if (percentage >= 75) performanceText = "⭐ Fantastiskt bra jobbat!";
+      else if (percentage >= 60) performanceText = "👍 Bra gjort! Du lär dig snabbt!";
+      else performanceText = "💪 Bra försök! Övning ger färdighet!";
+      
+      document.getElementById("finalScore").innerHTML = `
+        <div class="performance-text">${performanceText}</div>
+        <div style="margin: 15px 0;">📊 Resultat: ${correctCount}/${totalQuestions} rätt (${percentage}%)</div>
+        <div style="margin: 10px 0;">🔥 Längsta streak: ${maxStreak}</div>
+        <div style="margin: 10px 0;">🎯 Spelläge: ${currentGame === 'santfejk' ? 'Sant eller Fejk' : 'Like eller Not like'}</div>
+      `;
+      
+      endScreen.classList.add("show");
+      document.body.style.background = "linear-gradient(135deg, #1a1a1a, #2d2d2d)";
+      launchFireworks();
+    }
+
+    function restartGame() {
+      document.getElementById("endScreen").classList.remove("show");
+      document.getElementById("modeButtons").style.display = "block";
+      document.getElementById("gameHeader").classList.remove("show");
+      document.getElementById("answerButtons").style.display = "none";
+      document.body.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+      
+      document.getElementById("questionBox").innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
+        <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
+      `;
+      document.getElementById("questionBox").style.background = "rgba(255,255,255,0.95)";
+    }
+
+    // Spectacular fireworks animation
+    function launchFireworks() {
+      const canvas = document.getElementById("fireworksCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      
+      function random(min, max) { 
+        return Math.random() * (max - min) + min; 
+      }
+
+      function createFirework() {
+        let x = random(100, canvas.width - 100);
+        let y = random(50, canvas.height / 2);
+        let count = 100;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: x,
+            y: y,
+            dx: random(-3, 3),
+            dy: random(-3, 3),
+            life: random(50, 100)
+          });
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach((p, i) => {
+          ctx.fillStyle = "hsl(" + random(0, 360) + ",100%,50%)";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.life--;
+          if (p.life <= 0) particles.splice(i, 1);
+        });
+        
+        if (document.getElementById("endScreen").classList.contains("show")) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      const fireworkInterval = setInterval(() => {
+        if (document.getElementById("endScreen").classList.contains("show")) {
+          createFirework();
+        } else {
+          clearInterval(fireworkInterval);
+        }
+      }, 1000);
+      
+      animate();
+    }
+  </script>
 </body>
 </html>
