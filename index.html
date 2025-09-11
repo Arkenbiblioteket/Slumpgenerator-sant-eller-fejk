@@ -1,262 +1,189 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🧠 Bli ett proffs på smarta val online! 🌟</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Quiz</title>
   <style>
-    /* --- Din tidigare CSS --- */
-    * {margin:0; padding:0; box-sizing:border-box;}
-    body {font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:#333; min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; overflow-x:hidden; transition: all 0.5s ease;}
-    .container {text-align:center; width:95%; max-width:900px; padding:20px;}
-    h1 {font-family:'Fredoka One', cursive; color:white; font-size:clamp(2rem,5vw,3.5rem); margin-bottom:30px; text-shadow:3px 3px 6px rgba(0,0,0,0.3); animation: titleGlow 3s ease-in-out infinite alternate;}
-    @keyframes titleGlow {from {text-shadow:3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.2);} to {text-shadow:3px 3px 6px rgba(0,0,0,0.3), 0 0 35px rgba(255,255,255,0.5);}}
-    /* --- Lägg till resterande CSS här --- */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    #quiz-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .question {
+      font-size: 1.3em;
+      margin-bottom: 20px;
+    }
+
+    .answer {
+      display: block;
+      width: 100%;
+      background: #eeeeee;
+      border: none;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .answer:hover {
+      background: #ddd;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    #score {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    #end-screen {
+      display: none;
+      padding: 50px;
+    }
+
+    #restart-btn {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    #restart-btn:hover {
+      background: #45a049;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🧠 Bli ett proffs på smarta val online! 🌟</h1>
-
-    <div class="game-header" id="gameHeader">
-      <div class="progress-section">
-        <div class="progress-container">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="stats-row">
-          <div class="score-display" id="scoreDisplay">Poäng: 0/0</div>
-          <div class="progress-text" id="progressText">Fråga 0 av 0</div>
-          <div class="streak-display" id="streakDisplay">🔥 Streak: 0</div>
-        </div>
-      </div>
+  <div id="quiz-container">
+    <div id="quiz">
+      <div id="question" class="question"></div>
+      <div id="answers"></div>
+      <div id="feedback" class="feedback"></div>
+      <div id="score"></div>
     </div>
 
-    <div class="mode-buttons" id="modeButtons">
-      <button onclick="startGame('santfejk')">🎲 Sant eller Fejk</button>
-      <button onclick="startGame('like')">👍 Like eller 👎 Not like</button>
-    </div>
-
-    <div id="questionBox">
-      <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
-      <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
-    </div>
-    
-    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-
-    <div id="endScreen">
-      <h1>🎉 Fantastiskt jobbat! 🎉</h1>
-      <div class="final-score" id="finalScore"></div>
-      <button class="restart-btn" onclick="restartGame()">🔄 Spela igen</button>
-      <canvas id="fireworksCanvas"></canvas>
-      <div class="attribution">
-        🎵 Ljud: "applaus.wav" och "bu.wav" by xtrgamr — 
-        <a href="https://freesound.org/s/241132/" target="_blank">Freesound</a> — 
-        License: Attribution 4.0
-      </div>
+    <div id="end-screen">
+      <h1>Grattis! 🎉</h1>
+      <p>Du är nu ett proffs på smarta val online!</p>
+      <button id="restart-btn">Spela igen</button>
     </div>
   </div>
 
-  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
-  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
+  <audio id="correctSound" src="applause.mp3"></audio>
+  <audio id="wrongSound" src="bu.mp3"></audio>
 
   <script>
-    const santFejkQuestions = [
-      { q: "🥇 Guld är ätbart och används ibland som dekoration på lyxmat.", answer: "sant", explanation: "Sant – bladguld i mycket små mängder används verkligen som dekoration på dyra maträtter och drinkar!" },
-      { q: "🧠 Människan använder bara 10% av sin hjärna.", answer: "fejk", explanation: "Fejk – hela hjärnan är aktiv! Denna myt bygger på en gammal misstolkning av hjärnforskning." },
-      { q: "⚡ Blixten slår aldrig ner på samma ställe två gånger.", answer: "fejk", explanation: "Fejk – höga byggnader som Empire State Building träffas av blixtar flera gånger varje år!" },
-      { q: "🏯 Du kan se Kinesiska muren från rymden med blotta ögat.", answer: "fejk", explanation: "Fejk – muren är för smal och smälter in i landskapet. Astronauter bekräftar att det inte går att se den!" },
-      { q: "🦓 Strutsar gömmer huvudet i sanden när de blir rädda.", answer: "fejk", explanation: "Fejk – strutsar lägger sig ner mot marken för att gömma sig, men stoppar aldrig huvudet i sand!" }
+    const questions = [
+      {
+        question: "Vad ska du göra om du får ett konstigt meddelande?",
+        answers: ["Öppna det direkt", "Ignorera det", "Fråga en vuxen"],
+        correct: 2
+      },
+      {
+        question: "Vem ska du dela ditt lösenord med?",
+        answers: ["Bästa kompisen", "Ingen", "Alla i klassen"],
+        correct: 1
+      },
+      {
+        question: "Vad betyder källkritik?",
+        answers: [
+          "Att alltid tro på allt",
+          "Att ta reda på om informationen är sann",
+          "Att skriva källor på ett papper"
+        ],
+        correct: 1
+      }
     ];
 
-    const likeQuestions = [
-      { q: "🐱 En kompis delar en söt kattvideo som fick dig att skratta högt.", answer: "like", explanation: "👍 Like – att dela roligt och positivt innehåll sprider glädje och gör dagen bättre för andra!" },
-      { q: "😠 Någon skriver elaka kommentarer om andra personers utseende.", answer: "not like", explanation: "👎 Not like – att sprida hat och elaka kommentarer skadar andra människor och skapar en giftig atmosfär online." }
-    ];
+    let currentQuestion = 0;
+    let score = 0;
+    let answeredQuestions = new Set();
 
-    let currentGame = null;
-    let questions = [];
-    let currentIndex = 0;
-    let correctCount = 0;
-    let wrongCount = 0;
-    let streak = 0;
-    let maxStreak = 0;
-    let waitingForNext = false;
-    let answeredThisQuestion = false;
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const feedbackEl = document.getElementById("feedback");
+    const scoreEl = document.getElementById("score");
+    const endScreen = document.getElementById("end-screen");
+    const quiz = document.getElementById("quiz");
 
-    const correctSound = document.getElementById('correctSound');
-    const wrongSound = document.getElementById('wrongSound');
-
-    function startGame(gameType) {
-      currentGame = gameType;
-      questions = shuffleArray(gameType === "santfejk" ? [...santFejkQuestions] : [...likeQuestions]);
-      currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
-      streak = 0;
-      maxStreak = 0;
-      waitingForNext = false;
-      answeredThisQuestion = false;
-
-      document.getElementById("endScreen").classList.remove("show");
-      document.getElementById("modeButtons").style.display = "none";
-      document.getElementById("gameHeader").classList.add("show");
-      document.getElementById("answerButtons").style.display = "block";
-
-      updateProgress();
-      showQuestion();
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      answersEl.innerHTML = "";
+      feedbackEl.textContent = "";
+      q.answers.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.className = "answer";
+        btn.onclick = () => checkAnswer(i);
+        answersEl.appendChild(btn);
+      });
     }
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    function checkAnswer(i) {
+      if (answeredQuestions.has(currentQuestion)) return;
+
+      const q = questions[currentQuestion];
+      if (i === q.correct) {
+        feedbackEl.textContent = "Rätt! Bra jobbat!";
+        feedbackEl.style.color = "green";
+        score++;
+        document.getElementById("correctSound").play();
+      } else {
+        feedbackEl.textContent = "Fel, försök igen!";
+        feedbackEl.style.color = "red";
+        document.getElementById("wrongSound").play();
       }
-      return array;
-    }
+      answeredQuestions.add(currentQuestion);
+      scoreEl.textContent = `Poäng: ${score} / ${questions.length}`;
 
-    function showQuestion() {
-      if (currentIndex >= questions.length) {
-        showEndScreen();
-        return;
-      }
-
-      const q = questions[currentIndex];
-      const questionBox = document.getElementById("questionBox");
-      answeredThisQuestion = false;
-      waitingForNext = false;
-
-      questionBox.classList.remove("question-enter");
-      questionBox.style.background = "rgba(255,255,255,0.95)";
-      
       setTimeout(() => {
-        questionBox.innerHTML = q.q;
-        questionBox.classList.add("question-enter");
-      }, 100);
-
-      const buttonsDiv = document.getElementById("answerButtons");
-      buttonsDiv.innerHTML = "";
-
-      if (currentGame === "santfejk") {
-        buttonsDiv.innerHTML = `
-          <button class="sant-btn" onclick="checkAnswer('sant')">✅ Sant</button>
-          <button class="fejk-btn" onclick="checkAnswer('fejk')">❌ Fejk</button>
-        `;
-      } else {
-        buttonsDiv.innerHTML = `
-          <button class="like-btn" onclick="checkAnswer('like')">👍 Like</button>
-          <button class="not-like-btn" onclick="checkAnswer('not like')">👎 Not like</button>
-        `;
-      }
-
-      updateProgress();
-    }
-
-    function checkAnswer(answer) {
-      if (waitingForNext || answeredThisQuestion) return;
-      answeredThisQuestion = true;
-      waitingForNext = true;
-
-      const q = questions[currentIndex];
-      const questionBox = document.getElementById("questionBox");
-      const isCorrect = answer === q.answer;
-
-      let feedback = "";
-      let feedbackClass = "";
-
-      const buttons = document.querySelectorAll(".answer-buttons button");
-      buttons.forEach(btn => btn.disabled = true);
-
-      if (isCorrect) {
-        correctCount++;
-        streak++;
-        maxStreak = Math.max(maxStreak, streak);
-        feedbackClass = "correct";
-        feedback = `<div class='feedback ${feedbackClass}'>✅ Perfekt!<br><br>${q.explanation}</div>`;
-        questionBox.style.background = "linear-gradient(135deg, #c8e6c9, #a5d6a7)";
-        createFloatingEmoji("🎉");
-        try { correctSound.play().catch(e => console.log("Could not play correct sound")); } catch(e) {}
-      } else {
-        wrongCount++;
-        streak = 0;
-        feedbackClass = "incorrect";
-        feedback = `<div class='feedback ${feedbackClass}'>❌ Nästan där!<br><br>${q.explanation}</div>`;
-        questionBox.style.background = "linear-gradient(135deg, #ffcdd2, #f8bbd9)";
-        createFloatingEmoji("💡");
-        try { wrongSound.play().catch(e => console.log("Could not play wrong sound")); } catch(e) {}
-      }
-
-      questionBox.innerHTML = q.q + feedback + `<div class='click-hint'>👆 Klicka här för nästa fråga!</div>`;
-      updateProgress();
-    }
-
-    document.getElementById("questionBox").addEventListener("click", () => {
-      if (!waitingForNext) return;
-      waitingForNext = false;
-      currentIndex++;
-      const buttons = document.querySelectorAll(".answer-buttons button");
-      buttons.forEach(btn => btn.disabled = false);
-      showQuestion();
-    });
-
-    function updateProgress() {
-      const total = questions.length;
-      const current = Math.min(currentIndex + 1, total);
-      const percentage = total > 0 ? (currentIndex / total) * 100 : 0;
-
-      document.getElementById("progressBar").style.width = percentage + "%";
-      document.getElementById("progressText").textContent = `Fråga ${current} av ${total}`;
-      document.getElementById("scoreDisplay").textContent = `Poäng: ${correctCount}/${correctCount + wrongCount}`;
-      document.getElementById("streakDisplay").textContent = `🔥 Streak: ${streak}`;
-    }
-
-    function createFloatingEmoji(emoji) {
-      const floatingEmoji = document.createElement("div");
-      floatingEmoji.className = "floating-emoji";
-      floatingEmoji.textContent = emoji;
-      floatingEmoji.style.left = Math.random() * (window.innerWidth - 100) + "px";
-      floatingEmoji.style.top = "60%";
-      document.body.appendChild(floatingEmoji);
-      setTimeout(() => { if (document.body.contains(floatingEmoji)) document.body.removeChild(floatingEmoji); }, 2500);
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          loadQuestion();
+        } else {
+          showEndScreen();
+        }
+      }, 1500);
     }
 
     function showEndScreen() {
-      const endScreen = document.getElementById("endScreen");
-      const totalQuestions = correctCount + wrongCount;
-      const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-
-      let performanceText = "";
-      if (percentage >= 90) performanceText = "🏆 Perfekt! Du är en riktig expert!";
-      else if (percentage >= 75) performanceText = "⭐ Fantastiskt bra jobbat!";
-      else if (percentage >= 60) performanceText = "👍 Bra gjort! Du lär dig snabbt!";
-      else performanceText = "💪 Bra försök! Övning ger färdighet!";
-
-      document.getElementById("finalScore").innerHTML = `
-        <div class="performance-text">${performanceText}</div>
-        <div style="margin: 15px 0;">📊 Resultat: ${correctCount}/${totalQuestions} rätt (${percentage}%)</div>
-        <div style="margin: 10px 0;">🔥 Längsta streak: ${maxStreak}</div>
-        <div style="margin: 10px 0;">🎯 Spelläge: ${currentGame === 'santfejk' ? 'Sant eller Fejk' : 'Like eller Not like'}</div>
-      `;
-
-      endScreen.classList.add("show");
-      document.body.style.background = "linear-gradient(135deg, #1a1a1a, #2d2d2d)";
-      launchFireworks();
+      quiz.style.display = "none";
+      endScreen.style.display = "block";
     }
 
-    function restartGame() {
-      document.getElementById("endScreen").classList.remove("show");
-      document.getElementById("modeButtons").style.display = "block";
-      document.getElementById("gameHeader").classList.remove("show");
-      document.getElementById("answerButtons").style.display = "none";
-      document.body.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+    document.getElementById("restart-btn").onclick = () => {
+      currentQuestion = 0;
+      score = 0;
+      answeredQuestions.clear();
+      quiz.style.display = "block";
+      endScreen.style.display = "none";
+      scoreEl.textContent = "";
+      loadQuestion();
+    };
 
-      document.getElementById("questionBox").innerHTML = `
-        <div style="font-size: 3rem; margin-bottom: 20px;">🚀</div>
-        <div>Välj ett spel för att börja din resa mot att bli en expert på smarta val online!</div>
-      `;
-      document.getElementById("questionBox").style.background = "rgba(255,255,255,0.95)";
-    }
-
-    // --- Fireworks animation --- (behålls oförändrad)
-    function launchFireworks() {
-      const canvas = document.getElementById("fireworks
+    loadQuestion();
+  </script>
+</body>
+</html>
