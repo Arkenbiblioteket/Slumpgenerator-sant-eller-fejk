@@ -141,14 +141,23 @@
       { q: "Cola light flyter i vatten medan vanlig Cola sjunker.", answer: "sant", explanation: "Sant – light innehåller mindre socker och är mindre tät." },
       ];
 
-    const likeQuestions = [
-      { q: "Någon postar en rolig kattvideo.", answer: "like", explanation: "Like – ofarligt och roligt." },
-      { q: "Någon skriver elaka kommentarer.", answer: "not like", explanation: "Not like – att sprida hat gör andra ledsna." },
-      { q: "En kompis delar ett recept.", answer: "like", explanation: "Like – positivt och trevligt att dela." },
-      { q: "Någon du inte känner skickar en konstig länk.", answer: "not like", explanation: "Not like – kan vara virus eller bluff." },
-      { q: "En vän delar en fin komplimang.", answer: "like", explanation: "Like – alltid bra att sprida snällhet." }
-    ];
-
+    const bluffQuestions = [
+  { q: "Du får ett meddelande: 'Grattis! Du har vunnit en ny :contentReference[oaicite:1]{index=1} – klicka här!'", 
+    answer: "bluff", 
+    explanation: "Bluff – okända länkar kan innehålla virus eller försöka lura dig." },
+  { q: "En kompis skickar en rolig :contentReference[oaicite:2]{index=2}-video på :contentReference[oaicite:3]{index=3}.", 
+    answer: "säkert", 
+    explanation: "Säkert – det är någon du känner och det är inget misstänkt." },
+  { q: "En främling skriver: 'Följ den här länken för att vinna gratis presentkort!'", 
+    answer: "bluff", 
+    explanation: "Bluff – okända personer kan försöka lura dig eller stjäla uppgifter." },
+  { q: "Du ser en nyhet: ':contentReference[oaicite:4]{index=4}ar kan prata om de får rätt mat!'", 
+    answer: "bluff", 
+    explanation: "Bluff – kolla alltid vem som har skrivit artikeln." },
+  { q: "Din skola lägger upp veckans matsedel på :contentReference[oaicite:5]{index=5}.", 
+    answer: "säkert", 
+    explanation: "Säkert – officiella konton är pålitliga." }
+];
     let currentGame = null;
     let questions = [];
     let currentIndex = 0;
