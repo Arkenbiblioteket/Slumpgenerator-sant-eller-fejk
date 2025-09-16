@@ -136,19 +136,41 @@
 
   <script>
     const bluffQuestions = [
-      { q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
-        answer: "bluff", 
-        explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." },
-      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
-        answer: "säkert", 
-        explanation: "Det är någon du känner och det är inget misstänkt innehåll." },
-      { q: "En främling skriver: <br> 'Följ den här länken för att vinna gratis presentkort!'", 
-        answer: "bluff", 
-        explanation: "Om du klickar på länken kan okända personer <br>försöka stjäla uppgifter eller lura dig." },
-      { q: "Det dyker upp ett popup-fönster på en hemsida: <br>'Din dator är infekterad, klicka här!'", 
-        answer: "bluff", 
-        explanation: "Popup-fönster är nästan alltid bluff. <br>Klicka inte på länken, utan stäng bara ner sidan." }
-    ];
+  { q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
+    answer: "bluff", 
+    explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." },
+  { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
+    answer: "säkert", 
+    explanation: "Det är någon du känner och det är inget misstänkt innehåll." },
+  { q: "En främling skriver: <br> 'Följ den här länken för att vinna gratis presentkort!'", 
+    answer: "bluff", 
+    explanation: "Om du klickar på länken kan okända personer <br>försöka stjäla uppgifter eller lura dig." },
+  { q: "Det dyker upp ett popup-fönster på en hemsida: <br>'Din dator är infekterad, klicka här!'", 
+    answer: "bluff", 
+    explanation: "Popup-fönster är nästan alltid bluff. <br>Klicka inte på länken, utan stäng bara ner sidan." },
+  { q: "Du får ett meddelande från en främling på Instagram: <br>'Hej, vill du bli modell? Skicka dina bilder här!'", 
+    answer: "bluff", 
+    explanation: "Prata inte med främlingar online. <br>De kan låtsas vara någon annan." },
+  { q: "Din bästa vän skickar en bild från sitt husdjur på Snapchat.", 
+    answer: "säkert", 
+    explanation: "Det är någon du känner och bilden är ofarlig." },
+  { q: "Du får en vänförfrågan från någon du inte känner på TikTok.", 
+    answer: "bluff", 
+    explanation: "Acceptera inte okända personer – <br>det kan vara någon som låtsas vara snäll." },
+  { q: "Du ser en video som säger: <br>'Alla som gillar den här videon får gratis iPhone!'", 
+    answer: "bluff", 
+    explanation: "Ingen delar ut dyra saker gratis. <br>Det är bara ett knep för att få fler likes." },
+  { q: "Du får ett meddelande: <br>'Jag är din lärare – skicka ditt lösenord!'", 
+    answer: "bluff", 
+    explanation: "Ingen lärare skulle be om lösenord. <br>Ge aldrig ut det till någon." },
+  { q: "Du tittar på en rolig video från YouTube som en kompis tipsat om.", 
+    answer: "säkert", 
+    explanation: "Det är från en känd plattform och en kompis har tipsat om den." },
+  { q: "Du får ett mejl som säger att du måste betala <br>för att inte förlora ditt konto.", 
+    answer: "bluff", 
+    explanation: "Det är ett försök att lura dig. <br>Riktiga företag hotar inte så." }
+];
+
 
     const hatQuestions = [
       { q: "Någon skriver 'Du är ful och borde inte få vara här' i en kommentar.", 
