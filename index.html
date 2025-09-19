@@ -1,142 +1,124 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <title>Bluff eller Säkert?</title>
+  <meta charset="UTF-8">
+  <title>Bluff eller säkert?</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d6eaff, #ffffff);
+      background: #f0f8ff;
       text-align: center;
-      padding: 30px;
-    }
-    #quiz-container {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      max-width: 700px;
-      margin: auto;
       padding: 40px;
-      transition: 0.3s ease;
     }
-    h1 {
-      color: #1d3557;
-      font-size: 2.2em;
-      margin-bottom: 10px;
-    }
-    .question {
-      font-size: 1.3em;
-      margin: 20px 0;
-      color: #333;
-    }
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
+    #quiz {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
     button {
-      background: #457b9d;
-      color: white;
+      padding: 15px 25px;
+      margin: 15px;
+      font-size: 18px;
       border: none;
       border-radius: 10px;
-      padding: 15px 30px;
-      font-size: 1.1em;
       cursor: pointer;
-      transition: background 0.2s ease;
+      background: #4CAF50;
+      color: #fff;
+      transition: background 0.3s;
     }
     button:hover {
-      background: #1d3557;
+      background: #45a049;
     }
     #feedback {
-      margin-top: 30px;
-      font-size: 1.2em;
-      color: #444;
+      margin-top: 25px;
+      font-size: 20px;
+      min-height: 40px;
     }
-    #result {
-      font-size: 1.5em;
-      margin-top: 20px;
-      color: #1d3557;
-    }
-    #next-part {
+    #nextBtn {
       display: none;
-      margin-top: 40px;
+      background: #2196F3;
     }
-    #next-part a {
-      display: inline-block;
-      text-decoration: none;
-      background: #1d3557;
-      color: #fff;
-      padding: 15px 25px;
-      border-radius: 10px;
-      font-size: 1.2em;
+    #result, #endScreen {
+      display: none;
     }
-    #next-part a:hover {
-      background: #457b9d;
+    #endScreen button {
+      background: #FF9800;
     }
   </style>
 </head>
 <body>
-
-  <div id="quiz-container">
-    <h1>Bluff eller Säkert?</h1>
-    <div id="quiz"></div>
+  <div id="quiz">
+    <h1>Bluff eller säkert?</h1>
+    <div id="question"></div>
+    <button onclick="answer('säkert')">Säkert</button>
+    <button onclick="answer('bluff')">Bluff</button>
     <div id="feedback"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Nästa</button>
+
     <div id="result"></div>
-    <div id="next-part">
-      <a href="html1.html">Lär dig avslöja bluffar i bilder och filmer</a>
+
+    <div id="endScreen">
+      <h2>Du har svarat på alla frågor!</h2>
+      <p>Bra jobbat – nu vet du mer om bluffar på nätet!</p>
+      <button onclick="goToMore()">Lär dig avslöja bluffar i bilder och filmer</button>
     </div>
   </div>
 
   <script>
     const questions = [
-      { q: "Alla nyheter du ser i sociala medier är sanna.", a: false, feedback: "Nej, alla nyheter på sociala medier är inte sanna. Vem som helst kan skriva vad som helst." },
-      { q: "Om en känd person har delat något betyder det att det är sant.", a: false, feedback: "Inte alltid. Även kända personer kan dela felaktig information." },
-      { q: "Det är bra att kolla flera källor för att se om något stämmer.", a: true, feedback: "Ja! Att jämföra olika källor hjälper dig att se vad som är trovärdigt." },
-      { q: "En text med många stavfel är ofta mindre pålitlig.", a: true, feedback: "Ja, stavfel kan vara ett tecken på att källan inte är seriös." },
-      { q: "Om många gillar en nyhet betyder det att den är sann.", a: false, feedback: "Nej, många likes betyder inte att något är sant – bara att många sett det." },
-      { q: "Det är bra att fundera på vem som tjänar på att du tror på något.", a: true, feedback: "Ja! Fundera på vem som kan vinna på att du tror på informationen." },
-      { q: "Kedjebrev som hotar eller lockar med tur är alltid pålitliga.", a: false, feedback: "Nej, kedjebrev är nästan alltid bluff och bör ignoreras." },
-      { q: "En källkritisk person ställer frågor och undersöker fakta.", a: true, feedback: "Precis! Att vara källkritisk handlar om att tänka efter." },
-      { q: "Bilder på nätet kan vara redigerade eller fejkade.", a: true, feedback: "Ja, det går lätt att ändra bilder digitalt så att de ser äkta ut." },
-      { q: "Det är alltid sant om en kompis har hört det någonstans.", a: false, feedback: "Nej, hörsägen är ofta fel eller missförstådd information." }
+      { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
+      { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
+      { q: "Ett mejl på dålig svenska ber dig skicka dina inloggningsuppgifter.", answer: "bluff", explanation: "Ingen seriös tjänst ber dig om lösenord via mejl." },
+      { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "säkert", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
+      { q: "Du får ett sms som säger att du måste betala för ett paket.", answer: "bluff", explanation: "Postföretag brukar inte kräva betalning via sms." },
+      { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
+      { q: "Du får ett kedjebrev där det står att du måste skicka vidare eller får otur.", answer: "bluff", explanation: "Kedjebrev är bluffar och sprider bara onödig oro." },
+      { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
+      { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
+      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
     ];
 
-    let current = 0;
-    let score = 0;
+    let currentQuestion = 0;
 
     function showQuestion() {
-      if (current < questions.length) {
-        document.getElementById('quiz').innerHTML = `
-          <div class="question">${questions[current].q}</div>
-          <div class="button-container">
-            <button onclick="answer(true)">Säkert</button>
-            <button onclick="answer(false)">Bluff</button>
-          </div>
-        `;
-        document.getElementById('feedback').innerHTML = "";
-        document.getElementById('result').innerHTML = "";
+      if (currentQuestion < questions.length) {
+        document.getElementById("question").innerHTML = `<h2>${questions[currentQuestion].q}</h2>`;
+        document.getElementById("feedback").innerHTML = "";
+        document.getElementById("nextBtn").style.display = "none";
       } else {
-        document.getElementById('quiz').innerHTML = `<h2>Du är klar! 🎉</h2>`;
-        document.getElementById('feedback').innerHTML = "";
-        document.getElementById('result').innerHTML = `Du fick ${score} av ${questions.length} rätt.`;
-        document.getElementById('next-part').style.display = "block";
+        document.getElementById("question").style.display = "none";
+        document.querySelectorAll("button[onclick^='answer']").forEach(btn => btn.style.display = "none");
+        document.getElementById("feedback").style.display = "none";
+        document.getElementById("endScreen").style.display = "block";
       }
     }
 
-    function answer(ans) {
-      if (ans === questions[current].a) {
-        score++;
-        document.getElementById('feedback').innerHTML = "✅ Rätt! " + questions[current].feedback;
+    function answer(userAnswer) {
+      const correct = questions[currentQuestion].answer;
+      const feedback = document.getElementById("feedback");
+      if (userAnswer === correct) {
+        feedback.style.color = "green";
+        feedback.innerHTML = "Rätt! " + questions[currentQuestion].explanation;
       } else {
-        document.getElementById('feedback').innerHTML = "❌ Fel! " + questions[current].feedback;
+        feedback.style.color = "red";
+        feedback.innerHTML = "Fel! " + questions[currentQuestion].explanation;
       }
-      current++;
-      setTimeout(showQuestion, 2000);
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      showQuestion();
+    }
+
+    function goToMore() {
+      window.location.href = "1.html";
     }
 
     showQuestion();
   </script>
-
 </body>
 </html>
