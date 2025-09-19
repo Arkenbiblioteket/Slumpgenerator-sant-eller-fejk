@@ -144,4 +144,74 @@
 
     function startGame() {
       currentIndex = 0;
-      cor
+      correctCount = 0;
+      wrongCount = 0;
+      answered = false;
+      document.getElementById("questionBox").style.display = "flex";
+      document.getElementById("progress").style.display = "block";
+      document.getElementById("scoreCounter").style.display = "block";
+      document.getElementById("answerButtons").style.display = "block";
+      updateProgress();
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (currentIndex >= bluffQuestions.length) {
+        resetToStart();
+        return;
+      }
+      const q = bluffQuestions[currentIndex];
+      document.getElementById("questionBox").innerHTML = q.q;
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = `
+        <button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>
+        <button onclick="checkAnswer('säkert')">✅ Säkert</button>`;
+      updateScore();
+      answered = false;
+    }
+
+    function checkAnswer(answer) {
+      if (answered) return;
+      answered = true;
+
+      const q = bluffQuestions[currentIndex];
+      let feedback = "";
+      if (answer === q.answer) {
+        correctCount++;
+        document.getElementById("correctSound").play();
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
+      } else {
+        wrongCount++;
+        document.getElementById("wrongSound").play();
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
+      }
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
+
+      currentIndex++;
+      updateScore();
+      updateProgress();
+    }
+
+    function updateScore() {
+      document.getElementById("scoreCounter").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
+    }
+
+    function updateProgress() {
+      const percent = (currentIndex / bluffQuestions.length) * 100;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function resetToStart() {
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      answered = false;
+      document.getElementById("questionBox").innerHTML = "Klicka på knappen ovan för att börja!";
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+      document.getElementById("scoreCounter").style.display = "none";
+      document.getElementById("questionBox").style.display = "flex";
+    }
+  </script>
+</body>
+</html>
