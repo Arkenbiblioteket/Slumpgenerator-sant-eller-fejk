@@ -1,124 +1,124 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Bluff eller säkert?</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
       text-align: center;
       padding: 40px;
+      color: #333;
     }
-    #quiz {
+    #startScreen, #quiz, #endScreen {
       max-width: 600px;
       margin: auto;
-      background: #fff;
+      background: white;
+      border-radius: 20px;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     button {
+      background: #ff8c42;
+      border: none;
+      color: white;
       padding: 15px 25px;
       margin: 15px;
-      font-size: 18px;
-      border: none;
       border-radius: 10px;
       cursor: pointer;
-      background: #4CAF50;
-      color: #fff;
-      transition: background 0.3s;
+      font-size: 18px;
+      transition: 0.3s;
     }
     button:hover {
-      background: #45a049;
+      background: #e6762f;
     }
+    .hidden { display: none; }
     #feedback {
-      margin-top: 25px;
-      font-size: 20px;
-      min-height: 40px;
-    }
-    #nextBtn {
-      display: none;
-      background: #2196F3;
-    }
-    #result, #endScreen {
-      display: none;
-    }
-    #endScreen button {
-      background: #FF9800;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <div id="quiz">
-    <h1>Bluff eller säkert?</h1>
+
+  <!-- STARTSIDA -->
+  <div id="startScreen">
+    <h1>Välkommen!</h1>
+    <p>Kan du avgöra vad som är bluff eller säkert?</p>
+    <button onclick="startQuiz()">Starta spelet</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
     <div id="question"></div>
     <button onclick="answer('säkert')">Säkert</button>
     <button onclick="answer('bluff')">Bluff</button>
     <div id="feedback"></div>
-    <button id="nextBtn" onclick="nextQuestion()">Nästa</button>
-
-    <div id="result"></div>
-
-    <div id="endScreen">
-      <h2>Du har svarat på alla frågor!</h2>
-      <p>Bra jobbat – nu vet du mer om bluffar på nätet!</p>
-      <button onclick="goToMore()">Lär dig avslöja bluffar i bilder och filmer</button>
-    </div>
   </div>
+
+  <!-- SLUTSIDA -->
+  <div id="endScreen" class="hidden">
+    <h2>Du är klar! 🎉</h2>
+    <p>Bra jobbat — du har svarat på alla frågor.</p>
+    <button onclick="location.href='1.html'">Lär dig avslöja bluffar i bilder och filmer</button>
+  </div>
+
+  <!-- LJUD -->
+  <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_ab22b4d313.mp3?filename=applause-44774.mp3"></audio>
+  <audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_769b787233.mp3?filename=error-126627.mp3"></audio>
 
   <script>
     const questions = [
-      { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
-      { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
-      { q: "Ett mejl på dålig svenska ber dig skicka dina inloggningsuppgifter.", answer: "bluff", explanation: "Ingen seriös tjänst ber dig om lösenord via mejl." },
-      { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "säkert", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
-      { q: "Du får ett sms som säger att du måste betala för ett paket.", answer: "bluff", explanation: "Postföretag brukar inte kräva betalning via sms." },
-      { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
-      { q: "Du får ett kedjebrev där det står att du måste skicka vidare eller får otur.", answer: "bluff", explanation: "Kedjebrev är bluffar och sprider bara onödig oro." },
-      { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
-      { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
-      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
+      { q: " är platt.", answer: "bluff", explanation: " är rund." },
+      { q: " är huvudstad i .", answer: "säkert", explanation: " är Sveriges huvudstad." },
+      { q: "Alla sidor på internet går att lita på.", answer: "bluff", explanation: "Nej, alla sidor är inte pålitliga." },
+      { q: "Det är bra att kolla flera källor när man läser nyheter.", answer: "säkert", explanation: "Då kan du jämföra information." },
+      { q: "Bilder och filmer på nätet kan vara fejkade.", answer: "säkert", explanation: "Ja, det går att redigera eller skapa fejk." },
+      { q: "Det är alltid sant om många gillar och delar det.", answer: "bluff", explanation: "Nej, popularitet betyder inte sanning." },
+      { q: " är gjord av ost.", answer: "bluff", explanation: "Nej,  är av sten." },
+      { q: "Det finns lagar som skyddar mot falsk reklam.", answer: "säkert", explanation: "Ja, det finns lagar mot vilseledande reklam." },
+      { q: "Man kan alltid se direkt om en video är fejk.", answer: "bluff", explanation: "Det kan vara mycket svårt att avgöra." },
+      { q: "Det är bra att tänka efter innan man delar något.", answer: "säkert", explanation: "Ja, så sprider man inte falsk information." }
     ];
 
     let currentQuestion = 0;
 
-    function showQuestion() {
-      if (currentQuestion < questions.length) {
-        document.getElementById("question").innerHTML = `<h2>${questions[currentQuestion].q}</h2>`;
-        document.getElementById("feedback").innerHTML = "";
-        document.getElementById("nextBtn").style.display = "none";
-      } else {
-        document.getElementById("question").style.display = "none";
-        document.querySelectorAll("button[onclick^='answer']").forEach(btn => btn.style.display = "none");
-        document.getElementById("feedback").style.display = "none";
-        document.getElementById("endScreen").style.display = "block";
-      }
-    }
-
-    function answer(userAnswer) {
-      const correct = questions[currentQuestion].answer;
-      const feedback = document.getElementById("feedback");
-      if (userAnswer === correct) {
-        feedback.style.color = "green";
-        feedback.innerHTML = "Rätt! " + questions[currentQuestion].explanation;
-      } else {
-        feedback.style.color = "red";
-        feedback.innerHTML = "Fel! " + questions[currentQuestion].explanation;
-      }
-      document.getElementById("nextBtn").style.display = "inline-block";
-    }
-
-    function nextQuestion() {
-      currentQuestion++;
+    function startQuiz() {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
       showQuestion();
     }
 
-    function goToMore() {
-      window.location.href = "1.html";
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question").innerHTML = `<h3>${q.q}</h3>`;
+      document.getElementById("feedback").innerHTML = "";
     }
 
-    showQuestion();
+    function answer(choice) {
+      const q = questions[currentQuestion];
+      if (choice === q.answer) {
+        document.getElementById("feedback").innerHTML = "Rätt! 🎉<br>" + q.explanation;
+        document.getElementById("correctSound").play();
+      } else {
+        document.getElementById("feedback").innerHTML = "Fel 😢<br>" + q.explanation;
+        document.getElementById("wrongSound").play();
+      }
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        setTimeout(showQuestion, 2000);
+      } else {
+        setTimeout(showEndScreen, 2000);
+      }
+    }
+
+    function showEndScreen() {
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("endScreen").classList.remove("hidden");
+    }
   </script>
+
 </body>
 </html>
