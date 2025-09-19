@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
@@ -71,6 +70,7 @@
       border-radius: 10px;
       margin-top: 20px;
       overflow: hidden;
+      display: none;
     }
     #progressBar {
       height: 100%;
@@ -84,9 +84,9 @@
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div id="progress" style="display:none;"><div id="progressBar"></div></div>
+    <div id="progress"><div id="progressBar"></div></div>
 
-    <div id="questionBox">Hur ska jag veta vad som är bluff eller inte på internet?<br><br><small>Klicka här för att börja spelet</small></div>
+    <div id="questionBox">Hur ska jag veta vad som är bluff eller inte på internet?<br><br><span style="font-size:0.7em;">(Klicka för att börja)</span></div>
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
     <div id="scoreCounter" style="display:none;"></div>
   </div>
@@ -96,21 +96,61 @@
 
   <script>
     const questions = [
-      // ---- 10 textfrågor först ----
-      { q: "Ett sms säger att du måste betala en avgift för att få ditt paket. Är det sant?", answer: "bluff", explanation: "Det är oftast bluff. Riktiga företag ber inte om betalning via sms."},
-      { q: "Du får ett mejl om att du har vunnit pengar fast du inte har tävlat. Sant eller bluff?", answer: "bluff", explanation: "Om du inte har tävlat kan du inte vinna. Sådana mejl är bluff."},
-      { q: "Din kompis skickar en rolig video i en chatt. Är det troligt att den är bluff?", answer: "sant", explanation: "Om det är från en riktig kompis du känner är det oftast okej."},
-      { q: "Ett meddelande säger att du måste logga in snabbt annars försvinner ditt konto. Är det sant?", answer: "bluff", explanation: "Det är ofta bluff. De försöker få dig att lämna ut dina lösenord."},
-      { q: "Ett konto på :contentReference[oaicite:0]{index=0} med bara 2 följare ber dig skicka bilder på dig själv. Är det säkert?", answer: "bluff", explanation: "Var försiktig. Skicka aldrig bilder till främlingar."},
-      { q: "Din lärare skriver ett mejl till dig med ditt namn och information om lektionen. Är det bluff?", answer: "sant", explanation: "Det låter som ett riktigt mejl. Det är nog sant."},
-      { q: "Du får ett sms från banken som säger att du ska skriva in din pinkod. Sant eller bluff?", answer: "bluff", explanation: "Banker ber aldrig om pinkod via sms eller mejl."},
-      { q: "En person på :contentReference[oaicite:1]{index=1} säger att du måste betala för att få fler följare. Sant eller bluff?", answer: "bluff", explanation: "Det är bluff. Betala aldrig för följare."},
-      { q: "En vän skriver på :contentReference[oaicite:2]{index=2} att hen har fått en ny telefon och vill ha ditt nummer. Sant eller bluff?", answer: "sant", explanation: "Det kan vara sant om du känner personen väl."},
-      { q: "Du får ett meddelande om att du ska klicka på en länk för att få en gratis mobil. Sant eller bluff?", answer: "bluff", explanation: "Det är nästan alltid bluff. Klicka inte på länken."},
-
-      // ---- Dina videofrågor efter ----
+      // ---- Textfrågor först ----
       {
-        q: "Hur ska du veta om något är bluff på internet? <br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>",
+        q: "Du får ett meddelande: 'Grattis! Du har vunnit en ny mobil – klicka här!'.",
+        answer: "bluff",
+        explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar."
+      },
+      {
+        q: "Din kompis skriver: 'Titta vilken rolig video jag hittade!' och skickar en länk.",
+        answer: "sant",
+        explanation: "Om du litar på kompisen kan det vara okej — men tänk efter så det inte ser misstänkt ut."
+      },
+      {
+        q: "Ett mejl på dålig svenska ber dig skicka dina inloggningsuppgifter.",
+        answer: "bluff",
+        explanation: "Ingen seriös tjänst ber dig om lösenord via mejl."
+      },
+      {
+        q: "Din lärare skickar ett mejl via skolans e-post om att lämna in läxan.",
+        answer: "sant",
+        explanation: "Det är troligen äkta eftersom det kommer från en känd person via skolans system."
+      },
+      {
+        q: "Du får ett sms som säger att du måste betala en avgift för att få ditt paket.",
+        answer: "bluff",
+        explanation: "Postföretag brukar inte kräva betalning via sms — det kan vara försök att lura dig."
+      },
+      {
+        q: "En okänd person skriver att du har vunnit pengar i en tävling du inte deltagit i.",
+        answer: "bluff",
+        explanation: "Om du inte varit med i en tävling kan du inte vinna något."
+      },
+      {
+        q: "Du ser en video på sociala medier som säger att jorden är platt.",
+        answer: "bluff",
+        explanation: "Det finns vetenskapliga bevis på att jorden är rund."
+      },
+      {
+        q: "Din bästa vän skriver ett privat meddelande till dig på sociala medier.",
+        answer: "sant",
+        explanation: "Det är troligen äkta om du känner igen kontot och personen."
+      },
+      {
+        q: "Du ser ett inlägg med ett supererbjudande som bara gäller i 10 minuter.",
+        answer: "bluff",
+        explanation: "Bluffar försöker ofta stressa dig att bestämma dig snabbt."
+      },
+      {
+        q: "Din mamma skickar ett sms: 'Glöm inte att ta med gympakläder imorgon!'",
+        answer: "sant",
+        explanation: "Du känner igen numret, och meddelandet verkar rimligt."
+      },
+
+      // ---- Dina videofrågor ----
+      {
+        q: "Titta på klippet nedan.<br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>",
         answer: "bluff",
         explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
       },
@@ -119,34 +159,26 @@
         answer: "bluff",
         explanation: "Det är en AI-genererad fejkvideo där det ser ut som om han slänger sitt barn över bassängkanten."
       },
-      { 
-        q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'",
-        answer: "bluff",
-        explanation: "Klicka inte på konstiga länkar, det kan vara virus eller försök att lura dig."
-      },
       {
-        q: "Ibland är det lätt att förstå om något är fake. <br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/9nz-vprp6l0' frameborder='0' allowfullscreen></iframe>",
+        q: "Ibland är det lätt att förstå om något är fake.<br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/9nz-vprp6l0' frameborder='0' allowfullscreen></iframe>",
         answer: "bluff",
         explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
       },
       {
-        q: "Och ibland är det betydligt svårare. <br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/XLWtlUcU5ZI' frameborder='0' allowfullscreen></iframe>",
+        q: "Och ibland är det betydligt svårare.<br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/XLWtlUcU5ZI' frameborder='0' allowfullscreen></iframe>",
         answer: "bluff",
         explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
       },
     ];
 
-    let currentIndex = -1; // -1 = startsida
+    let currentIndex = -1;
     let correctCount = 0;
     let wrongCount = 0;
     let answered = false;
 
     document.getElementById("questionBox").addEventListener("click", () => {
-      if (currentIndex === -1) {
-        startGame();
-      } else if (answered) {
-        showQuestion();
-      }
+      if (currentIndex === -1) startGame();
+      else if (answered) showQuestion();
     });
 
     function startGame() {
@@ -166,11 +198,13 @@
         resetToStart();
         return;
       }
+
       const q = questions[currentIndex];
       document.getElementById("questionBox").innerHTML = q.q;
-      document.getElementById("answerButtons").innerHTML = `
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = `
         <button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>
-        <button onclick="checkAnswer('säkert')">✅ Säkert</button>
+        <button onclick="checkAnswer('sant')">✅ Sant</button>
       `;
       updateScore();
       answered = false;
@@ -208,6 +242,10 @@
     }
 
     function resetToStart() {
+      currentIndex = -1;
+      correctCount = 0;
+      wrongCount = 0;
+      answered = false;
       document.getElementById("questionBox").innerHTML = "Spelet är slut! Ladda om sidan för att spela igen.";
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
