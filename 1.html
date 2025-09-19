@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Avslöja bluffbilder</title>
+  <title>Avslöja bluffbilder och filmer</title>
   <style>
     body {
       margin: 0;
@@ -19,9 +19,9 @@
       max-width: 90%;
       max-height: 90%;
     }
-    img {
+    img, iframe {
       max-width: 100%;
-      max-height: 80vh;
+      max-height: 70vh;
       border-radius: 15px;
       box-shadow: 0 0 25px rgba(0,0,0,0.6);
       cursor: pointer;
@@ -31,56 +31,115 @@
       font-size: 20px;
       line-height: 1.5;
     }
-    #nextBtn {
+    #backBtn {
       display: none;
-      margin-top: 20px;
+      margin-top: 30px;
       padding: 15px 25px;
       font-size: 18px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background: #2196F3;
+      background: #4CAF50;
       color: #fff;
     }
   </style>
 </head>
 <body>
   <div id="container">
-    <img id="slideImage" src="" alt="Bild" onclick="nextStep()">
+    <div id="media"></div>
     <div id="text"></div>
-    <button id="nextBtn" onclick="nextStep()">Nästa</button>
+    <button id="backBtn" onclick="location.href='index.html'">Tillbaka till startsidan</button>
   </div>
 
   <script>
     const slides = [
       {
-        img: "hundar.jpg",
+        type: "image",
+        src: "hundar.jpg",
         text: "Två hundar – båda är skapade av AI, men med ett års mellanrum. Den nya bilden är mycket mer verklighetstrogen. Det blir allt svårare att se vad som är fejk."
       },
       {
-        img: "tjejer.jpg",
+        type: "image",
+        src: "tjejer.jpg",
         text: "Här ser du två tjejer – en är verklig och en är skapad av AI. Kan du gissa vilken som är AI-genererad?"
       },
       {
-        img: "tjejer.jpg",
+        type: "image",
+        src: "tjejer.jpg",
         text: "Svar: Den högra är skapad av AI. AI-bilder kan se mycket verkliga ut, så det är viktigt att vara källkritisk!"
+      },
+      {
+        type: "video",
+        src: "https://www.youtube.com/embed/0DAreNXQAqU",
+        text: "Hur ska du veta om något är sant eller inte?",
+        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
+      },
+      {
+        type: "video",
+        src: "https://www.youtube.com/embed/9nz-vprp6l0",
+        text: "Ibland är det lätt att förstå om något är fake.",
+        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
+      },
+      {
+        type: "video",
+        src: "https://www.youtube.com/embed/XLWtlUcU5ZI",
+        text: "Och ibland är det betydligt svårare.",
+        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
+      },
+      {
+        type: "video",
+        src: "https://www.youtube.com/embed/4g_vYZJVw9s",
+        text: "Visst ser det ganska verkligt ut?",
+        explanation: "Det är en AI-genererad fejkvideo där det ser ut som om han slänger sitt barn över bassängkanten."
+      },
+      {
+        type: "video",
+        src: "https://www.youtube.com/embed/XLWtlUcU5ZI",
+        text: "Här ser du en kändis i ett videoklipp. Är det verkligen han som säger detta?",
+        explanation: "Det här är en deepfake, en fejkvideo skapad med AI som imiterar Donald Trump."
       }
     ];
 
     let current = 0;
+    let showingExplanation = false;
 
     function showSlide() {
-      document.getElementById("slideImage").src = slides[current].img;
-      document.getElementById("text").innerHTML = slides[current].text;
+      const slide = slides[current];
+      const mediaContainer = document.getElementById("media");
+      const textEl = document.getElementById("text");
+
+      mediaContainer.innerHTML = "";
+      textEl.innerHTML = "";
+
+      if (slide.type === "image") {
+        mediaContainer.innerHTML = `<img src="${slide.src}" onclick="nextStep()">`;
+        textEl.innerHTML = slide.text;
+      } else if (slide.type === "video") {
+        mediaContainer.innerHTML = `<iframe width="800" height="450" src="${slide.src}" frameborder="0" allowfullscreen></iframe>`;
+        textEl.innerHTML = slide.text + "<br><br><em>Klicka på videon när du är klar för att se förklaringen.</em>";
+        mediaContainer.onclick = showExplanation;
+      }
+    }
+
+    function showExplanation() {
+      const slide = slides[current];
+      if (slide.type === "video" && !showingExplanation) {
+        document.getElementById("text").innerHTML = slide.explanation;
+        showingExplanation = true;
+      } else {
+        nextStep();
+      }
     }
 
     function nextStep() {
-      if (current < slides.length - 1) {
-        current++;
+      current++;
+      showingExplanation = false;
+      if (current < slides.length) {
         showSlide();
       } else {
-        document.getElementById("text").innerHTML = "Nu har du sett alla bilder!";
-        document.getElementById("slideImage").style.display = "none";
+        document.getElementById("media").innerHTML = "";
+        document.getElementById("text").innerHTML = "Nu har du sett alla bilder och filmer!";
+        document.getElementById("backBtn").style.display = "inline-block";
       }
     }
 
