@@ -2,148 +2,70 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Avslöja bluffbilder och filmer</title>
+  <title>AI eller verklighet?</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background: #f4f4f4;
+      color: #333;
       text-align: center;
+      padding: 20px;
     }
-    #container {
-      max-width: 90%;
-      max-height: 90%;
-    }
-    img, iframe {
-      max-width: 100%;
-      max-height: 70vh;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    img {
+      width: 100%;
+      max-width: 600px;
+      height: auto;
       cursor: pointer;
-    }
-    #text {
-      margin-top: 20px;
-      font-size: 20px;
-      line-height: 1.5;
-    }
-    #backBtn {
-      display: none;
-      margin-top: 30px;
-      padding: 15px 25px;
-      font-size: 18px;
-      border: none;
       border-radius: 10px;
-      cursor: pointer;
-      background: #4CAF50;
-      color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #00796b;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+    }
+    .quiz-container h2 {
+      color: #d32f2f;
+    }
+    .quiz-container p {
+      font-size: 1.1em;
+      line-height: 1.6;
+    }
+    .quiz-container a {
+      color: #0288d1;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .quiz-container a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="media"></div>
-    <div id="text"></div>
-    <button id="backBtn" onclick="location.href='index.html'">Tillbaka till startsidan</button>
+
+  <h1>Välkommen till AI-utmaningen!</h1>
+  <p>Testa dina färdigheter i att känna igen AI-genererat innehåll.</p>
+
+  <img src="hundar.jpg" alt="Hundar" onclick="nextImage()">
+  <img src="Tjejer.jpg" alt="Tjejer" onclick="nextImage()">
+
+  <div class="quiz-container">
+    <h2>Kan du skilja AI från äkta?</h2>
+    <p>Nu är det dags att utmana dina ögon och din källkritik!</p>
+    <p><a href="https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig" target="_blank">Klicka här för att göra Aftonbladets quiz och få tips på hur du avslöjar deepfakes.</a></p>
   </div>
 
   <script>
-    const slides = [
-      {
-        type: "image",
-        src: "hundar.jpg",
-        text: "Två hundar – båda är skapade av AI, men med ett års mellanrum. Den nya bilden är mycket mer verklighetstrogen. Det blir allt svårare att se vad som är fejk."
-      },
-      {
-        type: "image",
-        src: "Tjejer.jpg",
-        text: "Här ser du två tjejer – en är verklig och en är skapad av AI. Kan du gissa vilken som är AI-genererad?"
-      },
-      {
-        type: "image",
-        src: "tjejer.jpg",
-        text: "Svar: Den vänstra är skapad av AI. AI-bilder kan se mycket verkliga ut, så det är viktigt att vara källkritisk!"
-      },
-      {
-        type: "video",
-        src: "https://www.youtube.com/embed/0DAreNXQAqU",
-        text: "Hur ska du veta om något är sant eller inte?",
-        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
-      },
-      {
-        type: "video",
-        src: "https://www.youtube.com/embed/9nz-vprp6l0",
-        text: "Ibland är det lätt att förstå om något är fake.",
-        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
-      },
-      {
-        type: "video",
-        src: "https://www.youtube.com/embed/XLWtlUcU5ZI",
-        text: "Och ibland är det betydligt svårare.",
-        explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
-      },
-      {
-        type: "video",
-        src: "https://www.youtube.com/embed/4g_vYZJVw9s",
-        text: "Visst ser det ganska verkligt ut?",
-        explanation: "Det är en AI-genererad fejkvideo där det ser ut som om han slänger sitt barn över bassängkanten."
-      },
-      {
-        type: "video",
-        src: "https://www.youtube.com/embed/XLWtlUcU5ZI",
-        text: "Här ser du en kändis i ett videoklipp. Är det verkligen han som säger detta?",
-        explanation: "Det här är en deepfake, en fejkvideo skapad med AI som imiterar Donald Trump."
-      }
-    ];
-
-    let current = 0;
-    let showingExplanation = false;
-
-    function showSlide() {
-      const slide = slides[current];
-      const mediaContainer = document.getElementById("media");
-      const textEl = document.getElementById("text");
-
-      mediaContainer.innerHTML = "";
-      textEl.innerHTML = "";
-
-      if (slide.type === "image") {
-        mediaContainer.innerHTML = `<img src="${slide.src}" onclick="nextStep()">`;
-        textEl.innerHTML = slide.text;
-      } else if (slide.type === "video") {
-        mediaContainer.innerHTML = `<iframe width="800" height="450" src="${slide.src}" frameborder="0" allowfullscreen></iframe>`;
-        textEl.innerHTML = slide.text + "<br><br><em>Klicka på videon när du är klar för att se förklaringen.</em>";
-        mediaContainer.onclick = showExplanation;
-      }
+    function nextImage() {
+      alert("Klicka på nästa bild för att fortsätta!");
     }
-
-    function showExplanation() {
-      const slide = slides[current];
-      if (slide.type === "video" && !showingExplanation) {
-        document.getElementById("text").innerHTML = slide.explanation;
-        showingExplanation = true;
-      } else {
-        nextStep();
-      }
-    }
-
-    function nextStep() {
-      current++;
-      showingExplanation = false;
-      if (current < slides.length) {
-        showSlide();
-      } else {
-        document.getElementById("media").innerHTML = "";
-        document.getElementById("text").innerHTML = "Nu har du sett alla bilder och filmer!";
-        document.getElementById("backBtn").style.display = "inline-block";
-      }
-    }
-
-    showSlide();
   </script>
+
 </body>
 </html>
