@@ -41,19 +41,6 @@
       font-weight: normal;
       color: #444;
     }
-    .mode-buttons {
-      margin-bottom: 20px;
-    }
-    .mode-buttons button {
-      background: #00acc1;
-      color: white;
-      margin: 10px;
-      padding: 15px 25px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
     .answer-buttons button {
       margin: 10px;
       padding: 15px 30px;
@@ -97,13 +84,9 @@
   <div class="container">
     <h1>Bli ett proffs på smarta val online!</h1>
 
-    <div class="mode-buttons">
-      <button onclick="startGame()">🎣 Bluff eller Säkert</button>
-    </div>
-
     <div id="progress"><div id="progressBar"></div></div>
 
-    <div id="questionBox">Klicka på knappen ovan för att börja!</div>
+    <div id="questionBox">Laddar frågor...</div>
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
     <div id="scoreCounter"></div>
   </div>
@@ -112,24 +95,26 @@
   <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
   <script>
-    const bluffQuestions = [
+    const questions = [
+      { q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", answer: "bluff", explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." },
+
       {
-        q: "Hur ska vi veta vad som är sant eller falskt?<br><br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>",
+        q: "Här är en video som påstår något otroligt. Tror du den är äkta?<br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>",
         answer: "bluff",
         explanation: "Detta är ett exempel på en fejkvideo som är gjord för att lura tittaren."
       },
-      { q: "Du får ett meddelande: <br> 'Grattis! Du har vunnit en ny iPhone – klicka här!'", 
-        answer: "bluff", 
-        explanation: "Klicka inte på konstiga länkar, det kan vara <br> virus eller försök att lura dig." },
-      { q: "En kompis skickar en rolig kattvideo på Snapchat.", 
-        answer: "säkert", 
-        explanation: "Det är någon du känner och det är inget misstänkt innehåll." },
-      { q: "Det dyker upp ett popup-fönster på en hemsida: <br>'Din dator är infekterad, klicka här!'", 
-        answer: "bluff", 
-        explanation: "Popup-fönster är nästan alltid bluff. <br>Klicka inte på länken, utan stäng bara ner sidan." },
-      { q: "Du får en vänförfrågan från någon du inte känner på TikTok.", 
-        answer: "bluff", 
-        explanation: "Acceptera inte okända personer – <br>det kan vara någon som låtsas vara snäll." },
+
+      {
+        q: "Titta på klippet nedan. Visst ser det ganska verkligt ut?<br><iframe width='300' height='170' src='https://www.youtube.com/embed/4g_vYZJVw9s' frameborder='0' allowfullscreen></iframe>",
+        answer: "bluff",
+        explanation: "Det är en AI-genererad fejkvideo där det ser ut som om han slänger sitt barn över bassängkanten."
+      },
+
+      {
+        q: "Här ser du en kändis i ett videoklipp. Är det verkligen han som säger detta?<br><iframe width='300' height='170' src='https://www.youtube.com/embed/XLWtlUcU5ZI' frameborder='0' allowfullscreen></iframe>",
+        answer: "bluff",
+        explanation: "Det här är en deepfake, en fejkvideo skapad med AI som imiterar Donald Trump."
+      }
     ];
 
     let currentIndex = 0;
@@ -156,16 +141,18 @@
     }
 
     function showQuestion() {
-      if (currentIndex >= bluffQuestions.length) {
+      if (currentIndex >= questions.length) {
         resetToStart();
         return;
       }
-      const q = bluffQuestions[currentIndex];
+
+      const q = questions[currentIndex];
       document.getElementById("questionBox").innerHTML = q.q;
       const buttonsDiv = document.getElementById("answerButtons");
       buttonsDiv.innerHTML = `
         <button onclick="checkAnswer('bluff')" class="red">🎣 Bluff</button>
-        <button onclick="checkAnswer('säkert')">✅ Säkert</button>`;
+        <button onclick="checkAnswer('säkert')">✅ Säkert</button>
+      `;
       updateScore();
       answered = false;
     }
@@ -174,7 +161,7 @@
       if (answered) return;
       answered = true;
 
-      const q = bluffQuestions[currentIndex];
+      const q = questions[currentIndex];
       let feedback = "";
       if (answer === q.answer) {
         correctCount++;
@@ -197,7 +184,7 @@
     }
 
     function updateProgress() {
-      const percent = (currentIndex / bluffQuestions.length) * 100;
+      const percent = (currentIndex / questions.length) * 100;
       document.getElementById("progressBar").style.width = percent + "%";
     }
 
@@ -206,12 +193,14 @@
       correctCount = 0;
       wrongCount = 0;
       answered = false;
-      document.getElementById("questionBox").innerHTML = "Klicka på knappen ovan för att börja!";
+      document.getElementById("questionBox").innerHTML = "Spelet är slut! Ladda om sidan för att spela igen.";
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
       document.getElementById("scoreCounter").style.display = "none";
       document.getElementById("questionBox").style.display = "flex";
     }
+
+    window.onload = startGame;
   </script>
 </body>
 </html>
