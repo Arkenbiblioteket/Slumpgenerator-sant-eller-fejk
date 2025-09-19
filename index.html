@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
+      background: linear-gradient(135deg, #f6d365, #fda085);
       color: #222;
       display: flex;
       justify-content: center;
@@ -18,126 +18,209 @@
       text-align: center;
       width: 90%;
       max-width: 800px;
-    }
-    #quiz-box {
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 15px;
-      font-size: 1.2em;
       background: #fff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      min-height: 300px;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
-    button {
+    #questionBox {
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #f0f4f8;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .answer-buttons button {
       margin: 10px;
       padding: 15px 30px;
       font-size: 1.2em;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      background: #4caf50;
       color: white;
+      font-weight: bold;
+      transition: 0.3s;
     }
-    button.red { background: #e53935; }
-    button:hover { opacity: 0.85; }
-    #feedback { margin-top: 20px; font-size: 1em; color: #444; }
+    .answer-buttons button.bluff {
+      background: #e53935;
+    }
+    .answer-buttons button.sant {
+      background: #4caf50;
+    }
+    .answer-buttons button:hover {
+      opacity: 0.85;
+    }
+    #scoreCounter {
+      margin-top: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #00796b;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    #progress {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+      display: none;
+    }
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.3s;
+    }
+    #startBtn {
+      background: linear-gradient(90deg,#fbc2eb,#a6c1ee);
+      color: #222;
+      font-size:1.3em;
+      padding:20px 40px;
+      border-radius:20px;
+      border:none;
+      cursor:pointer;
+      box-shadow:0 5px 15px rgba(0,0,0,0.3);
+      transition:0.3s;
+    }
+    #startBtn:hover {
+      opacity: 0.9;
+    }
+    .feedback {
+      margin-top: 15px;
+      font-size: 1em;
+      color: #444;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>Bli ett proffs på smarta val online!</h1>
-  <div id="quiz-box">
-    <div id="question">Hur ska jag veta vad som är bluff eller inte på internet?<br><br>
-      <span style="font-size:0.8em;">(Klicka för att börja)</span>
+  <div class="container">
+    <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
+
+    <div id="questionBox">
+      Vill du bli ett proffs på att se bluffar på nätet? <br><br>
+      <button id="startBtn">🚀 Starta spelet!</button>
     </div>
-    <div id="buttons" style="margin-top:20px;"></div>
-    <div id="feedback"></div>
+
+    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
+    <div id="scoreCounter" style="display:none;"></div>
+    <div id="progress"><div id="progressBar"></div></div>
   </div>
-</div>
 
-<script>
-const questions = [
-  // 10 textfrågor
-  { q: "Du får ett meddelande: 'Du har vunnit en mobil – klicka här!'", answer: "bluff",
-    explanation: "Det är en bluff. De försöker lura dig att ge bort uppgifter eller ladda ner skadlig programvara." },
-  { q: "Du ser en nyhet från en känd tidning med datum och författare.", answer: "sant",
-    explanation: "Det verkar säkert. Kolla ändå att adressen är korrekt och att det är en riktig nyhetssajt." },
-  { q: "Kedjebrev: 'Skicka vidare annars får du otur.'", answer: "bluff",
-    explanation: "Kedjebrev är alltid bluff. De vill bara att du ska sprida meddelandet." },
-  { q: "En kompis skickar en rolig video som du känner igen från deras konto.", answer: "sant",
-    explanation: "Det är troligen säkert om det verkligen kommer från kompisen." },
-  { q: "En okänd person vill att du ska logga in på en länk för att få en present.", answer: "bluff",
-    explanation: "Det kan vara nätfiske. Skriv aldrig in lösenord på konstiga länkar." },
-  { q: "Du hittar en sida som ber om personnummer för att läsa artiklar.", answer: "bluff",
-    explanation: "Det är misstänkt – seriösa sidor kräver inte personnummer för att läsa artiklar." },
-  { q: "Du är inne på en skolas hemsida med https och hänglås i adressfältet.", answer: "sant",
-    explanation: "Hänglåset betyder att sidan är krypterad och troligen säker." },
-  { q: "Någon erbjuder dig gratis spelpoäng om du loggar in med ditt lösenord.", answer: "bluff",
-    explanation: "Det är ett försök att stjäla ditt konto. Logga aldrig in via okända länkar." },
-  { q: "Du hittar information på en myndighets webbsida.", answer: "sant",
-    explanation: "Myndigheters sidor är oftast tillförlitliga." },
-  { q: "En sida säger att du måste ladda ner ett program för att fortsätta.", answer: "bluff",
-    explanation: "Det kan vara skadlig programvara. Ladda aldrig ner från okända sidor." },
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
-  // 3 videofrågor
-  { video: "https://www.youtube.com/embed/0DAreNXQAqU", q: "Titta på filmen. Är detta bluff eller säkert?", answer: "bluff",
-    explanation: "Det ser äkta ut men är fejkad video – luras att dela vidare." },
-  { video: "https://www.youtube.com/embed/4g_vYZJVw9s", q: "Är denna film sann eller bluff?", answer: "bluff",
-    explanation: "Filmen är manipulerad för att se verklig ut." },
-  { video: "https://www.youtube.com/embed/9nz-vprp6l0", q: "Är detta en bluff eller en riktig händelse?", answer: "bluff",
-    explanation: "Filmen är fejkad och gjord för att lura tittaren." }
-];
+  <script>
+    const questions = [
+      // 10 textfrågor
+      { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
+      { q: "Din kompis skickar en länk till en rolig video.", answer: "sant", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
+      { q: "Ett mejl på dålig svenska ber dig skicka dina inloggningsuppgifter.", answer: "bluff", explanation: "Ingen seriös tjänst ber dig om lösenord via mejl." },
+      { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "sant", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
+      { q: "Du får ett sms som säger att du måste betala för ett paket.", answer: "bluff", explanation: "Postföretag brukar inte kräva betalning via sms." },
+      { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
+      { q: "Du får ett kedjebrev där det står att du måste skicka vidare eller får otur.", answer: "bluff", explanation: "Kedjebrev är bluffar och sprider bara onödig oro." },
+      { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "sant", explanation: "Troligen äkta om du känner igen kontot och personen." },
+      { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
+      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "sant", explanation: "Du känner igen numret, meddelandet verkar rimligt." },
 
-let current = -1;
-let score = 0;
+      // 3 videofrågor
+      { q: "Titta på klippet nedan.<br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "Exempel på fejkvideo." },
+      { q: "Titta på klippet nedan. Visst ser det verkligt ut?<br><iframe width='300' height='170' src='https://www.youtube.com/embed/4g_vYZJVw9s' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "AI-genererad fejkvideo." },
+      { q: "Ibland är det lätt att förstå om något är fake.<br><iframe width='300' height='170' src='https://www.youtube.com/embed/9nz-vprp6l0' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "Exempel på fejkvideo." },
+    ];
 
-// Klicka på start
-document.getElementById("question").addEventListener("click", () => {
-  if(current === -1) showQuestion();
-});
+    let currentIndex = -1;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answered = false;
 
-function showQuestion() {
-  current++;
-  if(current >= questions.length){
-    showSummary();
-    return;
-  }
-  const q = questions[current];
-  let content = q.q;
-  if(q.video) content = `<iframe width="100%" height="250" src="${q.video}" frameborder="0" allowfullscreen></iframe><h2>${q.q}</h2>`;
-  document.getElementById("question").innerHTML = content;
-  document.getElementById("buttons").innerHTML = `
-    <button class="red" onclick="checkAnswer('bluff')">🎣 Bluff</button>
-    <button onclick="checkAnswer('sant')">✅ Säkert</button>
-  `;
-  document.getElementById("feedback").innerHTML = "";
-}
+    document.getElementById("startBtn").addEventListener("click", () => {
+      document.getElementById("startBtn").style.display = "none";
+      document.getElementById("answerButtons").style.display = "block";
+      document.getElementById("scoreCounter").style.display = "block";
+      document.getElementById("progress").style.display = "block";
+      currentIndex = 0;
+      showQuestion();
+    });
 
-function checkAnswer(answer){
-  const q = questions[current];
-  if(answer === q.answer){
-    score++;
-    document.getElementById("feedback").innerHTML = "✅ Rätt! " + q.explanation;
-  } else {
-    document.getElementById("feedback").innerHTML = "❌ Fel. " + q.explanation;
-  }
-  setTimeout(showQuestion, 2500);
-}
+    function showQuestion() {
+      if (currentIndex >= questions.length) {
+        showSummary();
+        return;
+      }
 
-function showSummary(){
-  document.getElementById("quiz-box").innerHTML = `
-    <h1>Resultat</h1>
-    <h2>Du fick ${score} av ${questions.length} poäng!</h2>
-    <p><strong>Kom ihåg på internet:</strong></p>
-    <ul style="text-align:left; max-width:400px; margin:auto;">
-      <li>Klicka inte på konstiga länkar</li>
-      <li>Ge aldrig ut lösenord eller personnummer</li>
-      <li>Kolla att sidor är äkta och säkra (https och hänglås)</li>
-      <li>Prata med en vuxen om du blir osäker</li>
-    </ul>
-    <button onclick="location.reload()">🔁 Spela igen</button>
-  `;
-}
-</script>
+      const q = questions[currentIndex];
+      document.getElementById("questionBox").innerHTML = q.q;
+
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = `
+        <button onclick="checkAnswer('bluff')" class="bluff">🎣 Bluff</button>
+        <button onclick="checkAnswer('sant')" class="sant">✅ Sant</button>
+      `;
+
+      answered = false;
+      updateScore();
+      updateProgress();
+    }
+
+    function checkAnswer(answer) {
+      if (answered) return;
+      answered = true;
+
+      const q = questions[currentIndex];
+      let feedback = "";
+
+      if (answer === q.answer) {
+        correctCount++;
+        document.getElementById("correctSound").play();
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
+      } else {
+        wrongCount++;
+        document.getElementById("wrongSound").play();
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
+      }
+
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
+
+      currentIndex++;
+      updateScore();
+      updateProgress();
+    }
+
+    function updateScore() {
+      document.getElementById("scoreCounter").innerText = "Rätt: " + correctCount + " | Fel: " + wrongCount;
+    }
+
+    function updateProgress() {
+      const percent = (currentIndex / questions.length) * 100;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function showSummary() {
+      document.getElementById("questionBox").innerHTML = `
+        🎉 Spelet är slut! 🎉<br><br>
+        Du fick ${correctCount} rätt av ${questions.length}.<br><br>
+        <strong>Tips när du är på internet:</strong><br>
+        - Klicka aldrig på länkar från okända.<br>
+        - Tänk efter innan du delar personlig info.<br>
+        - Kontrollera alltid källan.<br>
+        - Lita på konton du känner igen.<br>
+        - Skicka aldrig kedjebrev vidare.<br>
+      `;
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+    }
+  </script>
 </body>
 </html>
+
