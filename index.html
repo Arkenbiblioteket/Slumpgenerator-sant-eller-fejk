@@ -112,7 +112,7 @@
     </div>
 
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
-    <div id="scoreCounter" style="display:none;"></div>
+    <div id="scoreCounter" style="display:none"></div>
     <div id="progress"><div id="progressBar"></div></div>
   </div>
 
@@ -130,7 +130,7 @@
       { q: "Du får ett kedjebrev där det står att du måste skicka vidare eller får otur.", answer: "bluff", explanation: "Kedjebrev är bluffar och sprider bara onödig oro." },
       { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
       { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
-      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." },
+      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
     ];
 
     let currentIndex = -1;
@@ -138,83 +138,83 @@
     let wrongCount = 0;
     let answered = false;
 
-    const questionBox = document.getElementById("questionBox");
-    const answerButtons = document.getElementById("answerButtons");
-    const scoreCounter = document.getElementById("scoreCounter");
-
-    document.getElementById("startBtn").addEventListener("click", startGame);
-
-    function startGame() {
-      document.getElementById("startBtn").style.display = "none";
-      answerButtons.style.display = "block";
-      scoreCounter.style.display = "block";
+    const startBtn = document.getElementById("startBtn");
+    startBtn.addEventListener("click", () => {
+      startBtn.style.display = "none";
+      document.getElementById("answerButtons").style.display = "block";
+      document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
       currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
       showQuestion();
-    }
+    });
 
     function showQuestion() {
-      if (currentIndex >= questions.length) {
+      if(currentIndex >= questions.length){
         showSummary();
         return;
       }
-      answered = false;
+
       const q = questions[currentIndex];
+      const questionBox = document.getElementById("questionBox");
       questionBox.innerHTML = q.q;
-      answerButtons.innerHTML = `
+
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = `
         <button onclick="checkAnswer('bluff')" class="bluff">🎣 Bluff</button>
         <button onclick="checkAnswer('säkert')" class="säkert">✅ Säkert</button>
       `;
+
+      answered = false;
       updateScore();
       updateProgress();
     }
 
     function checkAnswer(answer) {
-      if (answered) return;
+      if(answered) return;
       answered = true;
+
       const q = questions[currentIndex];
       let feedback = "";
-      if (answer === q.answer) {
+      if(answer === q.answer){
         correctCount++;
         document.getElementById("correctSound").play();
-        feedback = `<div class='feedback' onclick='nextQuestion()'>✅ Rätt!<br>${q.explanation}<br><em></em></div>`;
+        feedback = `<div class="feedback" onclick="nextQuestion()">✅ Rätt!<br>${q.explanation}<br><span style="font-size:0.9em;">Klicka här för nästa fråga</span></div>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        feedback = `<div class='feedback' onclick='nextQuestion()'>❌ Fel!<br>${q.explanation}<br><em></em></div>`;
+        feedback = `<div class="feedback" onclick="nextQuestion()">❌ Fel!<br>${q.explanation}<br><span style="font-size:0.9em;">Klicka här för nästa fråga</span></div>`;
       }
-      questionBox.innerHTML = q.q + feedback;
+      document.getElementById("questionBox").innerHTML = q.q + feedback;
+      updateScore();
+      updateProgress();
     }
 
-    function nextQuestion() {
+    function nextQuestion(){
       currentIndex++;
       showQuestion();
     }
 
-    function updateScore() {
-      scoreCounter.innerText = `Rätt: ${correctCount} | Fel: ${wrongCount}`;
+    function updateScore(){
+      document.getElementById("scoreCounter").innerText = `Rätt: ${correctCount} | Fel: ${wrongCount}`;
     }
 
-    function updateProgress() {
-      const percent = (currentIndex / questions.length) * 100;
+    function updateProgress(){
+      const percent = ((currentIndex+1)/questions.length)*100;
       document.getElementById("progressBar").style.width = percent + "%";
     }
 
-    function showSummary() {
-      questionBox.innerHTML = `
+    function showSummary(){
+      document.getElementById("questionBox").innerHTML = `
         🎉 Spelet är slut! 🎉<br><br>
-        Du fick ${correctCount} rätt av ${questions.length}.<br><br>
+        Du fick ${correctCount} rätt och ${wrongCount} fel av ${questions.length}.<br><br>
         <strong>Tips när du är på internet:</strong><br>
         - Klicka aldrig på länkar från okända.<br>
         - Tänk efter innan du delar personlig info.<br>
         - Kontrollera alltid källan.<br>
         - Lita på konton du känner igen.<br>
-        - Skicka aldrig kedjebrev vidare.<br><br>
-        <a href="1.html">Lär dig mer om hur du kan se om bilder och filmer är bluff eller inte</a>
+        - Skicka aldrig kedjebrev vidare.<br>
       `;
-      answerButtons.style.display = "none";
+      document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
     }
   </script>
