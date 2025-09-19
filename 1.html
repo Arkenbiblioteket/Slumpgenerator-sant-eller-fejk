@@ -2,53 +2,81 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>AI och verkliga bilder</title>
+  <title>AI eller verkligt?</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      background: #000;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      background: #f0f0f0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
     }
-    img {
-      max-width: 95%;
-      max-height: 75vh;
+    #imageContainer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    #displayImage {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       transition: transform 0.3s;
+      display: block;
+      margin: 0 auto;
+      background: #000;
     }
-    img:hover {
+    #displayImage:hover {
       transform: scale(1.02);
     }
     #caption {
-      margin-top: 15px;
-      font-size: 1.1em;
-      max-width: 90%;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 1.2em;
+      padding: 15px;
+      box-sizing: border-box;
+      text-align: center;
     }
     h1 {
-      margin-bottom: 20px;
-      color: #333;
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-size: 2em;
+      text-shadow: 2px 2px 5px #000;
     }
   </style>
 </head>
 <body>
-  <h1>AI eller verkligt?</h1>
-  <img id="displayImage" src="hundar.jpg" alt="Hundar" onclick="nextImage()">
-  <div id="caption">
-    Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.
+  <div id="imageContainer">
+    <h1>AI eller verkligt?</h1>
+    <img id="displayImage" src="hundar.jpg" alt="Hundar" onclick="nextImage()">
+    <div id="caption">
+      Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.
+    </div>
   </div>
 
   <script>
     const images = [
-      { src: 'hundar.jpg', alt: 'Hundar', text: 'Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.' },
-      { src: 'tjejer.jpg', alt: 'Tjejer', text: 'Här ser du två tjejer. Den högra bilden är äkta, den vänstra är AI-genererad. Kan du se skillnaden?' }
+      {
+        src: 'hundar.jpg',
+        alt: 'Hundar',
+        text: 'Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.'
+      },
+      {
+        src: 'tjejer.jpg',
+        alt: 'Tjejer',
+        text: 'Här ser du två tjejer. Den högra bilden är äkta, den vänstra är AI-genererad. Kan du se skillnaden?'
+      }
     ];
 
     let currentIndex = 0;
