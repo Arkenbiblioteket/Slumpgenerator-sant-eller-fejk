@@ -2,27 +2,19 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>AI och fejk - bilder och filmer</title>
+  <title>Hundarna</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding: 20px;
       margin: 0;
+      background: #f0f4f8;
     }
-    h1 {
-      color: #4caf50;
-      margin-bottom: 20px;
-    }
-    .image-box {
-      margin: 20px 0;
-      text-align: center;
-    }
-    .image-box img {
+    img {
       max-width: 100%;
       height: auto;
       cursor: pointer;
@@ -30,45 +22,27 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       transition: 0.3s;
     }
-    .image-box img:hover {
+    img:hover {
       opacity: 0.85;
     }
     .caption {
       margin-top: 10px;
       font-size: 1em;
       color: #444;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Bilder och filmer – AI och fejk</h1>
-
-  <div class="image-box" id="hundarBox">
-    <img src="hundar.jpg" alt="Hundar" id="hundarImg">
-    <div class="caption">Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, den högra i höst. Ser ni skillnaden i verklighetstrogenhet?</div>
-  </div>
-
-  <div class="image-box" id="tjejerBox">
-    <img src="tjejer.jpg" alt="Tjejer" id="tjejerImg">
-    <div class="caption">Här ser ni två unga tjejer. Vilken tror ni är skapad av AI och vilken finns på riktigt?</div>
-  </div>
-
-  <div class="image-box" id="quizBox">
-    <img src="quiz.jpg" alt="Aftonbladet quiz" id="quizImg">
-    <div class="caption">Klicka på bilden för att gå vidare till en sammanfattande slutsida.</div>
+  <h1>Hundarna</h1>
+  <img src="hundar.jpg" alt="Hundar" id="hundarImg">
+  <div class="caption">
+    Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, den högra i höst. Ser ni skillnaden i verklighetstrogenhet?
   </div>
 
   <script>
     document.getElementById("hundarImg").addEventListener("click", () => {
-      alert("Du kan klicka vidare till nästa bild längst ner."); 
-    });
-
-    document.getElementById("tjejerImg").addEventListener("click", () => {
-      window.open("aftonbladet.html", "_blank");
-    });
-
-    document.getElementById("quizImg").addEventListener("click", () => {
-      window.location.href = "slut.html";
+      window.location.href = "2.html"; // Klick → nästa sida
     });
   </script>
 </body>
