@@ -59,53 +59,42 @@
 <body>
   <div id="imageContainer">
     <h1>AI eller verkligt?</h1>
-    <img id="displayImage" src="tjejer.jpg" alt="Tjejer" onclick="nextImage()">
+    <img id="displayImage" src="hundar.jpg" alt="Hundar" onclick="nextImage()">
     <div id="caption">
-      Här ser ni två unga tjejer. Vilken av dem tror ni är skapad av AI och vilken finns på riktigt?
+      Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.
     </div>
   </div>
 
   <script>
     const images = [
+
       {
         src: 'tjejer.jpg',
         alt: 'Tjejer',
-        textInitial: 'Här ser ni två unga tjejer. Vilken av dem tror ni är skapad av AI och vilken finns på riktigt?',
-        textNext: 'Den högra tjejen är den som finns på riktigt, medan tjejen till vänster är skapad av AI.'
-      },
+        text: 'Här ser du två tjejer. Den högra bilden är äkta, den vänstra är AI-genererad. Kan du se skillnaden?'
+      }
       {
         src: 'hundar.jpg',
         alt: 'Hundar',
-        textInitial: 'Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.',
-        textNext: 'Den vänstra hunden är AI-genererad och den högra är äkta.'
-      }
+        text: 'Här ser du två hundbilder. Den vänstra skapades av AI för ett år sedan, den högra är ny och visar hur mycket tekniken gått framåt.'
+      },
+
     ];
 
     let currentIndex = 0;
-    let shownNextText = false;
 
     function nextImage() {
-      const img = images[currentIndex];
-      const display = document.getElementById('displayImage');
-      const caption = document.getElementById('caption');
-
-      // Om vi är på första visningen av bilden, visa nästa text
-      if (!shownNextText) {
-        caption.innerHTML = img.textNext || img.textInitial;
-        shownNextText = true;
+      currentIndex++;
+      if (currentIndex < images.length) {
+        const img = images[currentIndex];
+        const display = document.getElementById('displayImage');
+        const caption = document.getElementById('caption');
+        display.src = img.src;
+        display.alt = img.alt;
+        caption.innerHTML = img.text;
       } else {
-        // Gå vidare till nästa bild
-        currentIndex++;
-        if (currentIndex < images.length) {
-          const nextImg = images[currentIndex];
-          display.src = nextImg.src;
-          display.alt = nextImg.alt;
-          caption.innerHTML = nextImg.textInitial;
-          shownNextText = false;
-        } else {
-          // Efter sista bilden, gå till AI-quiz
-          window.location.href = 'https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig';
-        }
+        // När alla bilder visats, gå till AI-quiz
+        window.location.href = 'https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig';
       }
     }
   </script>
