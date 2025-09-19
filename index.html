@@ -162,11 +162,12 @@
       `;
 
       answered = false;
+
+      // Ta bort tidigare onclick på questionBox
+      document.getElementById("questionBox").onclick = null;
+
       updateScore();
       updateProgress();
-
-      // Ta bort tidigare onclick på questionBox så den inte stör
-      document.getElementById("questionBox").onclick = null;
     }
 
     function checkAnswer(answer) {
@@ -179,11 +180,11 @@
       if (answer === q.answer) {
         correctCount++;
         document.getElementById("correctSound").play();
-        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}<br><span style="font-size:0.8em;">Klicka här för nästa fråga</span></div>`;
+        feedback = `<div class='feedback'>✅ Rätt!<br>${q.explanation}</div>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}<br><span style="font-size:0.8em;">Klicka här för nästa fråga</span></div>`;
+        feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
       }
 
       document.getElementById("questionBox").innerHTML = q.q + feedback;
