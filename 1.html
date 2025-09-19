@@ -1,92 +1,70 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>AI och verklighet</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      max-width: 800px;
-      width: 90%;
-      background: #fff;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    }
-    img {
-      max-width: 100%;
-      border-radius: 15px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    p {
-      font-size: 1.2em;
-      margin-top: 15px;
-    }
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      font-size: 1.2em;
-      text-decoration: none;
-      color: white;
-      background: #4caf50;
-      padding: 10px 20px;
-      border-radius: 10px;
-    }
-    a:hover {
-      opacity: 0.85;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>AI och fejkbilder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0;
+    padding: 20px;
+  }
+  img {
+    max-width: 90%;
+    max-height: 60vh;
+    cursor: pointer;
+    border-radius: 15px;
+    margin: 20px 0;
+  }
+  .desc {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 40px;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <p id="description">Klicka på bilden för att börja!</p>
-    <img id="mainImage" src="hundar.jpg" alt="Bild" />
-  </div>
 
-  <script>
-    const steps = [
-      {
-        src: "hundar.jpg",
-        text: "Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, och den högra bilden är skapad i höst. Se hur mycket tekniken har förbättrats!"
-      },
-      {
-        src: "tjejer.jpg",
-        text: "Här ser ni två unga tjejer. Vilken av dem tror ni är skapad av AI och vilken finns på riktigt?"
-      },
-      {
-        src: "tjejer.jpg",
-        text: "Den högra tjejen är den som finns på riktigt, medan tjejen till vänster är skapad av AI."
-      },
-      {
-        src: "tjejer.jpg",
-        text: `Vill du lära dig mer om AI-bilder? <br><br>
-               <a href="1Aftonbladet.html" target="_blank">➡ Klicka här för Aftonbladet-quizzet</a>`
-      }
-    ];
+<img id="mainImage" src="hundar.jpg" alt="Hundar">
+<div class="desc" id="desc">Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, och den högra bilden är skapad i höst. Se hur mycket tekniken har förbättrats!</div>
 
-    let currentStep = 0;
-    const imgEl = document.getElementById("mainImage");
-    const descEl = document.getElementById("description");
+<script>
+const steps = [
+  {
+    src: "hundar.jpg",
+    text: "Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, och den högra bilden är skapad i höst. Se hur mycket tekniken har förbättrats!"
+  },
+  {
+    src: "tjejer.jpg",
+    text: "Här ser ni två unga tjejer. Vilken av dem tror ni är skapad av AI och vilken finns på riktigt? Klicka på bilden för att gå vidare."
+  },
+  {
+    src: null,
+    text: `Vill du lära dig mer om AI-bilder? <br><br>
+           <a href="1Aftonbladet.html" target="_blank">➡ Klicka här för Aftonbladet-quizzet</a>`
+  }
+];
 
+let currentStep = 0;
+const imgEl = document.getElementById("mainImage");
+const descEl = document.getElementById("desc");
+
+imgEl.addEventListener("click", () => {
+  if (currentStep < steps.length - 1) {
+    currentStep++;
+    if (steps[currentStep].src) {
+      imgEl.src = steps[currentStep].src;
+    }
     descEl.innerHTML = steps[currentStep].text;
+  }
+});
+</script>
 
-    imgEl.addEventListener("click", () => {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        imgEl.src = steps[currentStep].src;
-        descEl.innerHTML = steps[currentStep].text;
-      }
-    });
-  </script>
 </body>
 </html>
