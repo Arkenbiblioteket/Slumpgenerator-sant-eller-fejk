@@ -178,11 +178,11 @@
       if(answer === q.answer){
         correctCount++;
         document.getElementById("correctSound").play();
-        feedback = `<div class="feedback" onclick="nextQuestion()">✅ Rätt!<br>${q.explanation}<br><span style="font-size:0.9em;">Klicka här för nästa fråga</span></div>`;
+        feedback = `<div class="feedback" onclick="nextQuestion()">✅ Rätt!<br>${q.explanation}<br><span style="font-size:0.9em;"></span></div>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        feedback = `<div class="feedback" onclick="nextQuestion()">❌ Fel!<br>${q.explanation}<br><span style="font-size:0.9em;">Klicka här för nästa fråga</span></div>`;
+        feedback = `<div class="feedback" onclick="nextQuestion()">❌ Fel!<br>${q.explanation}<br><span style="font-size:0.9em;"></span></div>`;
       }
       document.getElementById("questionBox").innerHTML = q.q + feedback;
       updateScore();
