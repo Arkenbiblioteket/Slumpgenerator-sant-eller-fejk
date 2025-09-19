@@ -179,11 +179,11 @@
       if (answer === q.answer) {
         correctCount++;
         document.getElementById("correctSound").play();
-        feedback = `<div class='feedback' onclick='nextQuestion()'>✅ Rätt!<br>${q.explanation}<br><em>Klicka på texten för nästa fråga</em></div>`;
+        feedback = `<div class='feedback' onclick='nextQuestion()'>✅ Rätt!<br>${q.explanation}<br><em></em></div>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        feedback = `<div class='feedback' onclick='nextQuestion()'>❌ Fel!<br>${q.explanation}<br><em>Klicka på texten för nästa fråga</em></div>`;
+        feedback = `<div class='feedback' onclick='nextQuestion()'>❌ Fel!<br>${q.explanation}<br><em></em></div>`;
       }
       questionBox.innerHTML = q.q + feedback;
     }
