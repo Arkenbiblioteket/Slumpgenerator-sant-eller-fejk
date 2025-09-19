@@ -2,109 +2,89 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <title>Se om det är bluff!</title>
+  <title>Avslöja bluffbilder</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f8f9fa, #dceefc);
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-    }
-    #viewer {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 900px;
-      overflow: hidden;
       text-align: center;
-      padding: 20px;
     }
-    .media {
-      width: 100%;
+    #container {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    img {
+      max-width: 100%;
+      max-height: 80vh;
       border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
       cursor: pointer;
     }
-    .question {
-      font-size: 1.3em;
-      margin: 20px 0 10px 0;
-      color: #1d3557;
+    #text {
+      margin-top: 20px;
+      font-size: 20px;
+      line-height: 1.5;
     }
-    .answer {
-      font-size: 1.1em;
-      color: #333;
-      margin-bottom: 20px;
-    }
-    #done {
+    #nextBtn {
       display: none;
-      font-size: 1.5em;
-      color: #1d3557;
-      margin-top: 40px;
+      margin-top: 20px;
+      padding: 15px 25px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #2196F3;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-
-  <div id="viewer">
-    <div id="content"></div>
-    <div id="done">Bra jobbat! 🎉 Du har gått igenom alla bilder och filmer.</div>
+  <div id="container">
+    <img id="slideImage" src="" alt="Bild" onclick="nextStep()">
+    <div id="text"></div>
+    <button id="nextBtn" onclick="nextStep()">Nästa</button>
   </div>
 
   <script>
-    const media = [
+    const slides = [
       {
-        type: "image",
-        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Shark_in_Florida.jpg/800px-Shark_in_Florida.jpg",
-        question: "Den här hajbilden spreds som om den var tagen på en översvämmad motorväg. Är den äkta?",
-        answer: "Nej, bilden är redigerad. Hajen är inklippt från en annan bild."
+        img: "hundar.jpg",
+        text: "Två hundar – båda är skapade av AI, men med ett års mellanrum. Den nya bilden är mycket mer verklighetstrogen. Det blir allt svårare att se vad som är fejk."
       },
       {
-        type: "video",
-        src: "https://www.w3schools.com/html/mov_bbb.mp4",
-        question: "Den här videon spreds som bevis på ett UFO. Vad bör du tänka på?",
-        answer: "Videor kan redigeras eller sakna källor. Leta efter ursprungskälla eller faktagranskning."
+        img: "tjejer.jpg",
+        text: "Här ser du två tjejer – en är verklig och en är skapad av AI. Kan du gissa vilken som är AI-genererad?"
       },
       {
-        type: "image",
-        src: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg",
-        question: "Den här bilden har fått många likes – betyder det att den är sann?",
-        answer: "Nej, antal likes säger inget om sanningshalten. Titta alltid efter källor."
+        img: "tjejer.jpg",
+        text: "Svar: Den högra är skapad av AI. AI-bilder kan se mycket verkliga ut, så det är viktigt att vara källkritisk!"
       }
     ];
 
     let current = 0;
 
-    function showMedia() {
-      if (current < media.length) {
-        const m = media[current];
-        let mediaTag = "";
-        if (m.type === "image") {
-          mediaTag = `<img src="${m.src}" class="media" onclick="nextMedia()">`;
-        } else if (m.type === "video") {
-          mediaTag = `<video src="${m.src}" class="media" autoplay controls onclick="nextMedia()"></video>`;
-        }
-        document.getElementById('content').innerHTML = `
-          ${mediaTag}
-          <div class="question">${m.question}</div>
-          <div class="answer">${m.answer}</div>
-        `;
+    function showSlide() {
+      document.getElementById("slideImage").src = slides[current].img;
+      document.getElementById("text").innerHTML = slides[current].text;
+    }
+
+    function nextStep() {
+      if (current < slides.length - 1) {
+        current++;
+        showSlide();
       } else {
-        document.getElementById('content').style.display = "none";
-        document.getElementById('done').style.display = "block";
+        document.getElementById("text").innerHTML = "Nu har du sett alla bilder!";
+        document.getElementById("slideImage").style.display = "none";
       }
     }
 
-    function nextMedia() {
-      current++;
-      showMedia();
-    }
-
-    showMedia();
+    showSlide();
   </script>
-
 </body>
 </html>
