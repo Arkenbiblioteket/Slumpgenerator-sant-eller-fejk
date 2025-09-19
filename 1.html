@@ -1,49 +1,139 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <title>Hundarna</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      margin: 0;
-      background: #f0f4f8;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: 0.3s;
-    }
-    img:hover {
-      opacity: 0.85;
-    }
-    .caption {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #444;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>AI och bluffbilder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+  }
+  h1 {
+    text-align: center;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: 0.3s;
+    margin-bottom: 10px;
+  }
+  img:hover {
+    opacity: 0.85;
+  }
+  .caption {
+    font-size: 1em;
+    color: #444;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .hidden {
+    display: none;
+  }
+  .link-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  .link-button:hover {
+    opacity: 0.85;
+  }
+</style>
 </head>
 <body>
+
+<!-- Hundarna -->
+<div id="section1">
   <h1>Hundarna</h1>
   <img src="hundar.jpg" alt="Hundar" id="hundarImg">
   <div class="caption">
     Här ser ni två hundar. Den vänstra bilden är skapad av AI för ett år sedan, den högra i höst. Ser ni skillnaden i verklighetstrogenhet?
   </div>
+</div>
 
-  <script>
-    document.getElementById("hundarImg").addEventListener("click", () => {
-      window.location.href = "2.html"; // Klick → nästa sida
-    });
-  </script>
+<!-- Tjejerna -->
+<div id="section2" class="hidden">
+  <h1>Tjejerna</h1>
+  <img src="Tjejer.jpg" alt="Tjejer" id="tjejerImg">
+  <div class="caption">
+    Här ser ni två unga tjejer. Vilken av dem tror ni är skapad av AI och vilken finns på riktigt?
+  </div>
+</div>
+
+<!-- Quiz-bild -->
+<div id="section3" class="hidden">
+  <h1>Testa dina kunskaper</h1>
+  <img src="quiz.jpg" alt="Quiz" id="quizImg">
+  <div class="caption">
+    Klicka på bilden för att gå till Aftonbladets quiz om AI och fejk.
+  </div>
+</div>
+
+<!-- Slut-sammanfattning -->
+<div id="section4" class="hidden">
+  <h1>Sammanfattning</h1>
+  <div class="caption">
+    Här är en kort sammanfattning av allt vi gått igenom:<br><br>
+    - Var försiktig med länkar och meddelanden från okända.<br>
+    - Tänk alltid kritiskt kring bilder och filmer.<br>
+    - AI kan skapa mycket verklighetstrogna bluffbilder och deepfakes.<br>
+    - Kontrollera alltid källan innan du delar eller tror på något.<br>
+    - Testa dina kunskaper med quiz och reflektera över vad som är äkta.
+  </div>
+</div>
+
+<script>
+  const section1 = document.getElementById("section1");
+  const section2 = document.getElementById("section2");
+  const section3 = document.getElementById("section3");
+  const section4 = document.getElementById("section4");
+
+  const hundarImg = document.getElementById("hundarImg");
+  const tjejerImg = document.getElementById("tjejerImg");
+  const quizImg = document.getElementById("quizImg");
+
+  // Klick på hundarna → tjejerna
+  hundarImg.addEventListener("click", () => {
+    section1.classList.add("hidden");
+    section2.classList.remove("hidden");
+  });
+
+  // Klick på tjejerna → quiz-bild
+  tjejerImg.addEventListener("click", () => {
+    section2.classList.add("hidden");
+    section3.classList.remove("hidden");
+  });
+
+  // Klick på quiz-bild → öppna Aftonbladet quiz
+  quizImg.addEventListener("click", () => {
+    window.open("https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig", "_blank");
+  });
+
+  // Länk till slut-sammanfattning längst ner på quizet
+  const summaryLink = document.createElement("a");
+  summaryLink.href = "#";
+  summaryLink.textContent = "Gå till sammanfattning";
+  summaryLink.className = "link-button";
+  section3.appendChild(summaryLink);
+
+  summaryLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    section3.classList.add("hidden");
+    section4.classList.remove("hidden");
+  });
+</script>
+
 </body>
 </html>
