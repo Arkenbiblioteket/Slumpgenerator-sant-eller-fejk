@@ -50,15 +50,9 @@
       font-weight: bold;
       transition: 0.3s;
     }
-    .answer-buttons button.bluff {
-      background: #e53935;
-    }
-    .answer-buttons button.sant {
-      background: #4caf50;
-    }
-    .answer-buttons button:hover {
-      opacity: 0.85;
-    }
+    .answer-buttons button.bluff { background: #e53935; }
+    .answer-buttons button.sant { background: #4caf50; }
+    .answer-buttons button:hover { opacity: 0.85; }
     #scoreCounter {
       margin-top: 15px;
       font-size: 1.2em;
@@ -92,9 +86,7 @@
       box-shadow:0 5px 15px rgba(0,0,0,0.3);
       transition:0.3s;
     }
-    #startBtn:hover {
-      opacity: 0.9;
-    }
+    #startBtn:hover { opacity: 0.9; }
     .feedback {
       margin-top: 15px;
       font-size: 1em;
@@ -135,7 +127,7 @@
       // 3 videofrågor
       { q: "Titta på klippet nedan.<br><iframe width='300' height='170' src='https://www.youtube.com/embed/0DAreNXQAqU' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "Exempel på fejkvideo." },
       { q: "Titta på klippet nedan. Visst ser det verkligt ut?<br><iframe width='300' height='170' src='https://www.youtube.com/embed/4g_vYZJVw9s' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "AI-genererad fejkvideo." },
-      { q: "Ibland är det lätt att förstå om något är fake.<br><iframe width='300' height='170' src='https://www.youtube.com/embed/9nz-vprp6l0' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "Exempel på fejkvideo." },
+      { q: "Ibland är det lätt att förstå om något är fake.<br><iframe width='300' height='170' src='https://www.youtube.com/embed/9nz-vprp6l0' frameborder='0' allowfullscreen></iframe>", answer: "bluff", explanation: "Exempel på fejkvideo." }
     ];
 
     let currentIndex = -1;
@@ -143,9 +135,12 @@
     let wrongCount = 0;
     let answered = false;
 
+    const questionBox = document.getElementById("questionBox");
+    const answerButtons = document.getElementById("answerButtons");
+
     document.getElementById("startBtn").addEventListener("click", () => {
       document.getElementById("startBtn").style.display = "none";
-      document.getElementById("answerButtons").style.display = "block";
+      answerButtons.style.display = "block";
       document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
       currentIndex = 0;
@@ -159,10 +154,9 @@
       }
 
       const q = questions[currentIndex];
-      document.getElementById("questionBox").innerHTML = q.q;
+      questionBox.innerHTML = q.q;
 
-      const buttonsDiv = document.getElementById("answerButtons");
-      buttonsDiv.innerHTML = `
+      answerButtons.innerHTML = `
         <button onclick="checkAnswer('bluff')" class="bluff">🎣 Bluff</button>
         <button onclick="checkAnswer('sant')" class="sant">✅ Sant</button>
       `;
@@ -189,11 +183,16 @@
         feedback = `<div class='feedback'>❌ Fel!<br>${q.explanation}</div>`;
       }
 
-      document.getElementById("questionBox").innerHTML = q.q + feedback;
-
+      questionBox.innerHTML = q.q + feedback;
       currentIndex++;
       updateScore();
       updateProgress();
+
+      // Klicka på feedback för att gå vidare
+      questionBox.onclick = () => {
+        questionBox.onclick = null; // ta bort onclick tills nästa gång
+        showQuestion();
+      };
     }
 
     function updateScore() {
@@ -206,7 +205,7 @@
     }
 
     function showSummary() {
-      document.getElementById("questionBox").innerHTML = `
+      questionBox.innerHTML = `
         🎉 Spelet är slut! 🎉<br><br>
         Du fick ${correctCount} rätt av ${questions.length}.<br><br>
         <strong>Tips när du är på internet:</strong><br>
@@ -216,10 +215,9 @@
         - Lita på konton du känner igen.<br>
         - Skicka aldrig kedjebrev vidare.<br>
       `;
-      document.getElementById("answerButtons").style.display = "none";
+      answerButtons.style.display = "none";
       document.getElementById("progress").style.display = "none";
     }
   </script>
 </body>
 </html>
-
