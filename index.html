@@ -138,7 +138,7 @@
       { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
       { q: "Du får ett meddelande från någon som säger: 'Jag är en vän till din kompis, kan du berätta var hon bor?'", answer: "bluff", explanation: "Lämna inte ut personliga uppgifter på familj eller vänner." },
       { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
-      { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
+      { q: "Du ser ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabba beslut utan att hinna tänka efter." },
       { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
     ];
 
@@ -224,12 +224,7 @@
       document.getElementById("questionBox").innerHTML = `
         🎉 Spelet är slut! 🎉<br><br>
         Du fick ${correctCount} rätt och ${wrongCount} fel av ${questions.length}.<br><br>
-        <strong>Tips när du är på internet:</strong><br>
-        - Klicka aldrig på länkar från okända.<br>
-        - Tänk efter innan du delar personlig info.<br>
-        - Kontrollera alltid källan.<br>
-        - Lita på konton du känner igen.<br>
-        - Skicka aldrig kedjebrev vidare.<br><br>
+.<br><br>
         <a href="1.html" class="next-link">➡️ Gå vidare till nästa sida</a>
       `;
       document.getElementById("answerButtons").style.display = "none";
