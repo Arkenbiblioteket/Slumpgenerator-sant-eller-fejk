@@ -6,29 +6,23 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
       background: linear-gradient(135deg, #f6d365, #fda085);
       color: #222;
-    }
-
-    .page {
-      min-height: 100vh;          /* hela höjden */
       display: flex;
-      flex-direction: column;
-      justify-content: center;    /* centrerat vertikalt */
-      align-items: center;        /* centrerat horisontellt */
-      padding: 40px 20px;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
       text-align: center;
+      width: 90%;
+      max-width: 800px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
-
-    h1 {
-      font-size: 2.2em;
-      margin-bottom: 20px;
-      color: #222;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    }
-
     #questionBox {
       margin: 20px auto;
       padding: 20px;
@@ -44,13 +38,7 @@
       background: #f0f4f8;
       cursor: pointer;
       transition: 0.3s;
-      max-width: 800px;
     }
-
-    .answer-buttons {
-      margin-top: 20px;
-    }
-
     .answer-buttons button {
       margin: 10px;
       padding: 15px 30px;
@@ -71,7 +59,6 @@
     .answer-buttons button:hover {
       opacity: 0.85;
     }
-
     #scoreCounter {
       margin-top: 15px;
       font-size: 1.2em;
@@ -79,10 +66,8 @@
       color: #00796b;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
-
     #progress {
       width: 100%;
-      max-width: 600px;
       background: #ddd;
       height: 20px;
       border-radius: 10px;
@@ -90,14 +75,12 @@
       overflow: hidden;
       display: none;
     }
-
     #progressBar {
       height: 100%;
       width: 0%;
       background: #4caf50;
       transition: width 0.3s;
     }
-
     #startBtn {
       background: linear-gradient(90deg,#fbc2eb,#a6c1ee);
       color: #222;
@@ -112,7 +95,6 @@
     #startBtn:hover {
       opacity: 0.9;
     }
-
     .feedback {
       margin-top: 15px;
       font-size: 1em;
@@ -122,7 +104,7 @@
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
     <div id="questionBox">
@@ -145,7 +127,7 @@
       { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "säkert", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
       { q: "Du får ett sms som säger att du måste betala för ett paket.", answer: "bluff", explanation: "Postföretag brukar inte kräva betalning via sms." },
       { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
-      { q: "En person du inte känner på nätet skriver och frågar om du kan skicka bilder på dig själv eftersom de vill göra dig till modell.", answer: "bluff", explanation: "Det är en bluff. Okända personer på nätet kan ljuga om modelljobb för att få bilder på dig. Skicka aldrig bilder på dig själv till någon du inte känner.”" },
+      { q: "En person du inte känner på nätet skriver och frågar om du kan skicka bilder på dig själv eftersom de vill göra dig till modell.", answer: "bluff", explanation: "Det är en bluff. Okända personer på nätet kan ljuga om modelljobb för att få bilder på dig. Skicka aldrig bilder på dig själv till någon du inte känner." },
       { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
       { q: "Ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabbt." },
       { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
