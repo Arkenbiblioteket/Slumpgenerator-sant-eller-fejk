@@ -95,11 +95,10 @@
     #startBtn:hover {
       opacity: 0.9;
     }
-    .feedback {
-      margin-top: 15px;
+    .feedbackText {
+      margin-top: 10px;
       font-size: 1em;
       color: #444;
-      cursor: pointer;
     }
     .next-link {
       display: block;
@@ -184,19 +183,24 @@
       answered = true;
 
       const q = questions[currentIndex];
-
-      // Ta bort frågetexten när man visar förklaringen
-      document.getElementById("questionBox").innerHTML = "";
+      const box = document.getElementById("questionBox");
+      box.innerHTML = ""; // ta bort frågetext
 
       if(answer === q.answer){
         correctCount++;
         document.getElementById("correctSound").play();
-        document.getElementById("questionBox").innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} </p>`;
+        box.innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedbackText">${q.explanation}</p>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        document.getElementById("questionBox").innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} </p>`;
+        box.innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedbackText">${q.explanation}</p>`;
       }
+
+      // Klick på hela rutan går vidare
+      box.onclick = () => {
+        box.onclick = null; // ta bort event för att undvika dubbla klick
+        nextQuestion();
+      };
 
       updateScore();
       updateProgress();
