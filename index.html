@@ -133,8 +133,7 @@
     const questions = [
       { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
       { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
-      { q: "En kompis skickar ett meddelande till dig och säger att hon blivit avstängd från TikTok. Hon ber dig att skicka dina inloggningsuppgifter då det ska hjälpa henne att komma in igen.", 
-  answer: "bluff", explanation: "Dela aldrig dina inloggningsuppgifter. Din kompis har troligen blivit hackad, och om du skickar dina uppgifter riskerar du att själv bli hackad." },
+      { q: "En kompis skickar ett meddelande till dig och säger att hon blivit avstängd från TikTok. Hon ber dig att skicka dina inloggningsuppgifter då det ska hjälpa henne att komma in igen.", answer: "bluff", explanation: "Dela aldrig dina inloggningsuppgifter. Din kompis har troligen blivit hackad, och om du skickar dina uppgifter riskerar du att själv bli hackad." },
       { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "säkert", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
       { q: "Du får ett mejl från Snapchat som säger att ditt konto stängs om du inte skickar ditt lösenord.", answer: "bluff", explanation: "Säkra tjänster frågar aldrig efter ditt lösenord." },
       { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
@@ -180,22 +179,25 @@
       updateProgress();
     }
 
-    function checkAnswer(answer) {
+    function checkAnswer(answer){
       if(answered) return;
       answered = true;
 
       const q = questions[currentIndex];
-      let feedback = "";
+
+      // Ta bort frågetexten när man visar förklaringen
+      document.getElementById("questionBox").innerHTML = "";
+
       if(answer === q.answer){
         correctCount++;
         document.getElementById("correctSound").play();
-        feedback = `<div class="feedback" onclick="nextQuestion()">✅ Rätt!<br>${q.explanation}</div>`;
+        document.getElementById("questionBox").innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} (Klicka här för nästa fråga)</p>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        feedback = `<div class="feedback" onclick="nextQuestion()">❌ Fel!<br>${q.explanation}</div>`;
+        document.getElementById("questionBox").innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} (Klicka här för nästa fråga)</p>`;
       }
-      document.getElementById("questionBox").innerHTML = q.q + feedback;
+
       updateScore();
       updateProgress();
     }
