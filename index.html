@@ -191,11 +191,11 @@
       if(answer === q.answer){
         correctCount++;
         document.getElementById("correctSound").play();
-        document.getElementById("questionBox").innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} (Klicka här för nästa fråga)</p>`;
+        document.getElementById("questionBox").innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} </p>`;
       } else {
         wrongCount++;
         document.getElementById("wrongSound").play();
-        document.getElementById("questionBox").innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} (Klicka här för nästa fråga)</p>`;
+        document.getElementById("questionBox").innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedback" onclick="nextQuestion()">${q.explanation} </p>`;
       }
 
       updateScore();
