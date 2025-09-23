@@ -13,6 +13,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      position: relative;
     }
     .container {
       text-align: center;
@@ -22,6 +23,8 @@
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
     }
     #questionBox {
       margin: 20px auto;
@@ -39,22 +42,7 @@
       cursor: pointer;
       transition: 0.3s;
       position: relative;
-      overflow: hidden;
-    }
-    .firework {
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,0,0,0) 70%);
-      animation: explode 1s ease-out infinite;
-      pointer-events: none;
-    }
-    @keyframes explode {
-      0% {transform: scale(0) rotate(0deg);}
-      50% {transform: scale(1) rotate(180deg);}
-      100% {transform: scale(0) rotate(360deg);}
+      overflow: visible;
     }
     .answer-buttons button {
       margin: 10px;
@@ -70,7 +58,6 @@
     .answer-buttons button.bluff { background: #e53935; }
     .answer-buttons button.säkert { background: #4caf50; }
     .answer-buttons button:hover { opacity: 0.85; }
-
     #scoreCounter {
       margin-top: 15px;
       font-size: 1.2em;
@@ -118,6 +105,31 @@
       text-decoration: none;
     }
     .next-link:hover { text-decoration: underline; }
+
+    /* Fyrverkeri CSS */
+    .firework {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .firework span {
+      position: absolute;
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #fff 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0;
+      animation: explode 1s ease-out forwards;
+    }
+    @keyframes explode {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -192,7 +204,7 @@
 
       const q = questions[currentIndex];
       const box = document.getElementById("questionBox");
-      box.innerHTML = "";
+      box.innerHTML = ""; // ta bort frågetext
 
       if(answer === q.answer){
         correctCount++;
@@ -204,7 +216,11 @@
         box.innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedbackText">${q.explanation}</p>`;
       }
 
-      box.onclick = () => { box.onclick = null; nextQuestion(); };
+      // Klick på hela rutan går vidare
+      box.onclick = () => {
+        box.onclick = null;
+        nextQuestion();
+      };
 
       updateScore();
       updateProgress();
@@ -227,13 +243,27 @@
     function showSummary(){
       const box = document.getElementById("questionBox");
       box.innerHTML = `
-        <div class="firework"></div>
         🎉 Spelet är slut! 🎉<br><br>
         Du fick ${correctCount} rätt och ${wrongCount} fel av ${questions.length}.<br><br>
         <a href="1.html" class="next-link">➡️ Gå vidare till nästa sida</a>
       `;
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
+
+      // Skapa fyrverkeri
+      const fireworkContainer = document.createElement("div");
+      fireworkContainer.classList.add("firework");
+      for(let i=0;i<30;i++){
+        const dot = document.createElement("span");
+        const angle = Math.random()*2*Math.PI;
+        const distance = Math.random()*100+50;
+        dot.style.setProperty('--x', `${Math.cos(angle)*distance}px`);
+        dot.style.setProperty('--y', `${Math.sin(angle)*distance}px`);
+        dot.style.background = `hsl(${Math.random()*360},100%,70%)`;
+        dot.style.animationDuration = `${Math.random()*0.8+0.8}s`;
+        fireworkContainer.appendChild(dot);
+      }
+      box.appendChild(fireworkContainer);
     }
   </script>
 </body>
