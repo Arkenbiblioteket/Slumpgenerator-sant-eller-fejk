@@ -17,57 +17,44 @@
   .container {
     text-align: center;
     width: 90%;
-    max-width: 900px;
+    max-width: 800px;
     padding: 20px;
   }
-  .page { display: none; }
-  .active { display: block; }
   img {
     max-width: 100%;
     border-radius: 15px;
     cursor: pointer;
     margin-top: 20px;
   }
+  iframe {
+    margin-top: 20px;
+    border-radius: 15px;
+  }
   .text-box {
-    font-size: 1.15em;
+    font-size: 1.2em;
     margin-top: 15px;
   }
   #summaryPage {
+    display: none;
     text-align: center;
     padding: 30px;
     background: linear-gradient(135deg,#fceabb,#f8b500);
     border-radius: 20px;
-    display: none;
   }
-  #summaryPage.active { display: block; }
   #summaryPage h1 {
     font-size: 2.2em;
     margin-bottom: 20px;
   }
   #summaryPage p {
-    font-size: 1.1em;
+    font-size: 1.3em;
     margin-bottom: 15px;
   }
   #summaryPage ul {
     text-align: left;
     display: inline-block;
     max-width: 600px;
-    font-size: 1.05em;
+    font-size: 1.2em;
     line-height: 1.6;
-  }
-  #player {
-    margin: 0 auto;
-    margin-top: 20px;
-    max-width: 100%;
-    width: 560px;
-    height: 315px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  }
-  @media (max-width: 600px) {
-    #player { width: 100%; height: calc(100% * 9 / 16); }
-    iframe { width:100%; height:100%; }
   }
 </style>
 </head>
@@ -75,36 +62,39 @@
 <div class="container">
 
   <!-- Hundarna -->
-  <div id="hundPage" class="page active">
-    <p class="text-box">Klicka på hundarna för att börja spelet!</p>
+  <div id="hundPage">
+    <p class="text-box">
+    </p>
     <img src="hundar.jpg" id="hundarImg" alt="Hundar">
   </div>
 
   <!-- Händer -->
-  <div id="handPage" class="page">
-    <p class="text-box">Bra! Klicka på händerna för att gå vidare.</p>
+  <div id="handPage" style="display:none;">
+    <p class="text-box">
+    </p>
     <img src="händer.jpg" id="händerImg" alt="Händer">
   </div>
 
   <!-- Tjejerna -->
-  <div id="tjejerPage" class="page">
-    <p class="text-box">Klicka på tjejerna för nästa steg.</p>
+  <div id="tjejerPage" style="display:none;">
+    <p class="text-box">
+    </p>
     <img src="Tjejer.jpg" id="tjejerImg" alt="Tjejer">
   </div>
 
-  <!-- Video-sida -->
-  <div id="videoPage" class="page">
-    <p class="text-box">Titta på videon om fake news. När den har spelats 5 gånger kan du klicka på den för att gå vidare till quizet.</p>
+  <!-- Video -->
+  <div id="videoPage" style="display:none;">
+    <p class="text-box">Titta på videon (stannar efter 51 sekunder). Klicka sedan på videon för att fortsätta!</p>
     <div id="player"></div>
   </div>
 
   <!-- Quiz bild -->
-  <div id="quizPage" class="page">
+  <div id="quizPage" style="display:none;">
     <p class="text-box">Klicka på bilden för att gå vidare till Aftonbladet-quizet!</p>
     <img src="quiz.jpg" id="quizImg" alt="Quiz">
   </div>
 
-  <!-- Sammanfattning -->
+  <!-- Sammanfattning / rolig avslutning -->
   <div id="summaryPage">
     <h1>🎉 Grattis, du har klarat allt! 🎉</h1>
     <p>Du har lärt dig massor om hur man ser vad som är riktigt<br> och vad som kan vara bluff eller AI-genererat! 💡</p>
@@ -121,87 +111,82 @@
 </div>
 
 <script>
-  // SIDHANTERING
-  const hundPage = document.getElementById('hundPage');
-  const handPage = document.getElementById('handPage');
-  const tjejerPage = document.getElementById('tjejerPage');
-  const videoPage = document.getElementById('videoPage');
-  const quizPage = document.getElementById('quizPage');
-  const summaryPage = document.getElementById('summaryPage');
+  // Klick-logik för att gå mellan sidor
+  const hundPage = document.getElementById("hundPage");
+  const handPage = document.getElementById("handPage");
+  const tjejerPage = document.getElementById("tjejerPage");
+  const videoPage = document.getElementById("videoPage");
+  const quizPage = document.getElementById("quizPage");
+  const summaryPage = document.getElementById("summaryPage");
 
-  const hundarImg = document.getElementById('hundarImg');
-  const händerImg = document.getElementById('händerImg');
-  const tjejerImg = document.getElementById('tjejerImg');
-  const quizImg = document.getElementById('quizImg');
-
-  hundarImg.addEventListener('click', () => {
-    hundPage.classList.remove('active');
-    handPage.classList.add('active');
+  document.getElementById("hundarImg").addEventListener("click", () => {
+    hundPage.style.display = "none";
+    handPage.style.display = "block";
   });
 
-  händerImg.addEventListener('click', () => {
-    handPage.classList.remove('active');
-    tjejerPage.classList.add('active');
+  document.getElementById("händerImg").addEventListener("click", () => {
+    handPage.style.display = "none";
+    tjejerPage.style.display = "block";
   });
 
-  tjejerImg.addEventListener('click', () => {
-    tjejerPage.classList.remove('active');
-    videoPage.classList.add('active');
-    const el = document.getElementById('player');
-    if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
+  document.getElementById("tjejerImg").addEventListener("click", () => {
+    tjejerPage.style.display = "none";
+    videoPage.style.display = "block";
+    loadYouTubeAPI();
   });
 
-  quizImg.addEventListener('click', () => {
-    window.open('https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig', '_blank');
-    quizPage.classList.remove('active');
-    summaryPage.classList.add('active');
+  document.getElementById("quizImg").addEventListener("click", () => {
+    window.open("https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig", "_blank");
+    quizPage.style.display = "none";
+    summaryPage.style.display = "block";
   });
 
-  // --- YouTube IFrame API setup ---
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
+  // YouTube API
+  let player;
+  let checkInterval;
+  const stopTime = 51; // sekunder
 
-  var player;
-  var playCount = 0;   
-  var maxPlays = 5;    
+  function loadYouTubeAPI() {
+    if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(tag);
+    } else {
+      onYouTubeIframeAPIReady();
+    }
+  }
 
   function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-      height: '315',
-      width: '560',
-      videoId: '9nz-vprp6l0',
-      playerVars: {
-        controls: 1,
-        rel: 0,
-        modestbranding: 1
-      },
+    player = new YT.Player("player", {
+      height: "390",
+      width: "640",
+      videoId: "Q6AFeRzOg3c",
       events: {
-        'onStateChange': onPlayerStateChange
+        onStateChange: onPlayerStateChange
       }
     });
   }
 
   function onPlayerStateChange(event) {
-    const YT_ENDED = 0;
-
-    if (event.data === YT_ENDED) {
-      playCount++;
-      if (playCount >= maxPlays) {
-        // Efter 5 gånger -> gör videon klickbar
-        document.getElementById('player').style.cursor = "pointer";
-        document.getElementById('player').addEventListener('click', proceedToQuiz);
-      }
+    if (event.data === YT.PlayerState.PLAYING) {
+      checkInterval = setInterval(function() {
+        if (player.getCurrentTime() >= stopTime) {
+          player.pauseVideo();
+          clearInterval(checkInterval);
+        }
+      }, 500);
+    } else {
+      clearInterval(checkInterval);
     }
   }
 
-  function proceedToQuiz() {
-    try {
-      if (player && player.stopVideo) player.stopVideo();
-    } catch(e) {}
-    videoPage.classList.remove('active');
-    quizPage.classList.add('active');
-  }
+  // Klicka på videon för att gå vidare
+  document.addEventListener("click", function(e) {
+    if (videoPage.style.display === "block" && e.target.tagName === "IFRAME") {
+      videoPage.style.display = "none";
+      quizPage.style.display = "block";
+    }
+  });
 </script>
 </body>
 </html>
