@@ -17,9 +17,11 @@
   .container {
     text-align: center;
     width: 90%;
-    max-width: 800px;
+    max-width: 900px;
     padding: 20px;
   }
+  .page { display: none; }
+  .active { display: block; }
   img {
     max-width: 100%;
     border-radius: 15px;
@@ -27,30 +29,59 @@
     margin-top: 20px;
   }
   .text-box {
-    font-size: 1.2em;
+    font-size: 1.15em;
     margin-top: 15px;
   }
   #summaryPage {
-    display: none;
     text-align: center;
     padding: 30px;
     background: linear-gradient(135deg,#fceabb,#f8b500);
     border-radius: 20px;
+    display: none;
   }
+  #summaryPage.active { display: block; }
   #summaryPage h1 {
     font-size: 2.2em;
     margin-bottom: 20px;
   }
   #summaryPage p {
-    font-size: 1.3em;
+    font-size: 1.1em;
     margin-bottom: 15px;
   }
   #summaryPage ul {
     text-align: left;
     display: inline-block;
     max-width: 600px;
-    font-size: 1.2em;
+    font-size: 1.05em;
     line-height: 1.6;
+  }
+  /* Videostil + knapp */
+  #player {
+    margin: 0 auto;
+    margin-top: 20px;
+    max-width: 100%;
+    width: 560px;
+    height: 315px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+  #continueBtn {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    background: linear-gradient(180deg,#4CAF50,#388E3C);
+    color: white;
+  }
+  /* Responsiv */
+  @media (max-width: 600px) {
+    #player { width: 100%; height: calc(100% * 9 / 16); }
+    iframe { width:100%; height:100%; }
   }
 </style>
 </head>
@@ -58,31 +89,32 @@
 <div class="container">
 
   <!-- Hundarna -->
-  <div id="hundPage">
-    <p class="text-box"></p>
+  <div id="hundPage" class="page active">
+    <p class="text-box">Klicka på hundarna för att börja spelet!</p>
     <img src="hundar.jpg" id="hundarImg" alt="Hundar">
   </div>
 
   <!-- Händer -->
-  <div id="handPage" style="display:none;">
-    <p class="text-box"></p>
+  <div id="handPage" class="page">
+    <p class="text-box">Bra! Klicka på händerna för att gå vidare.</p>
     <img src="händer.jpg" id="händerImg" alt="Händer">
   </div>
 
   <!-- Tjejerna -->
-  <div id="tjejerPage" style="display:none;">
-    <p class="text-box"></p>
+  <div id="tjejerPage" class="page">
+    <p class="text-box">Klicka på tjejerna för nästa steg.</p>
     <img src="Tjejer.jpg" id="tjejerImg" alt="Tjejer">
   </div>
 
-  <!-- Video-sida -->
-  <div id="videoPage" style="display:none;">
-    <p class="text-box">Klicka på bilden för att se videon! När du stänger videon fortsätter spelet automatiskt.</p>
-    <img src="video.jpg" id="videoImg" alt="Video om fake news">
+  <!-- Video-sida (YouTube IFrame API används för att kunna känna av avslut och uppspelning) -->
+  <div id="videoPage" class="page">
+    <p class="text-box">Titta på videon om fake news. När du spelat den visas en knapp för att fortsätta — eller så går vi automatiskt vidare när videon är slut.</p>
+    <div id="player"></div>
+    <button id="continueBtn" aria-label="Fortsätt till quiz">Klicka här för att gå vidare</button>
   </div>
 
   <!-- Quiz bild -->
-  <div id="quizPage" style="display:none;">
+  <div id="quizPage" class="page">
     <p class="text-box">Klicka på bilden för att gå vidare till Aftonbladet-quizet!</p>
     <img src="quiz.jpg" id="quizImg" alt="Quiz">
   </div>
@@ -103,49 +135,113 @@
 
 </div>
 
+<!-- Scripts längst ner -->
 <script>
-  // Klick-logik för att gå mellan sidor
-  const hundPage = document.getElementById("hundPage");
-  const handPage = document.getElementById("handPage");
-  const tjejerPage = document.getElementById("tjejerPage");
-  const videoPage = document.getElementById("videoPage");
-  const quizPage = document.getElementById("quizPage");
-  const summaryPage = document.getElementById("summaryPage");
+  // SIDHANTERING
+  const hundPage = document.getElementById('hundPage');
+  const handPage = document.getElementById('handPage');
+  const tjejerPage = document.getElementById('tjejerPage');
+  const videoPage = document.getElementById('videoPage');
+  const quizPage = document.getElementById('quizPage');
+  const summaryPage = document.getElementById('summaryPage');
 
-  document.getElementById("hundarImg").addEventListener("click", () => {
-    hundPage.style.display = "none";
-    handPage.style.display = "block";
+  const hundarImg = document.getElementById('hundarImg');
+  const händerImg = document.getElementById('händerImg');
+  const tjejerImg = document.getElementById('tjejerImg');
+  const quizImg = document.getElementById('quizImg');
+
+  hundarImg.addEventListener('click', () => {
+    hundPage.classList.remove('active');
+    handPage.classList.add('active');
   });
 
-  document.getElementById("händerImg").addEventListener("click", () => {
-    handPage.style.display = "none";
-    tjejerPage.style.display = "block";
+  händerImg.addEventListener('click', () => {
+    handPage.classList.remove('active');
+    tjejerPage.classList.add('active');
   });
 
-  document.getElementById("tjejerImg").addEventListener("click", () => {
-    tjejerPage.style.display = "none";
-    videoPage.style.display = "block";
+  tjejerImg.addEventListener('click', () => {
+    tjejerPage.classList.remove('active');
+    videoPage.classList.add('active');
+    // om spelaren är redo kan vi scrolla till den (bra för mobil)
+    const el = document.getElementById('player');
+    if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
   });
 
-  document.getElementById("videoImg").addEventListener("click", () => {
-    // Öppna video i nytt fönster/flik
-    const win = window.open("https://www.youtube.com/shorts/9nz-vprp6l0", "youtubeWindow");
+  quizImg.addEventListener('click', () => {
+    // öppna quiz i ny flik (extern länk)
+    window.open('https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig', '_blank');
+    // visa sammanfattning i spelet
+    quizPage.classList.remove('active');
+    summaryPage.classList.add('active');
+  });
 
-    // Kolla om fönstret är stängt
-    const checkClosed = setInterval(() => {
-      if (win.closed) {
-        clearInterval(checkClosed);
-        videoPage.style.display = "none";
-        quizPage.style.display = "block";
+  // --- YouTube IFrame API setup ---
+  // Ladda API
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  var player;
+  var videoSeen = false;
+  var continueBtn = document.getElementById('continueBtn');
+
+  // Denna funktion anropas av YouTube API när scriptet är klart
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '315',
+      width: '560',
+      videoId: '9nz-vprp6l0', // din video
+      playerVars: {
+        controls: 1,
+        rel: 0,
+        modestbranding: 1
+      },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
       }
-    }, 1000);
-  });
+    });
+  }
 
-  document.getElementById("quizImg").addEventListener("click", () => {
-    window.open("https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig", "_blank");
-    quizPage.style.display = "none";
-    summaryPage.style.display = "block";
-  });
+  function onPlayerReady(event) {
+    // Ingen autoplay — användaren startar videon själv.
+    // Vi visar fortsätt-knappen först när videon spelats (eller när spelningen startar).
+    continueBtn.style.display = 'none';
+  }
+
+  function onPlayerStateChange(event) {
+    // event.data: YT.PlayerState.*
+    const YT_PLAYING = 1;
+    const YT_ENDED = 0;
+
+    if (event.data === YT_PLAYING) {
+      // användaren har startat videon minst en gång
+      videoSeen = true;
+      continueBtn.style.display = 'inline-block';
+    }
+
+    if (event.data === YT_ENDED) {
+      // videon slut => gå automatiskt vidare
+      proceedToQuiz();
+    }
+  }
+
+  // När användaren klickar på Fortsätt-knappen -> gå vidare
+  continueBtn.addEventListener('click', proceedToQuiz);
+
+  function proceedToQuiz() {
+    // stoppa videon om den spelar
+    try {
+      if (player && player.stopVideo) player.stopVideo();
+    } catch(e) { /* tyst fel om något oväntat */ }
+
+    videoPage.classList.remove('active');
+    quizPage.classList.add('active');
+  }
+
+  // Spara att användaren kan hoppa vidare med knapp även om de inte vill se klart
+  // (videoSeen kommer bli true vid uppspelningstart och visa knappen).
 </script>
 </body>
 </html>
