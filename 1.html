@@ -56,6 +56,15 @@
     font-size: 1.2em;
     line-height: 1.6;
   }
+  #continueLink {
+    display: none;
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0066cc;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
@@ -84,8 +93,9 @@
 
   <!-- Video -->
   <div id="videoPage" style="display:none;">
-    <p class="text-box">Titta på videon (stannar efter 51 sekunder). Klicka sedan på videon för att fortsätta!</p>
+    <p class="text-box">Men vad kan hända om AI används till att ändra vad ledarna för stora krigsmakter säger?</p>
     <div id="player"></div>
+    <div id="continueLink">👉 Fortsätt till quizet</div>
   </div>
 
   <!-- Quiz bild -->
@@ -118,6 +128,7 @@
   const videoPage = document.getElementById("videoPage");
   const quizPage = document.getElementById("quizPage");
   const summaryPage = document.getElementById("summaryPage");
+  const continueLink = document.getElementById("continueLink");
 
   document.getElementById("hundarImg").addEventListener("click", () => {
     hundPage.style.display = "none";
@@ -135,6 +146,11 @@
     loadYouTubeAPI();
   });
 
+  continueLink.addEventListener("click", () => {
+    videoPage.style.display = "none";
+    quizPage.style.display = "block";
+  });
+
   document.getElementById("quizImg").addEventListener("click", () => {
     window.open("https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig", "_blank");
     quizPage.style.display = "none";
@@ -144,7 +160,7 @@
   // YouTube API
   let player;
   let checkInterval;
-  const stopTime = 18; // sekunder
+  const stopTime = 51; // sekunder
 
   function loadYouTubeAPI() {
     if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
@@ -173,20 +189,13 @@
         if (player.getCurrentTime() >= stopTime) {
           player.pauseVideo();
           clearInterval(checkInterval);
+          continueLink.style.display = "block"; // visa länken
         }
       }, 500);
     } else {
       clearInterval(checkInterval);
     }
   }
-
-  // Klicka på videon för att gå vidare
-  document.addEventListener("click", function(e) {
-    if (videoPage.style.display === "block" && e.target.tagName === "IFRAME") {
-      videoPage.style.display = "none";
-      quizPage.style.display = "block";
-    }
-  });
 </script>
 </body>
 </html>
