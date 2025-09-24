@@ -55,7 +55,6 @@
     font-size: 1.05em;
     line-height: 1.6;
   }
-  /* Videostil + knapp */
   #player {
     margin: 0 auto;
     margin-top: 20px;
@@ -66,19 +65,6 @@
     overflow: hidden;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   }
-  #continueBtn {
-    display: none;
-    margin-top: 12px;
-    padding: 10px 18px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1em;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-    background: linear-gradient(180deg,#4CAF50,#388E3C);
-    color: white;
-  }
-  /* Responsiv */
   @media (max-width: 600px) {
     #player { width: 100%; height: calc(100% * 9 / 16); }
     iframe { width:100%; height:100%; }
@@ -106,11 +92,10 @@
     <img src="Tjejer.jpg" id="tjejerImg" alt="Tjejer">
   </div>
 
-  <!-- Video-sida (YouTube IFrame API används för att kunna känna av avslut och uppspelning) -->
+  <!-- Video-sida -->
   <div id="videoPage" class="page">
-    <p class="text-box">Titta på videon om fake news. När du spelat den visas en knapp för att fortsätta — eller så går vi automatiskt vidare när videon är slut.</p>
+    <p class="text-box">Titta på videon om fake news. När den har spelats 5 gånger kan du klicka på den för att gå vidare till quizet.</p>
     <div id="player"></div>
-    <button id="continueBtn" aria-label="Fortsätt till quiz">Klicka här för att gå vidare</button>
   </div>
 
   <!-- Quiz bild -->
@@ -119,7 +104,7 @@
     <img src="quiz.jpg" id="quizImg" alt="Quiz">
   </div>
 
-  <!-- Sammanfattning / rolig avslutning -->
+  <!-- Sammanfattning -->
   <div id="summaryPage">
     <h1>🎉 Grattis, du har klarat allt! 🎉</h1>
     <p>Du har lärt dig massor om hur man ser vad som är riktigt<br> och vad som kan vara bluff eller AI-genererat! 💡</p>
@@ -135,7 +120,6 @@
 
 </div>
 
-<!-- Scripts längst ner -->
 <script>
   // SIDHANTERING
   const hundPage = document.getElementById('hundPage');
@@ -163,85 +147,61 @@
   tjejerImg.addEventListener('click', () => {
     tjejerPage.classList.remove('active');
     videoPage.classList.add('active');
-    // om spelaren är redo kan vi scrolla till den (bra för mobil)
     const el = document.getElementById('player');
     if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
   });
 
   quizImg.addEventListener('click', () => {
-    // öppna quiz i ny flik (extern länk)
     window.open('https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig', '_blank');
-    // visa sammanfattning i spelet
     quizPage.classList.remove('active');
     summaryPage.classList.add('active');
   });
 
   // --- YouTube IFrame API setup ---
-  // Ladda API
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   document.head.appendChild(tag);
 
   var player;
-  var videoSeen = false;
-  var continueBtn = document.getElementById('continueBtn');
+  var playCount = 0;   
+  var maxPlays = 5;    
 
-  // Denna funktion anropas av YouTube API när scriptet är klart
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
       height: '315',
       width: '560',
-      videoId: '9nz-vprp6l0', // din video
+      videoId: '9nz-vprp6l0',
       playerVars: {
         controls: 1,
         rel: 0,
         modestbranding: 1
       },
       events: {
-        'onReady': onPlayerReady,
         'onStateChange': onPlayerStateChange
       }
     });
   }
 
-  function onPlayerReady(event) {
-    // Ingen autoplay — användaren startar videon själv.
-    // Vi visar fortsätt-knappen först när videon spelats (eller när spelningen startar).
-    continueBtn.style.display = 'none';
-  }
-
   function onPlayerStateChange(event) {
-    // event.data: YT.PlayerState.*
-    const YT_PLAYING = 1;
     const YT_ENDED = 0;
 
-    if (event.data === YT_PLAYING) {
-      // användaren har startat videon minst en gång
-      videoSeen = true;
-      continueBtn.style.display = 'inline-block';
-    }
-
     if (event.data === YT_ENDED) {
-      // videon slut => gå automatiskt vidare
-      proceedToQuiz();
+      playCount++;
+      if (playCount >= maxPlays) {
+        // Efter 5 gånger -> gör videon klickbar
+        document.getElementById('player').style.cursor = "pointer";
+        document.getElementById('player').addEventListener('click', proceedToQuiz);
+      }
     }
   }
 
-  // När användaren klickar på Fortsätt-knappen -> gå vidare
-  continueBtn.addEventListener('click', proceedToQuiz);
-
   function proceedToQuiz() {
-    // stoppa videon om den spelar
     try {
       if (player && player.stopVideo) player.stopVideo();
-    } catch(e) { /* tyst fel om något oväntat */ }
-
+    } catch(e) {}
     videoPage.classList.remove('active');
     quizPage.classList.add('active');
   }
-
-  // Spara att användaren kan hoppa vidare med knapp även om de inte vill se klart
-  // (videoSeen kommer bli true vid uppspelningstart och visa knappen).
 </script>
 </body>
 </html>
