@@ -26,12 +26,6 @@
     cursor: pointer;
     margin-top: 20px;
   }
-  iframe {
-    max-width: 100%;
-    border-radius: 15px;
-    margin-top: 20px;
-    cursor: pointer;
-  }
   .text-box {
     font-size: 1.2em;
     margin-top: 15px;
@@ -83,12 +77,8 @@
 
   <!-- Video-sida -->
   <div id="videoPage" style="display:none;">
-    <p class="text-box">Klicka på videon för att gå vidare!</p>
-    <iframe id="videoFrame" width="560" height="315"
-      src="https://www.youtube.com/embed/9nz-vprp6l0"
-      title="YouTube video player" frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
+    <p class="text-box">Klicka på bilden för att se videon! När du stänger videon fortsätter spelet automatiskt.</p>
+    <img src="video.jpg" id="videoImg" alt="Video om fake news">
   </div>
 
   <!-- Quiz bild -->
@@ -137,9 +127,18 @@
     videoPage.style.display = "block";
   });
 
-  document.getElementById("videoFrame").addEventListener("click", () => {
-    videoPage.style.display = "none";
-    quizPage.style.display = "block";
+  document.getElementById("videoImg").addEventListener("click", () => {
+    // Öppna video i nytt fönster/flik
+    const win = window.open("https://www.youtube.com/shorts/9nz-vprp6l0", "youtubeWindow");
+
+    // Kolla om fönstret är stängt
+    const checkClosed = setInterval(() => {
+      if (win.closed) {
+        clearInterval(checkClosed);
+        videoPage.style.display = "none";
+        quizPage.style.display = "block";
+      }
+    }, 1000);
   });
 
   document.getElementById("quizImg").addEventListener("click", () => {
