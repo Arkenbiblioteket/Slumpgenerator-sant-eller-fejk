@@ -154,16 +154,17 @@
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
       document.body.appendChild(tag);
+      window.onYouTubeIframeAPIReady = createPlayer1;
     } else {
-      onYouTubeIframeAPIReady1();
+      createPlayer1();
     }
   }
 
-  function onYouTubeIframeAPIReady1() {
+  function createPlayer1() {
     player1 = new YT.Player("player1", {
       height: "390",
       width: "640",
-      videoId: "9nz-vprp6l0",
+      videoId: "9nz-vprp6l0", // rätt ID från Shorts
     });
   }
 </script>
