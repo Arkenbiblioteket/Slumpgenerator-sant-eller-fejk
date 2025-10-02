@@ -52,22 +52,14 @@
 
   /* Specifika storlekar för bilder */
   #startImg {
-    width: 400px;
+    width: 400px; /* första bilden mindre */
     height: auto;
   }
   #hundarImg,
   #händerImg,
   #quizImg {
-    width: 400px;
+    width: 400px; /* övriga bilder lite större */
     height: auto;
-  }
-  #video1Thumb,
-  #video2Thumb {
-    width: 400px;
-    height: auto;
-    border-radius: 15px;
-    cursor: pointer;
-    margin-top: 20px;
   }
 </style>
 </head>
@@ -108,22 +100,12 @@
   <div id="deepfakePage" class="page">
     <h2>Deepfake 🎭💻</h2>
     <p>AI kan ändra filmer så att personer ser ut att säga eller göra saker de inte gjort</p>
-    <img src="video1.jpg" id="video1Thumb" alt="Klicka för första videon">
-  </div>
-
-  <!-- Video 1 -->
-  <div id="video1Page" class="page">
-    <div id="video1Container">
-      <div id="player1"></div>
-    </div>
+    <img src="video1.jpg" id="video1Thumb" alt="Klicka för första videon" style="width:400px; border-radius:15px; cursor:pointer; margin-top:20px;">
   </div>
 
   <!-- Video 2 -->
   <div id="video2Page" class="page">
-    <div id="video2Container">
-      <img src="video2.jpg" id="video2Thumb" alt="Klicka för andra videon">
-      <div id="player2"></div>
-    </div>
+    <img src="video2.jpg" id="video2Thumb" alt="Klicka för andra videon" style="width:400px; border-radius:15px; cursor:pointer; margin-top:20px;">
   </div>
 
   <!-- Sammanfattning -->
@@ -163,57 +145,17 @@
     showPage('deepfakePage');
   });
 
-  // Deepfake → Klickbar bild → Video 1
+  // Klick på första videobilden → öppna YouTube och gå till nästa steg
   document.getElementById('video1Thumb').addEventListener('click', () => {
-    showPage('video1Page');
-    player1.playVideo();
-  });
-
-  // Video 2 → Klickbar bild startar video
-  document.getElementById('video2Thumb').addEventListener('click', () => {
+    window.open('https://www.youtube.com/embed/9nz-vprp6l0', '_blank');
     showPage('video2Page');
-    player2.playVideo();
   });
 
-  // Ladda YouTube IFrame API
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
-
-  let player1, player2;
-
-  function onYouTubeIframeAPIReady() {
-    player1 = new YT.Player('player1', {
-      height: '360',
-      width: '640',
-      videoId: '9nz-vprp6l0',
-      events: {
-        'onStateChange': onPlayer1StateChange
-      }
-    });
-
-    player2 = new YT.Player('player2', {
-      height: '360',
-      width: '640',
-      videoId: 'XLWtlUcU5ZI',
-      events: {
-        'onStateChange': onPlayer2StateChange
-      }
-    });
-  }
-
-  function onPlayer1StateChange(event) {
-    if(event.data === YT.PlayerState.ENDED){
-      showPage('video2Page');
-      player2.playVideo();
-    }
-  }
-
-  function onPlayer2StateChange(event) {
-    if(event.data === YT.PlayerState.ENDED){
-      showPage('summaryPage');
-    }
-  }
+  // Klick på andra videobilden → öppna YouTube och gå till sammanfattningen
+  document.getElementById('video2Thumb').addEventListener('click', () => {
+    window.open('https://www.youtube.com/embed/XLWtlUcU5ZI', '_blank');
+    showPage('summaryPage');
+  });
 </script>
 
 </body>
