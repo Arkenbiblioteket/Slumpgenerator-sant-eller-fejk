@@ -1,153 +1,283 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<title>AI och bluffar - lär dig se skillnad!</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f4f8;
-    color: #222;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  .container {
-    text-align: center;
-    width: 90%;
-    max-width: 800px;
-    padding: 20px;
-  }
-  img {
-    max-width: 100%;
-    border-radius: 15px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  iframe {
-    margin-top: 20px;
-    border-radius: 15px;
-  }
-  .page {
-    display: none;
-  }
-  .active {
-    display: block;
-  }
-  .click-box {
-    display: inline-block;
-    padding: 20px;
-    background: #ffd966;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 1.5em;
-    margin-top: 20px;
-  }
+  <meta charset="UTF-8">
+  <title>Bli ett proffs på smarta val online!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      position: relative;
+    }
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 800px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+    #questionBox {
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #f0f4f8;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      overflow: visible;
+    }
+    .answer-buttons button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .answer-buttons button.bluff { background: #e53935; }
+    .answer-buttons button.säkert { background: #4caf50; }
+    .answer-buttons button:hover { opacity: 0.85; }
+    #scoreCounter {
+      margin-top: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #00796b;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    #progress {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+      display: none;
+    }
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.3s;
+    }
+    #startBtn {
+      background: linear-gradient(90deg,#fbc2eb,#a6c1ee);
+      color: #222;
+      font-size:1.3em;
+      padding:20px 40px;
+      border-radius:20px;
+      border:none;
+      cursor:pointer;
+      box-shadow:0 5px 15px rgba(0,0,0,0.3);
+      transition:0.3s;
+    }
+    #startBtn:hover { opacity: 0.9; }
+    .feedbackText {
+      margin-top: 10px;
+      font-size: 1em;
+      color: #444;
+    }
+    .next-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .next-link:hover { text-decoration: underline; }
 
-  /* Specifika storlekar för bilder */
-  #startImg { width: 400px; height: auto; }
-  #hundarImg, #händerImg, #quizImg { width: 400px; height: auto; }
-</style>
+    /* Fyrverkeri CSS */
+    .firework {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .firework span {
+      position: absolute;
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #fff 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: 0;
+      animation: explode 1s ease-out forwards;
+    }
+    @keyframes explode {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
+    <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
-  <!-- Start sida -->
-  <div id="startPage" class="page active">
-    <h1>Vad är AI? 🤖💡🖥️</h1>
-    <img src="ai.jpg" id="startImg" alt="AI-bild">
-    <h2>AI, eller artificiell intelligens, är när datorer kan lära sig <br>
-        och tänka lite som människor. Den kan känna igen bilder, förstå <br>
-        språk och ge förslag, och blir bättre ju mer den övar.</h2>
-  </div>
-
-  <!-- Hundarna -->
-  <div id="hundPage" class="page">
-    <h2>Den första hunden är skapad för något år sedan, medan den andra är ny. 
-      AI har blivit mycket bättre på att skapa bilder som ser verkliga ut.</h2>
-    <img src="hundar.jpg" id="hundarImg" alt="Hundar">
-  </div>
-
-  <!-- Händer -->
-  <div id="handPage" class="page">
-    <h2>Förr hade AI problem med att skapa mänskliga händer, <br>men har blivit mycket bättre på det.</h2>
-    <img src="händer.jpg" id="händerImg" alt="Händer">
-    <h2>Så det blir allt svårare att veta vilka bilder<br> som är verkliga eller skapade av AI.</h2>
-  </div>
-
-  <!-- Quiz -->
-  <div id="quizPage" class="page">
-    <h2>Nu ska vi göra ett quiz som kommer från Aftonbladet<br> där ni gissa om en bild är sann eller falsk.</h2>
-    <img src="quiz.jpg" id="quizImg" alt="Quiz">
-  </div>
-
-  <!-- Deepfake -->
-  <div id="deepfakePage" class="page">
-    <h2>Deepfake 🎭💻</h2>
-    <p>AI kan ändra filmer så att personer ser ut att säga eller göra saker de inte gjort</p>
-    <div class="click-box" id="deepfakeNext">Klicka här för video 1</div>
-  </div>
-
-  <!-- Video 1 -->
-  <div id="video1Page" class="page">
-    <iframe width="640" height="360" 
-      src="https://www.youtube.com/embed/9nz-vprp6l0" 
-      title="Video 1" frameborder="0" allowfullscreen></iframe>
-    <div class="click-box" id="video1Next">Klicka här för nästa video</div>
-  </div>
-
-  <!-- Video 2 -->
-  <div id="video2Page" class="page">
-    <iframe width="640" height="360" src="https://www.youtube.com/embed/XLWtlUcU5ZI" 
-      title="Video 2" frameborder="0" allowfullscreen></iframe>
-    <div class="click-box" id="video2Next">Klicka här för sammanfattning</div>
-  </div>
-
-  <!-- Sammanfattning -->
-  <div id="summaryPage" class="page">
-    <canvas id="confettiCanvas"></canvas>
-    <div class="summary-content">
-      <h1>🎉 Grattis! 🎉</h1>
-      <p>Nu har du lärt dig om AI, bluffar och deepfake! 💡</p>
-      <ul>
-        <li>👀 Var alltid nyfiken och tänk kritiskt när du ser bilder och filmer.</li>
-        <li>🔍 Kontrollera alltid källan innan du litar på något.</li>
-        <li>🚫 Klicka aldrig på länkar från okända eller konstiga meddelanden.</li>
-        <li>🤝 Lita bara på personer och konton du känner igen.</li>
-        <li>✨ Ha kul med teknik, men tänk efter innan du delar eller tror på allt du ser!</li>
-      </ul>
-      <p class="final-text">Nu kan du göra smarta val online! 🌟💪</p>
+    <div id="questionBox">
+      <button id="startBtn">🚀 Starta spelet!</button>
     </div>
+
+    <!-- Testa ljuden innan spelet -->
+    <h2>🔊 Testa ljuden innan du börjar</h2>
+    <div id="soundTest" style="margin: 10px 0;">
+      <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
+      <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
+    </div>
+
+    <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
+    <div id="scoreCounter" style="display:none"></div>
+    <div id="progress"><div id="progressBar"></div></div>
   </div>
 
-</div>
+  <!-- Ljudfiler -->
+  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
+  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
-<script>
-  function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-  }
+  <script>
+    function playCorrect() {
+      document.getElementById("correctSound").play();
+    }
+    function playWrong() {
+      document.getElementById("wrongSound").play();
+    }
 
-  // Start → Hund
-  document.getElementById('startImg').addEventListener('click', () => showPage('hundPage'));
-  // Hund → Händer
-  document.getElementById('hundarImg').addEventListener('click', () => showPage('handPage'));
-  // Händer → Quiz
-  document.getElementById('händerImg').addEventListener('click', () => showPage('quizPage'));
-  // Quiz → Aftonbladet → Deepfake
-  document.getElementById('quizImg').addEventListener('click', () => {
-    window.open("https://www.aftonbladet.se/nyheter/kolumnister/a/QMlWGq/martin-schori-kan-du-skilja-ai-fran-akta-har-kan-du-testa-dig", "_blank");
-    showPage('deepfakePage');
-  });
-  // Deepfake → Video 1
-  document.getElementById('deepfakeNext').addEventListener('click', () => showPage('video1Page'));
-  // Video 1 → Video 2
-  document.getElementById('video1Next').addEventListener('click', () => showPage('video2Page'));
-  // Video 2 → Sammanfattning
-  document.getElementById('video2Next').addEventListener('click', () => showPage('summaryPage'));
-</script>
+    const questions = [
+      { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
+      { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
+      { q: "Din lärare skickar ett mejl via skolans e-post om läxan.", answer: "säkert", explanation: "Det är troligen äkta eftersom det kommer från skolans system." },
+      { q: "Du får ett mejl från Snapchat som säger att ditt konto stängs om du inte skickar ditt lösenord.", answer: "bluff", explanation: "Säkra tjänster frågar aldrig efter ditt lösenord." },
+      { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
+      { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
+      { q: "Du ser ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta <BR>snabba beslut utan att hinna tänka efter." },
+      { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
+    ];
 
+    let currentIndex = -1;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answered = false;
+
+    const startBtn = document.getElementById("startBtn");
+    startBtn.addEventListener("click", () => {
+      startBtn.style.display = "none";
+      document.getElementById("answerButtons").style.display = "block";
+      document.getElementById("scoreCounter").style.display = "block";
+      document.getElementById("progress").style.display = "block";
+      currentIndex = 0;
+      showQuestion();
+    });
+
+    function showQuestion() {
+      if(currentIndex >= questions.length){
+        showSummary();
+        return;
+      }
+
+      const q = questions[currentIndex];
+      const questionBox = document.getElementById("questionBox");
+      questionBox.innerHTML = q.q;
+
+      const buttonsDiv = document.getElementById("answerButtons");
+      buttonsDiv.innerHTML = `
+        <button onclick="checkAnswer('bluff')" class="bluff">🎣 Bluff</button>
+        <button onclick="checkAnswer('säkert')" class="säkert">✅ Säkert</button>
+      `;
+
+      answered = false;
+      updateScore();
+      updateProgress();
+    }
+
+    function checkAnswer(answer){
+      if(answered) return;
+      answered = true;
+
+      const q = questions[currentIndex];
+      const box = document.getElementById("questionBox");
+      box.innerHTML = ""; // ta bort frågetext
+
+      if(answer === q.answer){
+        correctCount++;
+        document.getElementById("correctSound").play();
+        box.innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedbackText">${q.explanation}</p>`;
+      } else {
+        wrongCount++;
+        document.getElementById("wrongSound").play();
+        box.innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedbackText">${q.explanation}</p>`;
+      }
+
+      // Klick på hela rutan går vidare
+      box.onclick = () => {
+        box.onclick = null;
+        nextQuestion();
+      };
+
+      updateScore();
+      updateProgress();
+    }
+
+    function nextQuestion(){
+      currentIndex++;
+      showQuestion();
+    }
+
+    function updateScore(){
+      document.getElementById("scoreCounter").innerText = `Rätt: ${correctCount} | Fel: ${wrongCount}`;
+    }
+
+    function updateProgress(){
+      const percent = ((currentIndex+1)/questions.length)*100;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function showSummary(){
+      const box = document.getElementById("questionBox");
+      box.innerHTML = `
+        🎉 Spelet är slut! 🎉<br><br>
+        Du fick ${correctCount} rätt och ${wrongCount} fel av ${questions.length}.<br><br>
+      <a href="1.html" class="next-link">➡️ Lär dig mer om AI och deep fake</a>
+      `;
+      document.getElementById("answerButtons").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+
+      // Skapa fyrverkeri
+      const fireworkContainer = document.createElement("div");
+      fireworkContainer.classList.add("firework");
+      for(let i=0;i<30;i++){
+        const dot = document.createElement("span");
+        const angle = Math.random()*2*Math.PI;
+        const distance = Math.random()*100+50;
+        dot.style.setProperty('--x', `${Math.cos(angle)*distance}px`);
+        dot.style.setProperty('--y', `${Math.sin(angle)*distance}px`);
+        dot.style.background = `hsl(${Math.random()*360},100%,70%)`;
+        dot.style.animationDuration = `${Math.random()*0.8+0.8}s`;
+        fireworkContainer.appendChild(dot);
+      }
+      box.appendChild(fireworkContainer);
+    }
+  </script>
 </body>
 </html>
