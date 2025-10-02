@@ -138,36 +138,31 @@
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
-        </div>
-<h2>🔊 Testa ljuden innan du börjar</h2>
-<div style="margin: 10px 0;">
-  <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
-  <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
-</div>
+    </div>
 
-<script>
-  // Skapa två ljudfiler
-  const correctSound = new Audio("sounds/ratt.mp3"); // byt till din ljudfil
-  const wrongSound = new Audio("sounds/fel.mp3");     // byt till din ljudfil
-
-  function playCorrect() {
-    correctSound.play();
-  }
-
-  function playWrong() {
-    wrongSound.play();
-  }
-</script>
+    <h2>🔊 Testa ljuden innan du börjar</h2>
+    <div style="margin: 10px 0;">
+      <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
+      <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
+    </div>
 
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
     <div id="scoreCounter" style="display:none"></div>
     <div id="progress"><div id="progressBar"></div></div>
   </div>
 
-  <audio id="correctSound" src="applaus.wav" preload="auto"></audio>
-  <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
+  <!-- Ljudfiler -->
+  <audio id="correctSound" src="ratt.mp3" preload="auto"></audio>
+  <audio id="wrongSound" src="fel.mp3" preload="auto"></audio>
 
   <script>
+    function playCorrect() {
+      document.getElementById("correctSound").play();
+    }
+    function playWrong() {
+      document.getElementById("wrongSound").play();
+    }
+
     const questions = [
       { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
       { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
