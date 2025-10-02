@@ -135,10 +135,10 @@
   <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
-    <!-- Symbolknappar (endast ikoner) -->
+    <!-- Symbolknappar (ändrade till bock/kryss med ljud) -->
     <div style="margin-bottom: 15px;">
-      <button onclick="playCorrect()" title="Testa rätt-ljud" style="border:none;background:none;font-size:28px;cursor:pointer;">🔊</button>
-      <button onclick="toggleFullscreen()" title="Fullskärm" style="border:none;background:none;font-size:28px;cursor:pointer;">⛶</button>
+      <button onclick="playCorrect()" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
+      <button onclick="playWrong()" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
     </div>
 
     <div id="questionBox">
@@ -160,13 +160,6 @@
     }
     function playWrong() {
       document.getElementById("wrongSound").play();
-    }
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-      }
     }
 
     const questions = [
