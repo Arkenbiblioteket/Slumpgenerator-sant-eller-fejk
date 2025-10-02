@@ -106,7 +106,6 @@
     }
     .next-link:hover { text-decoration: underline; }
 
-    /* Fyrverkeri CSS */
     .firework {
       position: absolute;
       width: 100%;
@@ -136,15 +135,14 @@
   <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
+    <!-- Symbolknappar (endast ikoner) -->
+    <div style="margin-bottom: 15px;">
+      <button onclick="playCorrect()" title="Testa rätt-ljud" style="border:none;background:none;font-size:28px;cursor:pointer;">🔊</button>
+      <button onclick="toggleFullscreen()" title="Fullskärm" style="border:none;background:none;font-size:28px;cursor:pointer;">⛶</button>
+    </div>
+
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
-
-      <!-- Testa ljuden innan spelet -->
-      <div id="soundTest" style="margin-top:20px;">
-        <p style="margin:5px 0; font-weight:bold;">🔊 Testa ljuden innan du börjar</p>
-        <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
-        <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
-      </div>
     </div>
 
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
@@ -163,6 +161,13 @@
     function playWrong() {
       document.getElementById("wrongSound").play();
     }
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
 
     const questions = [
       { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
@@ -171,7 +176,7 @@
       { q: "Du får ett mejl från Snapchat som säger att ditt konto stängs om du inte skickar ditt lösenord.", answer: "bluff", explanation: "Säkra tjänster frågar aldrig efter ditt lösenord." },
       { q: "En okänd person skriver att du vunnit pengar i en tävling du inte deltagit i.", answer: "bluff", explanation: "Om du inte deltagit kan du inte vinna." },
       { q: "Din bästa vän skickar ett privat meddelande på sociala medier.", answer: "säkert", explanation: "Troligen äkta om du känner igen kontot och personen." },
-      { q: "Du ser ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta <BR>snabba beslut utan att hinna tänka efter." },
+      { q: "Du ser ett inlägg med supererbjudande som gäller i 10 minuter.", answer: "bluff", explanation: "Bluffar försöker ofta stressa dig att fatta snabba beslut utan att hinna tänka efter." },
       { q: "Din mamma skickar: 'Glöm inte gympakläder imorgon!'", answer: "säkert", explanation: "Du känner igen numret, meddelandet verkar rimligt." }
     ];
 
@@ -183,7 +188,6 @@
     const startBtn = document.getElementById("startBtn");
     startBtn.addEventListener("click", () => {
       startBtn.style.display = "none";
-      document.getElementById("soundTest").style.display = "none"; // dölj testdelen
       document.getElementById("answerButtons").style.display = "block";
       document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
@@ -196,7 +200,6 @@
         showSummary();
         return;
       }
-
       const q = questions[currentIndex];
       const questionBox = document.getElementById("questionBox");
       questionBox.innerHTML = q.q;
@@ -222,11 +225,11 @@
 
       if(answer === q.answer){
         correctCount++;
-        document.getElementById("correctSound").play();
+        playCorrect();
         box.innerHTML = `<p style="color:green; font-weight:bold;">Rätt!</p><p class="feedbackText">${q.explanation}</p>`;
       } else {
         wrongCount++;
-        document.getElementById("wrongSound").play();
+        playWrong();
         box.innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedbackText">${q.explanation}</p>`;
       }
 
@@ -258,7 +261,7 @@
       box.innerHTML = `
         🎉 Spelet är slut! 🎉<br><br>
         Du fick ${correctCount} rätt och ${wrongCount} fel av ${questions.length}.<br><br>
-      <a href="1.html" class="next-link">➡️ Lär dig mer om AI och deep fake</a>
+        <a href="1.html" class="next-link">➡️ Lär dig mer om AI och deep fake</a>
       `;
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
