@@ -140,13 +140,6 @@
       <button id="startBtn">🚀 Starta spelet!</button>
     </div>
 
-    <!-- Testa ljuden innan spelet -->
-    <h2>🔊 Testa ljuden innan du börjar</h2>
-    <div id="soundTest" style="margin: 10px 0;">
-      <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
-      <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
-    </div>
-
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
     <div id="scoreCounter" style="display:none"></div>
     <div id="progress"><div id="progressBar"></div></div>
@@ -183,7 +176,6 @@
     const startBtn = document.getElementById("startBtn");
     startBtn.addEventListener("click", () => {
       startBtn.style.display = "none";
-      document.getElementById("soundTest").style.display = "none"; // 🔴 Döljer testknapparna när spelet börjar
       document.getElementById("answerButtons").style.display = "block";
       document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
