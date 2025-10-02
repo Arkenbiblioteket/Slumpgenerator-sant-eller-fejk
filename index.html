@@ -183,6 +183,7 @@
     const startBtn = document.getElementById("startBtn");
     startBtn.addEventListener("click", () => {
       startBtn.style.display = "none";
+      document.getElementById("soundTest").style.display = "none"; // 🔴 Döljer testknapparna när spelet börjar
       document.getElementById("answerButtons").style.display = "block";
       document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
