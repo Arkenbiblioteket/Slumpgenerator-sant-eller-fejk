@@ -138,7 +138,26 @@
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
-    </div>
+        </div>
+<h2>🔊 Testa ljuden innan du börjar</h2>
+<div style="margin: 10px 0;">
+  <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
+  <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
+</div>
+
+<script>
+  // Skapa två ljudfiler
+  const correctSound = new Audio("sounds/correct.mp3"); // byt till din ljudfil
+  const wrongSound = new Audio("sounds/wrong.mp3");     // byt till din ljudfil
+
+  function playCorrect() {
+    correctSound.play();
+  }
+
+  function playWrong() {
+    wrongSound.play();
+  }
+</script>
 
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
     <div id="scoreCounter" style="display:none"></div>
