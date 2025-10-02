@@ -138,6 +138,13 @@
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
+
+      <!-- Testa ljuden innan spelet -->
+      <div id="soundTest" style="margin-top:20px;">
+        <p style="margin:5px 0; font-weight:bold;">🔊 Testa ljuden innan du börjar</p>
+        <button onclick="playCorrect()" style="font-size:18px;">✅ Rätt-ljud</button>
+        <button onclick="playWrong()" style="font-size:18px;">❌ Fel-ljud</button>
+      </div>
     </div>
 
     <div class="answer-buttons" id="answerButtons" style="display:none;"></div>
@@ -176,6 +183,7 @@
     const startBtn = document.getElementById("startBtn");
     startBtn.addEventListener("click", () => {
       startBtn.style.display = "none";
+      document.getElementById("soundTest").style.display = "none"; // dölj testdelen
       document.getElementById("answerButtons").style.display = "block";
       document.getElementById("scoreCounter").style.display = "block";
       document.getElementById("progress").style.display = "block";
@@ -210,7 +218,7 @@
 
       const q = questions[currentIndex];
       const box = document.getElementById("questionBox");
-      box.innerHTML = ""; // ta bort frågetext
+      box.innerHTML = "";
 
       if(answer === q.answer){
         correctCount++;
@@ -222,7 +230,6 @@
         box.innerHTML = `<p style="color:red; font-weight:bold;">Fel!</p><p class="feedbackText">${q.explanation}</p>`;
       }
 
-      // Klick på hela rutan går vidare
       box.onclick = () => {
         box.onclick = null;
         nextQuestion();
@@ -256,7 +263,6 @@
       document.getElementById("answerButtons").style.display = "none";
       document.getElementById("progress").style.display = "none";
 
-      // Skapa fyrverkeri
       const fireworkContainer = document.createElement("div");
       fireworkContainer.classList.add("firework");
       for(let i=0;i<30;i++){
