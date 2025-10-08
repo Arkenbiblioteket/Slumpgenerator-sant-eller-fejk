@@ -136,23 +136,29 @@
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
 <!-- Symbolknappar (bock/kryss med ljud) -->
-<div id="soundTest" style="margin-bottom: 15px;">
-  <button onclick="playCorrect()" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
-  <button onclick="playWrong()" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
+<div id="soundTest" style="margin-bottom: 15px; position: relative; z-index: 10;">
+  <button id="correctBtn" title="Spela applåder"
+          style="border:none;background:none;font-size:48px;cursor:pointer;color:green;">✅</button>
+  <button id="wrongBtn" title="Spela burop"
+          style="border:none;background:none;font-size:48px;cursor:pointer;color:red;">❌</button>
 </div>
 
 <script>
-  function playCorrect() {
-    const audio = new Audio('applaus.wav');
-    audio.play();
-  }
+  // Skapa ljudobjekt i förväg (bättre respons)
+  const applause = new Audio('applaus.wav');
+  const boo = new Audio('bu.wav');
 
-  function playWrong() {
-    const audio = new Audio('bu.wav');
-    audio.play();
-  }
+  // Gör knapparna klickbara och koppla till ljud
+  document.getElementById("correctBtn").addEventListener("click", () => {
+    applause.currentTime = 0; // Spela från början varje gång
+    applause.play();
+  });
+
+  document.getElementById("wrongBtn").addEventListener("click", () => {
+    boo.currentTime = 0;
+    boo.play();
+  });
 </script>
-
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
