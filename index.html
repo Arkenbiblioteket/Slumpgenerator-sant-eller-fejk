@@ -136,27 +136,39 @@
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
 <!-- Symbolknappar (bock/kryss med ljud) -->
-<div id="soundTest" style="margin-bottom: 15px; position: relative; z-index: 10;">
-  <button id="correctBtn" title="Spela applåder"
-          style="border:none;background:none;font-size:48px;cursor:pointer;color:green;">✅</button>
-  <button id="wrongBtn" title="Spela burop"
-          style="border:none;background:none;font-size:48px;cursor:pointer;color:red;">❌</button>
+<div id="soundTest" style="
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 9999;
+  pointer-events: auto;
+">
+  <button id="correctBtn" title="Spela applåder" 
+    style="border:none;background:none;font-size:48px;cursor:pointer;color:green;
+    position: relative; z-index: 9999; pointer-events: auto;">✅</button>
+  <button id="wrongBtn" title="Spela burop" 
+    style="border:none;background:none;font-size:48px;cursor:pointer;color:red;
+    position: relative; z-index: 9999; pointer-events: auto;">❌</button>
 </div>
 
 <script>
-  // Skapa ljudobjekt i förväg (bättre respons)
-  const applause = new Audio('applaus.wav');
-  const boo = new Audio('bu.wav');
+  document.addEventListener("DOMContentLoaded", function() {
+    const applause = new Audio('applaus.wav');
+    const boo = new Audio('bu.wav');
 
-  // Gör knapparna klickbara och koppla till ljud
-  document.getElementById("correctBtn").addEventListener("click", () => {
-    applause.currentTime = 0; // Spela från början varje gång
-    applause.play();
-  });
+    const correctBtn = document.getElementById("correctBtn");
+    const wrongBtn = document.getElementById("wrongBtn");
 
-  document.getElementById("wrongBtn").addEventListener("click", () => {
-    boo.currentTime = 0;
-    boo.play();
+    correctBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      applause.currentTime = 0;
+      applause.play();
+    });
+
+    wrongBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      boo.currentTime = 0;
+      boo.play();
+    });
   });
 </script>
 
