@@ -135,11 +135,26 @@
   <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
-    <!-- Symbolknappar (ändrade till bock/kryss med ljud) -->
-    <div id="soundTest" style="margin-bottom: 15px;">
-      <button onclick="playCorrect()" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
-      <button onclick="playWrong()" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
-    </div>
+<!-- Symbolknappar (✅❌ – fungerar och försvinner när spelet startar) -->
+<div id="soundTest" style="margin-bottom: 15px;">
+  <button id="testCorrect" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
+  <button id="testWrong" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
+</div>
+
+<script>
+  document.getElementById("testCorrect").addEventListener("click", () => {
+    const sound = document.getElementById("correctSound");
+    sound.currentTime = 0;
+    sound.play();
+  });
+
+  document.getElementById("testWrong").addEventListener("click", () => {
+    const sound = document.getElementById("wrongSound");
+    sound.currentTime = 0;
+    sound.play();
+  });
+</script>
+
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
