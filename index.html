@@ -135,42 +135,11 @@
   <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
-<!-- Symbolknappar (bock/kryss med ljud) -->
-<div id="soundTest" style="
-  margin-bottom: 15px;
-  position: relative;
-  z-index: 9999;
-  pointer-events: auto;
-">
-  <button id="correctBtn" title="Spela applåder" 
-    style="border:none;background:none;font-size:48px;cursor:pointer;color:green;
-    position: relative; z-index: 9999; pointer-events: auto;">✅</button>
-  <button id="wrongBtn" title="Spela burop" 
-    style="border:none;background:none;font-size:48px;cursor:pointer;color:red;
-    position: relative; z-index: 9999; pointer-events: auto;">❌</button>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const applause = new Audio('applaus.wav');
-    const boo = new Audio('bu.wav');
-
-    const correctBtn = document.getElementById("correctBtn");
-    const wrongBtn = document.getElementById("wrongBtn");
-
-    correctBtn.addEventListener("click", function(e) {
-      e.stopPropagation();
-      applause.currentTime = 0;
-      applause.play();
-    });
-
-    wrongBtn.addEventListener("click", function(e) {
-      e.stopPropagation();
-      boo.currentTime = 0;
-      boo.play();
-    });
-  });
-</script>
+    <!-- Symbolknappar (oförändrat utseende; IDs lagda till för funktion) -->
+    <div id="soundTest" style="margin-bottom: 15px;">
+      <button id="soundCorrectBtn" type="button" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;line-height:1;padding:0;margin:0;">✅</button>
+      <button id="soundWrongBtn" type="button" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;line-height:1;padding:0;margin:0;">❌</button>
+    </div>
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
@@ -186,13 +155,41 @@
   <audio id="wrongSound" src="bu.wav" preload="auto"></audio>
 
   <script>
+    // ---------- ljudfunktioner (ändrade så ljud alltid startar från början) ----------
     function playCorrect() {
-      document.getElementById("correctSound").play();
+      const el = document.getElementById("correctSound");
+      if (el) {
+        el.currentTime = 0;
+        el.play().catch(() => {
+          // Ignorera play-fel (t.ex. autoplay-policy) — inga felmeddelanden syns för användaren
+        });
+      }
     }
     function playWrong() {
-      document.getElementById("wrongSound").play();
+      const el = document.getElementById("wrongSound");
+      if (el) {
+        el.currentTime = 0;
+        el.play().catch(() => {});
+      }
     }
 
+    // Koppla klick till symbolerna (samma funktioner som används i quizen)
+    const soundCorrectBtn = document.getElementById('soundCorrectBtn');
+    const soundWrongBtn = document.getElementById('soundWrongBtn');
+    if (soundCorrectBtn) {
+      soundCorrectBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // hindra att ett överordnat element fångar klicket
+        playCorrect();
+      });
+    }
+    if (soundWrongBtn) {
+      soundWrongBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        playWrong();
+      });
+    }
+
+    // ---------- quizkod (oförändrad funktionalitet) ----------
     const questions = [
       { q: "Du får ett meddelande:<br>'Grattis! Du har vunnit en ny mobil – klicka här!'", answer: "bluff", explanation: "Sådana meddelanden försöker ofta lura dig att klicka på farliga länkar." },
       { q: "Din kompis skickar en länk till en rolig video.", answer: "säkert", explanation: "Om du litar på kompisen kan det vara okej, men kontrollera alltid länken." },
