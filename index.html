@@ -135,11 +135,24 @@
   <div class="container">
     <h1>🎉 Bli ett proffs på smarta val online! 🎉</h1>
 
-    <!-- Symbolknappar (ändrade till bock/kryss med ljud) -->
-    <div id="soundTest" style="margin-bottom: 15px;">
-      <button onclick="playCorrect()" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
-      <button onclick="playWrong()" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
-    </div>
+<!-- Symbolknappar (bock/kryss med ljud) -->
+<div id="soundTest" style="margin-bottom: 15px;">
+  <button onclick="playCorrect()" title="Spela applåder" style="border:none;background:none;font-size:32px;cursor:pointer;color:green;">✅</button>
+  <button onclick="playWrong()" title="Spela burop" style="border:none;background:none;font-size:32px;cursor:pointer;color:red;">❌</button>
+</div>
+
+<script>
+  function playCorrect() {
+    const audio = new Audio('applaus.wav');
+    audio.play();
+  }
+
+  function playWrong() {
+    const audio = new Audio('bu.wav');
+    audio.play();
+  }
+</script>
+
 
     <div id="questionBox">
       <button id="startBtn">🚀 Starta spelet!</button>
